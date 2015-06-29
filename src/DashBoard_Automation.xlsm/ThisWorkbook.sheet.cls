@@ -8,11 +8,13 @@ End Sub
 Private Sub Workbook_BeforeClose(Cancel As Boolean)
 
    Call hideTipsForWorkbookEvent
+   
+   'Call exportVbaCode
     
 End Sub
 
 Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, Cancel As Boolean)
 
     Call hideTipsForWorkbookEvent
-
+    
 End Sub

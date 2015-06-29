@@ -10,10 +10,8 @@ Public Sub Error_Messagebox()
 'Messagebox if no drive is selected
 If Sheet1.rdbLocalDrive.Value = False Then
     If Sheet1.rdbSharedDrive.Value = False Then
-        If Sheet1.rdbSharepoint.Value = False Then
             MsgBox "Please select a Data Source!" & vbCrLf & "Local or Shared or Sharepoint"
             End
-        End If
     End If
 End If
 
@@ -46,15 +44,6 @@ If Sheet1.combProductGroup.Value = "Select Product Group" Then
         End
 End If
 
-'message box to select ITM or MQT or MAT
-If Sheet1.chkbtnITM.Value = False Then
-    If Sheet1.chkbtnMQT.Value = False Then
-        If Sheet1.chkbtnMAT.Value = False Then
-        MsgBox "Please select ITM or MQT or MAT"
-        End
-        End If
-    End If
-End If
 
 'message box for file name and Selected date correction
     Dim monthChk As String

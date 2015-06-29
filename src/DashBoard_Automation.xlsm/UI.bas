@@ -7,7 +7,7 @@ On Error Resume Next
 
 Sheet1.rdbLocalDrive.Value = 0
 Sheet1.rdbSharedDrive.Value = 0
-Sheet1.rdbSharepoint.Value = 0
+
 
 Sheet1.combProductGroup.Clear
 With Sheet1.combProductGroup
@@ -23,8 +23,6 @@ With Sheet1.combProductGroup
 End With
 
 Sheet1.rdbLocalDrive.Value = True
-Sheet1.chkbtnMAT.Enabled = False
-Sheet1.chkbtnMQT.Enabled = False
 Sheet1.processTime.Value = 0
 Sheet1.processTime.Enabled = False
 Sheet1.minProcessTime.Enabled = False
@@ -32,6 +30,8 @@ Sheet1.combProductGroup.Value = "Select Product Group"
 Sheet1.chkCTS.Enabled = False
 Sheet1.chkRevenue.Enabled = False
 Sheet1.chkAllGroups.Value = False
+Sheet1.minProcessTime.Value = 0
+Sheet1.processTime.Value = 0
 
 Dim yearValue As String
 Dim monthVal As String

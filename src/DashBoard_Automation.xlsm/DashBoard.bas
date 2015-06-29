@@ -78,7 +78,7 @@ installFileOpen = "Install SPAN P95_" & fstMonthChk & ".xlsx"
     
     Application.Workbooks.Open (installFlName), False
     Application.Workbooks.Open (inputItem), False 'false to disable link update message
-    myWorkBook = ActiveWorkbook.Name
+    myWorkBook = ActiveWorkbook.name
     Workbooks(myWorkBook).Activate
     ActiveWorkbook.Sheets("Data Analysis Pivot").Activate
     ActiveSheet.Cells(1, 1).Select
@@ -165,7 +165,7 @@ Dim exists As Boolean
 exists = False
 Workbooks(outputFlName).Activate
 For i = 1 To Workbooks(outputFlName).Sheets.Count
-    If Workbooks(outputFlName).Sheets(i).Name = KPISheetName Then
+    If Workbooks(outputFlName).Sheets(i).name = KPISheetName Then
         exists = True
     End If
 Next i
@@ -177,7 +177,7 @@ End If
 Workbooks(inputFlName).Activate
 Worksheets("Data Analysis Pivot").Activate
 ActiveSheet.Cells(5, 2).Select
-pvtName = ActiveCell.PivotTable.Name
+pvtName = ActiveCell.PivotTable.name
 
 'filtering the data based on selection
 Set p = ActiveSheet.PivotTables(pvtName)
@@ -191,7 +191,7 @@ Next pf
 Application.Calculation = xlCalculationAutomatic  'Enabling automatic calculations
 Worksheets("Service Scorecard").Activate
 ActiveSheet.Cells(8, 2).Select
-pvtName = ActiveCell.PivotTable.Name
+pvtName = ActiveCell.PivotTable.name
 
 Set p = ActiveSheet.PivotTables(pvtName) 'for YTD values
 For Each pf In p.PageFields
@@ -217,7 +217,6 @@ ActiveSheet.Cells(5, 2).Select
 monthVal = Mid(Sheet1.combYear.Value, 6, 2)
 j = Mid(Sheet1.combYear.Value, 6, 2)
 
-If Sheet1.chkbtnITM.Value = True Then
 Do Until j = 0
 
 Select Case j
@@ -358,7 +357,7 @@ Workbooks(inputFile).Activate
 ActiveWorkbook.Sheets("Install SPAN").Activate
 ActiveSheet.UsedRange.Find("Period").Select
 insFindValue = Sheet1.combProductGroup.Value
-pvtName = ActiveCell.PivotTable.Name
+pvtName = ActiveCell.PivotTable.name
 
 Select Case insFindValue
     
@@ -550,7 +549,7 @@ For Each celItem In Range(firstCell, lastCell)
     
     Case "Contract Revenue"
         ActiveSheet.UsedRange.Find("Customer").Select
-        ActiveSheet.UsedRange.Find(what:=YTDFindValue, after:=ActiveCell, LookIn:=xlValues).Select
+        ActiveSheet.UsedRange.Find(what:=YTDFindValue, After:=ActiveCell, LookIn:=xlValues).Select
          i = 0
             Do Until ActiveCell.End(xlUp).Value = "YTD"
             i = i + 1
@@ -568,7 +567,7 @@ For Each celItem In Range(firstCell, lastCell)
     
     Case "iGM%"
         ActiveSheet.UsedRange.Find("Customer").Select
-        ActiveSheet.UsedRange.Find(what:="Contract Profitability - Gross Margin %", after:=ActiveCell, LookIn:=xlValues).Select
+        ActiveSheet.UsedRange.Find(what:="Contract Profitability - Gross Margin %", After:=ActiveCell, LookIn:=xlValues).Select
          i = 0
             Do Until ActiveCell.End(xlUp).Value = "YTD"
             i = i + 1
@@ -765,7 +764,6 @@ For Each celItem In Range(firstCell, lastCell)
     End Select
     ActiveCell.Offset(1, 0).Select
 Next
-End If 'if for ITM
 
 sheetNameNotPresent:
 'exit loop if all groups option is not selected
@@ -812,7 +810,7 @@ outputFl = "MoS KPI Summary.xlsx"
 inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "KPI dashboard_Innovation_" & fstMonthChk & "*.xl*")
 
 Application.Workbooks.Open (inputFl)
-inputFl = ActiveWorkbook.Name
+inputFl = ActiveWorkbook.name
 
 patternProductGroup = Sheet1.combProductGroup.Value
 
@@ -879,7 +877,7 @@ Dim exists As Boolean
 exists = False
 Workbooks(outputFl).Activate
 For i = 1 To Workbooks(outputFl).Sheets.Count
-    If Workbooks(outputFl).Sheets(i).Name = KPISheetName Then
+    If Workbooks(outputFl).Sheets(i).name = KPISheetName Then
         exists = True
     End If
 Next i
@@ -1028,7 +1026,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("# of Patterns").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(what:=patternDate, after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = patternValToPaste
 
@@ -1038,7 +1036,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("DAP capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(what:=patternDate, after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = dapValToPaste
 
@@ -1048,7 +1046,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("Remote Capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(what:=patternDate, after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = remoteValToPaste
 
@@ -1080,8 +1078,9 @@ ActiveCell.Offset(1, 0).Select
     Loop
     
     If ActiveCell.Offset(0, -1).Value = "Patterns" Then
+    actAdd = ActiveCell.Address
         i = 0
-        Do Until ActiveCell.End(xlUp).Value = patternDate
+        Do Until ActiveCell.End(xlUp).Value = "YTD"
         ActiveCell.Offset(0, 1).Select
         i = i + 1
         If i > 200 Then
@@ -1091,8 +1090,9 @@ ActiveCell.Offset(1, 0).Select
         patternValToPaste = ActiveCell.Value
         
     ElseIf ActiveCell.Offset(0, -1).Value = "Dap Capability" Then
+    actAdd = ActiveCell.Address
         i = 0
-        Do Until ActiveCell.End(xlUp).Value = patternDate
+        Do Until ActiveCell.End(xlUp).Value = "YTD"
         ActiveCell.Offset(0, 1).Select
         i = i + 1
         If i > 200 Then
@@ -1102,8 +1102,9 @@ ActiveCell.Offset(1, 0).Select
         dapValToPaste = ActiveCell.Value
         
     ElseIf ActiveCell.Offset(0, -1).Value = "Remote Capability" Then
+    actAdd = ActiveCell.Address
         i = 0
-        Do Until ActiveCell.End(xlUp).Value = patternDate
+        Do Until ActiveCell.End(xlUp).Value = "YTD"
         ActiveCell.Offset(0, 1).Select
         i = i + 1
         If i > 200 Then
@@ -1121,7 +1122,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("# of Patterns").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(what:="YTD", after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = patternValToPaste
 
@@ -1131,7 +1132,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("DAP capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(what:="YTD", after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = dapValToPaste
 
@@ -1141,7 +1142,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("Remote Capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(what:="YTD", after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = remoteValToPaste
 
@@ -1150,6 +1151,10 @@ sheetNameNotPresent:
 If Sheet1.chkAllGroups.Value = False Then
     Exit For
 End If
+
+patternValToPaste = ""
+dapValToPaste = ""
+remoteValToPaste = ""
 
 Next productItem 'for all product groups
 
@@ -1264,7 +1269,7 @@ Dim exists As Boolean
 exists = False
 Workbooks(outputFl).Activate
 For i = 1 To Workbooks(outputFl).Sheets.Count
-    If Workbooks(outputFl).Sheets(i).Name = KPISheetName Then
+    If Workbooks(outputFl).Sheets(i).name = KPISheetName Then
         exists = True
     End If
 Next i
@@ -1324,7 +1329,7 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("MoS Open Complaints").Activate
 ActiveSheet.UsedRange.Find("Period").Select
 
-pvtName = ActiveCell.PivotTable.Name
+pvtName = ActiveCell.PivotTable.name
 'filtering the data based on selection
 Set p = ActiveSheet.PivotTables(pvtName)
 'Unhide page field pivot items
@@ -1484,7 +1489,7 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("MoS Open Complaints").Activate
 ActiveSheet.UsedRange.Find("Period").Select
 
-pvtName = ActiveCell.PivotTable.Name
+pvtName = ActiveCell.PivotTable.name
 'filtering the data based on selection
 Set p = ActiveSheet.PivotTables(pvtName)
 'Unhide page field pivot items
@@ -1638,7 +1643,7 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("MoS Open Complaints").Activate
 ActiveSheet.UsedRange.Find("Period").Select
 
-pvtName = ActiveCell.PivotTable.Name
+pvtName = ActiveCell.PivotTable.name
 'filtering the data based on selection
 Set p = ActiveSheet.PivotTables(pvtName)
 'Unhide page field pivot items
@@ -1792,7 +1797,7 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("MoS Open Complaints").Activate
 ActiveSheet.UsedRange.Find("Period").Select
 
-pvtName = ActiveCell.PivotTable.Name
+pvtName = ActiveCell.PivotTable.name
 'filtering the data based on selection
 Set p = ActiveSheet.PivotTables(pvtName)
 'Unhide page field pivot items
@@ -1945,7 +1950,7 @@ cProductGroup = "BV Vectra"
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("CHU synop").Activate
 ActiveSheet.Cells(5, 5).Select
-ActiveSheet.UsedRange.Find(what:=cProductGroup, after:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=cProductGroup, After:=ActiveCell).Select
 Dim chuYearToFind As Integer
 chuYearToFind = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.Value, 1, 4) & "-" & selMonth).Select
@@ -2032,7 +2037,7 @@ cProductGroup = "Allura FC"
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("CHU synop").Activate
 ActiveSheet.Cells(5, 5).Select
-ActiveSheet.UsedRange.Find(what:=cProductGroup, after:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=cProductGroup, After:=ActiveCell).Select
 chuYearToFind = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.Value, 1, 4) & "-" & selMonth).Select
 toMinusVal = CInt(Mid(ActiveCell.Address, 4, 2))
@@ -2479,7 +2484,7 @@ Dim exists As Boolean
 exists = False
 Workbooks(outputFl).Activate
 For i = 1 To Workbooks(outputFl).Sheets.Count
-    If Workbooks(outputFl).Sheets(i).Name = KPISheetName Then
+    If Workbooks(outputFl).Sheets(i).name = KPISheetName Then
         exists = True
     End If
 Next i
@@ -2529,6 +2534,12 @@ Select Case j
     selMonth = "12"
 End Select
 
+
+Select Case fcoProductGroup
+
+'for Endura
+Case "IXR-MOS Endura-Y"
+
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("FCO").Activate
 ActiveSheet.UsedRange.Find("MoS").Select
@@ -2548,11 +2559,6 @@ lstAdd = ActiveCell.Address
 ActiveSheet.Range(fstAdd, lstAdd).Select
 Selection.Copy
 
-Select Case fcoProductGroup
-
-'for Endura
-Case "IXR-MOS Endura-Y"
-
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find(what:="# Released FCO", LookAt:=xlWhole).Select
@@ -2565,6 +2571,24 @@ ActiveCell.Offset(1, 0).Select
 
 'fpr Pulsera
 Case "IXR-MOS Pulsera-Y"
+
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets("FCO").Activate
+ActiveSheet.UsedRange.Find("MoS").Select
+
+Do Until ActiveCell.Value = "YTD"
+ActiveCell.Offset(0, 1).Select
+Loop
+
+ActiveCell.Offset(1, 0).Select
+fstAdd = ActiveCell.Address
+ActiveCell.Offset(0, j).Select
+ActiveCell.End(xlDown).Select
+lstAdd = ActiveCell.Address
+
+ActiveSheet.Range(fstAdd, lstAdd).Select
+Selection.Copy
+
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find(what:="# Released FCO", LookAt:=xlWhole).Select
@@ -2577,6 +2601,24 @@ ActiveCell.Offset(1, 0).Select
 
 'for Veradius
 Case "IXR-MOS Veradius-Y"
+
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets("FCO").Activate
+ActiveSheet.UsedRange.Find("MoS").Select
+
+Do Until ActiveCell.Value = "YTD"
+ActiveCell.Offset(0, 1).Select
+Loop
+
+ActiveCell.Offset(1, 0).Select
+fstAdd = ActiveCell.Address
+ActiveCell.Offset(0, j).Select
+ActiveCell.End(xlDown).Select
+lstAdd = ActiveCell.Address
+
+ActiveSheet.Range(fstAdd, lstAdd).Select
+Selection.Copy
+
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find(what:="# Released FCO", LookAt:=xlWhole).Select
@@ -2589,6 +2631,24 @@ ActiveCell.Offset(1, 0).Select
 
 'for BV Libra
 Case "IXR-MOS Libra-N"
+
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets("FCO").Activate
+ActiveSheet.UsedRange.Find("MoS").Select
+
+Do Until ActiveCell.Value = "YTD"
+ActiveCell.Offset(0, 1).Select
+Loop
+
+ActiveCell.Offset(1, 0).Select
+fstAdd = ActiveCell.Address
+ActiveCell.Offset(0, j).Select
+ActiveCell.End(xlDown).Select
+lstAdd = ActiveCell.Address
+
+ActiveSheet.Range(fstAdd, lstAdd).Select
+Selection.Copy
+
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find(what:="# Released FCO", LookAt:=xlWhole).Select
@@ -2601,6 +2661,24 @@ ActiveCell.Offset(1, 0).Select
 
 'for BV Vectra
 Case "IXR-MOS BV Vectra-N"
+
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets("FCO").Activate
+ActiveSheet.UsedRange.Find(what:="BV Vectra", LookAt:=xlWhole).Select
+
+Do Until ActiveCell.Value = "YTD"
+ActiveCell.Offset(0, 1).Select
+Loop
+
+ActiveCell.Offset(1, 0).Select
+fstAdd = ActiveCell.Address
+ActiveCell.Offset(0, j).Select
+ActiveCell.End(xlDown).Select
+lstAdd = ActiveCell.Address
+
+ActiveSheet.Range(fstAdd, lstAdd).Select
+Selection.Copy
+
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find(what:="# Released FCO", LookAt:=xlWhole).Select
@@ -2613,6 +2691,24 @@ ActiveCell.Offset(1, 0).Select
 
 'for Allura FC
 Case "IXR-CV Allura FC-Y"
+
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets("FCO").Activate
+ActiveSheet.UsedRange.Find(what:="Allura FC", LookAt:=xlWhole).Select
+
+Do Until ActiveCell.Value = "YTD"
+ActiveCell.Offset(0, 1).Select
+Loop
+
+ActiveCell.Offset(1, 0).Select
+fstAdd = ActiveCell.Address
+ActiveCell.Offset(0, j).Select
+ActiveCell.End(xlDown).Select
+lstAdd = ActiveCell.Address
+
+ActiveSheet.Range(fstAdd, lstAdd).Select
+Selection.Copy
+
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find(what:="# Released FCO", LookAt:=xlWhole).Select
@@ -2625,6 +2721,24 @@ ActiveCell.Offset(1, 0).Select
 
 'for Opta
 Case "DXR-MobileDiagnost Opta-N"
+
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets("FCO").Activate
+ActiveSheet.UsedRange.Find(what:="Opta DR/AR", LookAt:=xlWhole).Select
+
+Do Until ActiveCell.Value = "YTD"
+ActiveCell.Offset(0, 1).Select
+Loop
+
+ActiveCell.Offset(1, 0).Select
+fstAdd = ActiveCell.Address
+ActiveCell.Offset(0, j).Select
+ActiveCell.End(xlDown).Select
+lstAdd = ActiveCell.Address
+
+ActiveSheet.Range(fstAdd, lstAdd).Select
+Selection.Copy
+
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find(what:="# Released FCO", LookAt:=xlWhole).Select
@@ -2637,6 +2751,53 @@ ActiveCell.Offset(1, 0).Select
 
 'for Primary Diagnost
 Case "DXR-PrimaryDiagnost Digital-N"
+
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets("FCO").Activate
+ActiveSheet.UsedRange.Find(what:="Primary Diagnost  DR/AR", LookAt:=xlWhole).Select
+
+Do Until ActiveCell.Value = "YTD"
+ActiveCell.Offset(0, 1).Select
+Loop
+
+ActiveCell.Offset(1, 0).Select
+fstAdd = ActiveCell.Address
+ActiveCell.Offset(0, j).Select
+ActiveCell.End(xlDown).Select
+lstAdd = ActiveCell.Address
+
+ActiveSheet.Range(fstAdd, lstAdd).Select
+Selection.Copy
+
+Workbooks(outputFl).Activate
+ActiveWorkbook.Sheets(KPISheetName).Activate
+ActiveSheet.UsedRange.Find(what:="# Released FCO", LookAt:=xlWhole).Select
+i = Mid(ActiveCell.Address, 4, 2)
+ActiveSheet.UsedRange.Find(what:="YTD", LookAt:=xlWhole).Select
+ActiveCell.Offset(i - 2, 0).Select
+ActiveSheet.Paste
+Selection.Font.Size = 18
+ActiveCell.Offset(1, 0).Select
+
+Case "DXR-MicroDose Mammography-Y"
+
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets("FCO").Activate
+ActiveSheet.UsedRange.Find(what:="Mammography", LookAt:=xlWhole).Select
+
+Do Until ActiveCell.Value = "YTD"
+ActiveCell.Offset(0, 1).Select
+Loop
+
+ActiveCell.Offset(1, 0).Select
+fstAdd = ActiveCell.Address
+ActiveCell.Offset(0, j).Select
+ActiveCell.End(xlDown).Select
+lstAdd = ActiveCell.Address
+
+ActiveSheet.Range(fstAdd, lstAdd).Select
+Selection.Copy
+
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find(what:="# Released FCO", LookAt:=xlWhole).Select
@@ -2756,6 +2917,7 @@ magNameFlt = "PrimaryDiagnost DR"
 Case "DXR-MicroDose Mammography-Y"
 KPISheetName = "MicroDose Mammography"
 selectSheet = 1
+magNameFlt = "MicroDose SI"
 
 Case "DXR-MobileDiagnost Opta-N"
 KPISheetName = "MobileDiagnost Opta"
@@ -2769,7 +2931,7 @@ Dim exists As Boolean
 exists = False
 Workbooks(outputFl).Activate
 For i = 1 To Workbooks(outputFl).Sheets.Count
-    If Workbooks(outputFl).Sheets(i).Name = KPISheetName Then
+    If Workbooks(outputFl).Sheets(i).name = KPISheetName Then
         exists = True
     End If
 Next i
@@ -2827,7 +2989,7 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("Pivot").Activate
 ActiveSheet.Cells(11, 2).Select
 
-pvtName = ActiveCell.PivotTable.Name
+pvtName = ActiveCell.PivotTable.name
 
 'filtering the data based on selection
 Set p = ActiveSheet.PivotTables(pvtName)
@@ -2869,7 +3031,7 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("Pivot").Activate
 ActiveSheet.Cells(11, 2).Select
 
-pvtName = ActiveCell.PivotTable.Name
+pvtName = ActiveCell.PivotTable.name
 
 'filtering the data based on selection
 Set p = ActiveSheet.PivotTables(pvtName)
@@ -3026,7 +3188,7 @@ Dim exists As Boolean
 exists = False
 Workbooks(outputFl).Activate
 For i = 1 To Workbooks(outputFl).Sheets.Count
-    If Workbooks(outputFl).Sheets(i).Name = KPISheetName Then
+    If Workbooks(outputFl).Sheets(i).name = KPISheetName Then
         exists = True
     End If
 Next i
@@ -3093,7 +3255,7 @@ Dim mcSysCode1 As Double, mcSysCode2 As Double, mcSysCode3 As Double, mcSysCode4
 Workbooks(inputFlDI).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3150,7 +3312,7 @@ Case "DXR-PrimaryDiagnost Digital-N"
 Workbooks(inputFlDI).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3198,7 +3360,7 @@ Dim ytdIGTvalToPaste As Double
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, after:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3249,7 +3411,7 @@ Case "IXR-MOS Pulsera-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3293,7 +3455,7 @@ Case "IXR-MOS Veradius-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3339,7 +3501,7 @@ Case "IXR-MOS BV Vectra-N"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3386,7 +3548,7 @@ Case "IXR-CV Allura FC-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3429,7 +3591,7 @@ Case "DXR-MobileDiagnost Opta-N"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, after:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3578,7 +3740,7 @@ Dim exists As Boolean
 exists = False
 Workbooks(outputFl).Activate
 For i = 1 To Workbooks(outputFl).Sheets.Count
-    If Workbooks(outputFl).Sheets(i).Name = KPISheetName Then
+    If Workbooks(outputFl).Sheets(i).name = KPISheetName Then
         exists = True
     End If
 Next i
@@ -3664,17 +3826,23 @@ If Sheet1.chkAllGroups.Value = False Then
     Exit For
 End If
 
-ActiveSheet.Cells(1, 1).Select
+ActiveSheet.Cells(11, 11).Select
 
 Next productItem 'for all product groups
 
 Workbooks(inputFl).Close False
 Application.Workbooks(outputFl).Windows(1).Visible = True
 Workbooks(outputFl).Activate
+For Each Sheet In ActiveWorkbook.Sheets
+ActiveSheet.Cells.Select
+Selection.Font.Size = 18
+ActiveSheet.Cells(11, 11).Select
+Next
+
 Workbooks(outputFl).Save
 
 If Sheet1.chkAllGroups.Value = True Then
-ActiveWorkbook.Sheets(1).Activate
+ActiveWorkbook.Sheets(2).Activate
 End If
 
 'loop for month not present in input
