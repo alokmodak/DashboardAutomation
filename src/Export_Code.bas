@@ -1,6 +1,21 @@
 Attribute VB_Name = "Export_Code"
+'* Export Code incorporated by Jitendra Deshmukh Dated 6/30/2015
+
+'Date           Who     What
+
+
+
 Public Sub exportVbaCode()
 
+Dim objUserEnvVars As Object
+Dim strVar As String
+Set objUserEnvVars = CreateObject("WScript.Shell").Environment("User")
+strVar = objUserEnvVars.item("Dashboard_Automation")
+If Not InStr(strVar, "\") > 0 Then
+        'In this case it is a new workbook, we skip it
+        Exit Sub
+    End If
+    
 Dim vbaProject As VBProject
 
 Set vbaProject = ThisWorkbook.VBProject

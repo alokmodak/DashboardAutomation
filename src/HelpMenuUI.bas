@@ -1,4 +1,7 @@
 Attribute VB_Name = "HelpMenuUI"
+'Date           Who     What
+
+
 Option Private Module
 
 Public clearInfoTime As Date            'the time hideInfoTips is scheduled for

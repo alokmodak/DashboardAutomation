@@ -1,4 +1,6 @@
 Attribute VB_Name = "Import_Code"
+'Date           Who     What
+
 
 Option Explicit
 
@@ -13,6 +15,15 @@ Public vbaProjectToImport As VBProject
 Public Sub ImportCode()
     Dim proj_name As String
     proj_name = "Dashboard_Automation"
+
+Dim objUserEnvVars As Object
+Dim strVar As String
+Set objUserEnvVars = CreateObject("WScript.Shell").Environment("User")
+strVar = objUserEnvVars.item("Dashboard_Automation")
+If Not InStr(strVar, "\") > 0 Then
+        'In this case it is a new workbook, we skip it
+        Exit Sub
+    End If
 
     Dim vbaProject As Object
     Set vbaProject = Application.VBE.VBProjects(proj_name)

@@ -1,5 +1,6 @@
 Attribute VB_Name = "ErrorMessage"
 Option Explicit
+
 'Date           Who     What
 '10-June-2015   Name    First file - Purpose is to to perform error handling on UI
 '16-June-2015   Name    Added validation for checkbox
