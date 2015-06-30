@@ -134,7 +134,7 @@ Public Function getSourceDir(fullWorkbookPath As String, createIfNotExists As Bo
     Dim srcDir As String
     srcDir = projDir & "src\"
     Dim exportDir As String
-    exportDir = srcDir & FSO.GetFileName(fullWorkbookPath) & "_" & Format(Now(), "ddmmm") & "\"
+    exportDir = srcDir & FSO.GetFileName(fullWorkbookPath) & "\"
 
     If createIfNotExists Then
         If Not FSO.FolderExists(srcDir) Then

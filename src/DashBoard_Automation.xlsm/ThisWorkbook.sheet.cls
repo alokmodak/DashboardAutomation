@@ -9,7 +9,7 @@ Private Sub Workbook_BeforeClose(Cancel As Boolean)
 
    Call hideTipsForWorkbookEvent
    
-   'Call exportVbaCode
+   Call exportVbaCode
     
 End Sub
 
