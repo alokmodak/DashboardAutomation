@@ -91,10 +91,10 @@ End If
 
 'declaring output path
 If Sheet1.rdbLocalDrive.value = True Then
-outputPath = ThisWorkbook.Path & "\" & "Mos KPI Summary.xlsx"
-outputFlName = "Mos KPI Summary.xlsx"
+outputPath = ThisWorkbook.Path & "\" & "KPI Summary.xlsx"
+outputFlName = "KPI Summary.xlsx"
 Application.Workbooks.Open (outputPath)
-Application.Workbooks("Mos KPI Summary.xlsx").Windows(1).Visible = False
+Application.Workbooks("KPI Summary.xlsx").Windows(1).Visible = False
 End If
 
 'Filtering servicescorecard data based on selection
@@ -806,7 +806,7 @@ Dim fstMonthChk As String
 
 fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
 
-outputFl = "MoS KPI Summary.xlsx"
+outputFl = "KPI Summary.xlsx"
 inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "KPI dashboard_Innovation_" & fstMonthChk & "*.xl*")
 
 Application.Workbooks.Open (inputFl)
@@ -1193,7 +1193,7 @@ fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
 
 yrSelectedFirst = Sheet1.combYear.value
 
-outputFl = "MoS KPI Summary.xlsx"
+outputFl = "KPI Summary.xlsx"
 inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & "*.xls*")
 escInputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs_" & fstMonthChk & "*.xls*")
 Application.Workbooks.Open (inputFl)
@@ -2411,7 +2411,7 @@ fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
 
 yrSelectedFirst = Sheet1.combYear.value
 
-outputFl = "MoS KPI Summary.xlsx"
+outputFl = "KPI Summary.xlsx"
 inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "FCO OP review file_" & fstMonthChk & "*.xls*")
 Application.Workbooks.Open (inputFl)
 inputFl = Dir(ThisWorkbook.Path & "\" & "FCO OP review file_" & fstMonthChk & "*.xls*")
@@ -2848,7 +2848,7 @@ Dim pvtName As String
 
 yrSelectedFirst = Sheet1.combYear.value
 
-outputFl = "MoS KPI Summary.xlsx"
+outputFl = "KPI Summary.xlsx"
 inputFlOpen = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & Sheet1.combYear.value & " " & "*Installation spend L2-report*" & "*.xls*")
 Application.Workbooks.Open (inputFlOpen)
 inputFl = Split(inputFlOpen, "\")(UBound(Split(inputFlOpen, "\")))
@@ -3100,7 +3100,7 @@ Dim DIValToPaste As String
 
 yrSelectedFirst = Sheet1.combYear.value
 
-outputFl = "MoS KPI Summary.xlsx"
+outputFl = "KPI Summary.xlsx"
 inputFlOpenIGT = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*IGT.xls*")
 inputFlOpenDI = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*DI.xls*")
 Application.Workbooks.Open (inputFlOpenDI)
@@ -3194,7 +3194,7 @@ For i = 1 To Workbooks(outputFl).Sheets.Count
 Next i
 
 If Not exists Then
-    shtNotPresent(shtNt) = "Sheet with name " & KPISheetName & " Does not exists in MoS KPI Summary.xlsx" & vbCrLf & vbCrLf
+    shtNotPresent(shtNt) = "Sheet with name " & KPISheetName & " Does not exists in KPI Summary.xlsx" & vbCrLf & vbCrLf
     shtNt = shtNt + 1
     GoTo sheetNameNotPresent
 End If
@@ -3667,7 +3667,7 @@ fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
 
 yrSelectedFirst = Sheet1.combYear.value
 
-outputFl = "MoS KPI Summary.xlsx"
+outputFl = "KPI Summary.xlsx"
 inputFl = ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx"
 Application.Workbooks.Open (inputFl)
 inputFl = "CQ_Data_SPM.xlsx"
