@@ -8,24 +8,24 @@ Option Explicit
 Public Sub Error_Messagebox()
 
 'Messagebox if no drive is selected
-If Sheet1.rdbLocalDrive.Value = False Then
-    If Sheet1.rdbSharedDrive.Value = False Then
+If Sheet1.rdbLocalDrive.value = False Then
+    If Sheet1.rdbSharedDrive.value = False Then
             MsgBox "Please select a Data Source!" & vbCrLf & "Local or Shared or Sharepoint"
             End
     End If
 End If
 
 'Message box to select year
-If Sheet1.combYear.Value = "Select" Then
+If Sheet1.combYear.value = "Select" Then
 MsgBox "Please select a Year/Month Value!"
 End
 End If
 
 
 'message box for option select CTS, Revenue or Dashboard
-If Sheet1.chkDashboard.Value = False Then
-    If Sheet1.chkCTS.Value = False Then
-        If Sheet1.chkRevenue.Value = False Then
+If Sheet1.chkDashboard.value = False Then
+    If Sheet1.chkCTS.value = False Then
+        If Sheet1.chkRevenue.value = False Then
             MsgBox "Please select Output option"
             End
         End If
@@ -33,13 +33,13 @@ If Sheet1.chkDashboard.Value = False Then
 End If
 
 'Messagebox if no values selected in product group or CTS or revenue
-If Sheet1.combProductGroup.Value = "Select Product Group" Then
+If Sheet1.combProductGroup.value = "Select Product Group" Then
  MsgBox "Please select a value in Dashboard Product group"
         End
-    ElseIf Sheet1.comb6NC2.Value = "Select Product Group" Then
+    ElseIf Sheet1.comb6NC2.value = "Select Product Group" Then
      MsgBox "Please select a value in Product group"
         End
-        ElseIf Sheet1.comb6NC1.Value = "Select Product Group" Then
+        ElseIf Sheet1.comb6NC1.value = "Select Product Group" Then
          MsgBox "Please select a value in Product group"
         End
 End If
@@ -68,7 +68,7 @@ End If
     End If
     
     'for service scorecard
-    fstMonthChk = Format(Sheet1.combYear.Value, "mmmyy")
+    fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
     servicefileName = ""
     servicefileName = Dir(ThisWorkbook.Path & "\" & "Service Scorecard F 6.1_" & fstMonthChk & "*.xls*")
     
@@ -126,9 +126,9 @@ End If
     '2015-05 Installation spend L2-report.xlsb
     Dim inscostFileOpen As String
     inscostFileOpen = ""
-    inscostFileOpen = Dir(ThisWorkbook.Path & "\" & Sheet1.combYear.Value & " " & "Installation spend L2-report" & "*.xls*")
+    inscostFileOpen = Dir(ThisWorkbook.Path & "\" & Sheet1.combYear.value & " " & "Installation spend L2-report" & "*.xls*")
         If inscostFileOpen = "" Then
-        MsgBox "Input File with name " & Chr(34) & Sheet1.combYear.Value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & " doesn't exist!"
+        MsgBox "Input File with name " & Chr(34) & Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & " doesn't exist!"
         End
     End If
     
@@ -138,7 +138,7 @@ End If
     Dim valFind As String, found As String
     Dim found2 As String
     
-    valFind = Replace(Sheet1.combYear.Value, "-", "")
+    valFind = Replace(Sheet1.combYear.value, "-", "")
     warrantyCostFile1 = Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*IGT.xls*")
     warrantyCostFile2 = Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*DI.xls*")
     found = InStr(1, warrantyCostFile1, valFind, vbTextCompare)

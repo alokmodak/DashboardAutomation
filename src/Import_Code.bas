@@ -1,12 +1,64 @@
 Attribute VB_Name = "Import_Code"
+
+Option Explicit
+
+
+Private Const IMPORT_DELAY As String = "00:00:02"
+
+'We need to make these variables public such that they can be given as arguments to application.ontime()
+Public componentsToImport As Dictionary 'Key = componentName, Value = componentFilePath
+Public sheetsToImport As Dictionary 'Key = componentName, Value = File object
+Public vbaProjectToImport As VBProject
+
+Public Sub ImportCode()
+    Dim proj_name As String
+    proj_name = "Dashboard_Automation"
+
+    Dim vbaProject As Object
+    Set vbaProject = Application.VBE.VBProjects(proj_name)
+    Import_Code.importVbaCode vbaProject
+End Sub
+
+Public Function getSourceDir(fullWorkbookPath As String, createIfNotExists As Boolean) As String
+    
+Dim objUserEnvVars As Object
+Dim strVar As String
+Set objUserEnvVars = CreateObject("WScript.Shell").Environment("User")
+strVar = objUserEnvVars.item("Dashboard_Automation")
+
+    ' First check if the fullWorkbookPath contains a \.
+    If Not InStr(strVar, "\") > 0 Then
+        'In this case it is a new workbook, we skip it
+        Exit Function
+    End If
+
+    Dim FSO As New Scripting.FileSystemObject
+    Dim projDir As String
+    projDir = strVar
+    
+    Dim srcDir As String
+    srcDir = projDir & "\src\"
+    Dim exportDir As String
+    exportDir = srcDir
+
+    If createIfNotExists Then
+        If Not FSO.FolderExists(srcDir) Then
+            FSO.CreateFolder srcDir
+            Debug.Print "Created Folder " & srcDir
+        End If
+        If Not FSO.FolderExists(exportDir) Then
+            FSO.CreateFolder exportDir
+            Debug.Print "Created Folder " & exportDir
+        End If
+    Else
+        
+    End If
+    getSourceDir = srcDir
+End Function
+
 ' Usually called after the given workbook is opened. The option includeClassFiles is False by default because
 ' they don't import correctly from VBA. They'll have to be imported manually instead.
-Public Sub importVbaCode()
-
-Dim vbaProject As VBProject, includeClassFiles As Boolean
-
-Set vbaProject = ThisWorkbook.VBProject
-includeClassFiles = False
+Public Sub importVbaCode(vbaProject As VBProject, Optional includeClassFiles As Boolean = False)
     Dim vbProjectFileName As String
     On Error Resume Next
     'this can throw if the workbook has never been saved.
@@ -19,7 +71,7 @@ includeClassFiles = False
     End If
 
     Dim export_path As String
-    export_path = getSourceDir_Import(vbProjectFileName, createIfNotExists:=False)
+    export_path = getSourceDir(vbProjectFileName, createIfNotExists:=False)
     If export_path = "" Then
         'The source directory does not exist, code has never been exported for this vbaProject.
         Debug.Print "No import directory for project " & vbaProject.name & ", skipping"
@@ -48,9 +100,9 @@ includeClassFiles = False
         removeComponent vbaProject, componentName
     Next
     'Then import them
-    Debug.Print "Invoking 'Build.importComponents'with Application.Ontime with delay " & IMPORT_DELAY
+    Debug.Print "Invoking 'Import_Code.importComponents'with Application.Ontime with delay " & IMPORT_DELAY
     ' to prevent duplicate modules, like MyClass1 etc.
-    Application.OnTime Now() + TimeValue(IMPORT_DELAY), "'Build.importComponents'"
+    Application.OnTime Now() + TimeValue(IMPORT_DELAY), "'Import_Code.importComponents'"
     Debug.Print "almost finished importing code for " & vbaProject.name
 End Sub
 
@@ -60,7 +112,7 @@ Private Sub checkHowToImport(file As Object, includeClassFiles As Boolean)
     fileName = file.name
     Dim componentName As String
     componentName = Left(fileName, InStr(fileName, ".") - 1)
-    If componentName = "Build" Then
+    If componentName = "Import_Code" Then
         '"don't remove or import ourself
         Exit Sub
     End If
@@ -203,51 +255,5 @@ Public Function addSheetToWorkbook(sheetName As String, workbookFilePath As Stri
         Debug.Print "Skipping file " & sheetName & ". Could not open workbook " & workbookFilePath
         addSheetToWorkbook = ""
     End If
-End Function
-
-Public Function getSourceDir_Import(fullWorkbookPath As String, createIfNotExists As Boolean) As String
-    ' First check if the fullWorkbookPath contains a \.
-    If Not InStr(fullWorkbookPath, "\") > 0 Then
-        'In this case it is a new workbook, we skip it
-        Exit Function
-    End If
-
-    Dim FSO As New Scripting.FileSystemObject
-    Dim projDir As String
-    projDir = FSO.GetParentFolderName(fullWorkbookPath) & "\"
-    Dim srcDir As String
-    srcDir = projDir & "src\"
-    Dim exportDir As String
-    Dim exportDir1 As String
-    
-    exportDir1 = Environment.GetEnvironmentVariable("Dashboard_Automation")
-    'exportDir = srcDir & FSO.GetFileName(fullWorkbookPath) & "_" & Format(Now(), "ddmmm") & "\"
-
-    If createIfNotExists Then
-        If Not FSO.FolderExists(srcDir) Then
-            FSO.CreateFolder srcDir
-            Debug.Print "Created Folder " & srcDir
-        End If
-        If Not FSO.FolderExists(exportDir) Then
-            FSO.CreateFolder exportDir
-            Debug.Print "Created Folder " & exportDir
-        End If
-    Else
-        If Not FSO.FolderExists(exportDir) Then
-            Debug.Print "Folder does not exist: " & exportDir
-            exportDir = ""
-        End If
-        
-        If Not FSO.FolderExists(exportDir1) Then
-            Debug.Print "Folder does not exist: " & exportDir
-            exportDir1 = ""
-        End If
-    End If
-    getSourceDir_Import = exportDir
-    
-    If getSourceDir_Import = "" Then
-    getSourceDir_Import = exportDir1
-    End If
-    
 End Function
 

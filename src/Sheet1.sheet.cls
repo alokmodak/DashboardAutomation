@@ -17,7 +17,7 @@ Dim minProcessTime As Integer
 minstartTime = Minute(Now()) 'start time for process time
 startTime = Second(Now())
 
-    If Sheet1.chkDashboard.Value = True Then
+    If Sheet1.chkDashboard.value = True Then
     
             Call Error_Messagebox
             
@@ -35,10 +35,10 @@ startTime = Second(Now())
             
             Call CQ_Calculations
             
-    ElseIf Sheet1.chkRevenue.Value = True Then
+    ElseIf Sheet1.chkRevenue.value = True Then
     'Call Revenue_Product_Group_Select
     
-    ElseIf Sheet1.chkCTS.Value = True Then
+    ElseIf Sheet1.chkCTS.value = True Then
     
     Else
     MsgBox "Please select an output option"
@@ -54,8 +54,8 @@ If endTime < startTime Then
 startTime = 60 - startTime
 processTime = endTime + startTime
 End If
-Sheet1.processTime.Value = processTime
-Sheet1.minProcessTime.Value = minProcessTime
+Sheet1.processTime.value = processTime
+Sheet1.minProcessTime.value = minProcessTime
 End Sub
 
 'UI Date Control
@@ -83,15 +83,15 @@ End Sub
 
 
 Private Sub chkAllGroups_Click()
-    If Sheet1.chkAllGroups.Value = True Then
+    If Sheet1.chkAllGroups.value = True Then
         Sheet1.comb6NC1.Enabled = False
         Sheet1.comb6NC2.Enabled = False
-        Sheet1.combProductGroup.Value = ""
+        Sheet1.combProductGroup.value = ""
         Sheet1.combProductGroup.Enabled = False
     Else
         Sheet1.comb6NC1.Enabled = True
         Sheet1.comb6NC2.Enabled = True
         Sheet1.combProductGroup.Enabled = True
-        Sheet1.combProductGroup.Value = "Select Product Group"
+        Sheet1.combProductGroup.value = "Select Product Group"
     End If
 End Sub

@@ -31,8 +31,8 @@ Dim lblMonthCheck As String
 Dim lblText As String
 Dim warrantyVal As String
 
-warrantyVal = Replace(Sheet1.combYear.Value, "-", "")
- lblMonthCheck = Format(Sheet1.combYear.Value, "mmmyy")
+warrantyVal = Replace(Sheet1.combYear.value, "-", "")
+ lblMonthCheck = Format(Sheet1.combYear.value, "mmmyy")
  
  lblText = "Input files Required Are -" & vbCrLf & _
 "1) Service Scorecard F 6.1_" & lblMonthCheck & ".xlsm" & vbCrLf & _
@@ -40,7 +40,7 @@ warrantyVal = Replace(Sheet1.combYear.Value, "-", "")
 "3) FCO OP review file_" & lblMonthCheck & ".xlsx" & vbCrLf & _
 "4) Escalations_Overview_ALL BIUs_" & lblMonthCheck & ".xlsx" & vbCrLf & _
 "5) Customer escalations (Weekly Review) Complaints_" & lblMonthCheck & ".xlsx" & vbCrLf & _
-"6) " & Sheet1.combYear.Value & " Installation spend L2-report" & lblMonthCheck & ".xlsb" & vbCrLf & _
+"6) " & Sheet1.combYear.value & " Installation spend L2-report" & lblMonthCheck & ".xlsb" & vbCrLf & _
 "7) Level 4 Warranty Spend Analysis - " & warrantyVal & " @ " & warrantyVal - 1 & " BS Rate_IGT" & vbCrLf & _
 "8) Level 4 Warranty Spend Analysis - " & warrantyVal & " @ " & warrantyVal - 1 & " BS Rate_DI" & vbCrLf & _
 "9) KPI dashboard_Innovation_" & lblMonthCheck & ".xlsx" & vbCrLf & _
