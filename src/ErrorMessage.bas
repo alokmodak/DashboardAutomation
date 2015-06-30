@@ -59,12 +59,12 @@ End If
     Dim installFileOpen As String
     Dim TestStr As String
     
-    outputPath = ThisWorkbook.Path & "\" & "Mos KPI Summary.xlsx" 'output file path
+    outputPath = ThisWorkbook.Path & "\" & "KPI Summary.xlsx" 'output file path
     TestStr = ""
     TestStr = Dir(outputPath)
     On Error GoTo 0
     If TestStr = "" Then
-        MsgBox "Output File with name " & Chr(34) & "Mos KPI Summary.xlsx" & Chr(34) & " doesn't exist!"
+        MsgBox "Output File with name " & Chr(34) & "KPI Summary.xlsx" & Chr(34) & " doesn't exist!"
         End
     End If
     
