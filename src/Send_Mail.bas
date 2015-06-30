@@ -1,4 +1,6 @@
 Attribute VB_Name = "Send_Mail"
+'Date           Who     What
+
 '**********************************
 'Set Microsoft CDO for windows 2000 library as reference if the below code doesnt work
 
