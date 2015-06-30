@@ -10,30 +10,36 @@ Public componentsToImport As Dictionary 'Key = componentName, Value = componentF
 Public sheetsToImport As Dictionary 'Key = componentName, Value = File object
 Public vbaProjectToImport As VBProject
 
-Public Sub testImport()
+Public Sub ImportCode()
     Dim proj_name As String
     proj_name = "Dashboard_Automation"
 
     Dim vbaProject As Object
     Set vbaProject = Application.VBE.VBProjects(proj_name)
-    MsgBox proj_name
     Import_Code.importVbaCode vbaProject
 End Sub
 
 Public Function getSourceDir(fullWorkbookPath As String, createIfNotExists As Boolean) As String
+    
+Dim objUserEnvVars As Object
+Dim strVar As String
+Set objUserEnvVars = CreateObject("WScript.Shell").Environment("User")
+strVar = objUserEnvVars.item("Dashboard_Automation")
+
     ' First check if the fullWorkbookPath contains a \.
-    If Not InStr(fullWorkbookPath, "\") > 0 Then
+    If Not InStr(strVar, "\") > 0 Then
         'In this case it is a new workbook, we skip it
         Exit Function
     End If
 
     Dim FSO As New Scripting.FileSystemObject
     Dim projDir As String
-    projDir = FSO.GetParentFolderName(fullWorkbookPath) & "\"
+    projDir = strVar
+    
     Dim srcDir As String
-    srcDir = projDir & "src\"
+    srcDir = projDir & "\src\"
     Dim exportDir As String
-    exportDir = srcDir & FSO.GetFileName(fullWorkbookPath) & "\"
+    exportDir = srcDir
 
     If createIfNotExists Then
         If Not FSO.FolderExists(srcDir) Then
@@ -45,12 +51,9 @@ Public Function getSourceDir(fullWorkbookPath As String, createIfNotExists As Bo
             Debug.Print "Created Folder " & exportDir
         End If
     Else
-        If Not FSO.FolderExists(exportDir) Then
-            Debug.Print "Folder does not exist: " & exportDir
-            exportDir = ""
-        End If
+        
     End If
-    getSourceDir = exportDir
+    getSourceDir = srcDir
 End Function
 
 ' Usually called after the given workbook is opened. The option includeClassFiles is False by default because
@@ -253,5 +256,4 @@ Public Function addSheetToWorkbook(sheetName As String, workbookFilePath As Stri
         addSheetToWorkbook = ""
     End If
 End Function
-
 
