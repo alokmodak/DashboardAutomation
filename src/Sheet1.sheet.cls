@@ -33,6 +33,8 @@ startTime = Second(Now())
             
             Call Warranty_Cost_Calculations
             
+            Call Service_Information
+            
             Call CQ_Calculations
             
     ElseIf Sheet1.chkRevenue.value = True Then
