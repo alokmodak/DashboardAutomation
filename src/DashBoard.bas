@@ -94,7 +94,7 @@ End If
 If Sheet1.rdbLocalDrive.value = True Then
 outputPath = ThisWorkbook.Path & "\" & outputFileGlobal
 outputFlName = outputFileGlobal
-Application.Workbooks.Open (outputPath)
+Application.Workbooks.Open (outputPath), False
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = False
 End If
 
@@ -761,6 +761,9 @@ For Each celItem In Range(firstCell, lastCell)
         Workbooks(outputFlName).Activate
         ActiveCell.value = YTDPasteValue
         YTDPasteValue = ""
+    
+    Case Else
+        Workbooks(outputFlName).Activate
         
     End Select
     ActiveCell.Offset(1, 0).Select
