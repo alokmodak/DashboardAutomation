@@ -94,7 +94,7 @@ End If
 If Sheet1.rdbLocalDrive.value = True Then
 outputPath = ThisWorkbook.Path & "\" & outputFileGlobal
 outputFlName = outputFileGlobal
-Application.Workbooks.Open (outputPath)
+Application.Workbooks.Open (outputPath), False
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = False
 End If
 
@@ -761,6 +761,9 @@ For Each celItem In Range(firstCell, lastCell)
         Workbooks(outputFlName).Activate
         ActiveCell.value = YTDPasteValue
         YTDPasteValue = ""
+    
+    Case Else
+        Workbooks(outputFlName).Activate
         
     End Select
     ActiveCell.Offset(1, 0).Select
@@ -3646,6 +3649,197 @@ Next productItem 'for all product groups
 Workbooks(inputFlDI).Close False
 Workbooks(inputFlIGT).Close False
 End Sub
+
+Public Sub Service_Information()
+
+On Error Resume Next
+Dim inputFl As String
+Dim outputFl As String
+Dim InfoProductGroup As String
+Dim cProductGroup As String
+Dim InfoDate As String
+Dim i As Integer
+Dim j As Integer
+Dim productItem As Variant
+Dim yrSelectedFirst As String 'Month and year selected at first
+Dim selMonth As String
+Dim KPISheetName As String
+Dim selectSheet As Integer
+Dim fstMonthChk As String
+
+fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
+
+yrSelectedFirst = Sheet1.combYear.value
+
+outputFl = outputFileGlobal
+inputFl = ThisWorkbook.Path & "\" & "Service_Information_Quality_Completion.xlsx"
+Application.Workbooks.Open (inputFl)
+inputFl = "Service_Information_Quality_Completion.xlsx"
+
+InfoProductGroup = Sheet1.combProductGroup.value
+
+'loop for all the product groups
+For Each productItem In Sheet1.combProductGroup.List
+    If Sheet1.chkAllGroups.value = True Then
+        Sheet1.combProductGroup.value = productItem
+        InfoProductGroup = Sheet1.combProductGroup.value
+            
+            'exit for for end of list
+            If InfoProductGroup = "" Then
+            Exit For
+            End If
+    End If
+
+selectSheet = 0
+
+i = 0
+InfoDate = Mid(Sheet1.combYear.value, 6, 2)
+j = Mid(Sheet1.combYear.value, 6, 2)
+
+'Case select for sheet tab
+KPISheetName = Sheet1.combProductGroup.value
+
+Select Case KPISheetName
+
+Case "IXR-MOS Pulsera-Y"
+KPISheetName = "Pulsera"
+InfoProductGroup = "Pulsera"
+
+Case "IXR-MOS BV Vectra-N"
+KPISheetName = "BV Vectra"
+InfoProductGroup = "BV Vectra"
+
+Case "IXR-MOS Endura-Y"
+KPISheetName = "Endura"
+InfoProductGroup = "Endura"
+
+Case "IXR-MOS Veradius-Y"
+KPISheetName = "Veradius"
+InfoProductGroup = "Veradius"
+
+Case "IXR-CV Allura FC-Y"
+KPISheetName = "Allura FC"
+InfoProductGroup = "Allura FC"
+
+Case "IXR-MOS Libra-N"
+KPISheetName = "Libra"
+InfoProductGroup = "Libra"
+
+Case "DXR-PrimaryDiagnost Digital-N"
+KPISheetName = "PrimaryDiagnost Digital"
+InfoProductGroup = "PrimaryDiagnost Digital"
+
+Case "DXR-MicroDose Mammography-Y"
+KPISheetName = "MicroDose Mammography"
+InfoProductGroup = "MicroDose Mammography"
+
+Case "DXR-MobileDiagnost Opta-N"
+KPISheetName = "MobileDiagnost Opta"
+InfoProductGroup = "MobileDiagnost Opta"
+
+End Select
+
+'checking whether sheet exists in the output file
+Dim exists As Boolean
+exists = False
+Workbooks(outputFl).Activate
+For i = 1 To Workbooks(outputFl).Sheets.Count
+    If Workbooks(outputFl).Sheets(i).name = KPISheetName Then
+        exists = True
+    End If
+Next i
+
+If Not exists Then
+    GoTo sheetNameNotPresent
+End If
+
+'Do Until j = 0
+Select Case j
+
+    Case 1
+    InfoDate = "Jan"
+    selMonth = "01"
+    Case 2
+    InfoDate = "Feb"
+    selMonth = "02"
+    Case 3
+    InfoDate = "Mar"
+    selMonth = "03"
+    Case 4
+    InfoDate = "Apr"
+    selMonth = "04"
+    Case 5
+    InfoDate = "May"
+    selMonth = "05"
+    Case 6
+    InfoDate = "Jun"
+    selMonth = "06"
+    Case 7
+    InfoDate = "Jul"
+    selMonth = "07"
+    Case 8
+    InfoDate = "Aug"
+    selMonth = "08"
+    Case 9
+    InfoDate = "Sep"
+    selMonth = "09"
+    Case 10
+    InfoDate = "Oct"
+    selMonth = "10"
+    Case 11
+    InfoDate = "Nov"
+    selMonth = "11"
+    Case 12
+    InfoDate = "Dec"
+    selMonth = "12"
+End Select
+
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets(1).Activate
+ActiveSheet.UsedRange.Find(what:=InfoProductGroup, LookAt:=xlWhole).Select
+
+Do Until ActiveCell.value = "YTD"
+ActiveCell.Offset(0, 1).Select
+Loop
+
+ActiveCell.Offset(1, 0).Select
+Dim fstAdd As String
+Dim lstAdd As String
+fstAdd = ActiveCell.Address
+ActiveCell.Offset(0, j).Select
+ActiveCell.Offset(1, 0).Select
+lstAdd = ActiveCell.Address
+
+ActiveSheet.Range(fstAdd, lstAdd).Select
+Selection.Copy
+
+Workbooks(outputFl).Activate
+ActiveWorkbook.Sheets(KPISheetName).Activate
+ActiveSheet.UsedRange.Find(what:="Service Information Quality", LookAt:=xlWhole).Select
+i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
+ActiveSheet.UsedRange.Find(what:="YTD", LookAt:=xlWhole).Select
+ActiveCell.Offset(i - 2, 0).Select
+Application.ActiveCell.PasteSpecial xlPasteAll
+
+'j = j - 1 'loop for each month
+'Loop
+
+sheetNameNotPresent:
+'exit loop if all groups option is not selected
+If Sheet1.chkAllGroups.value = False Then
+    Exit For
+End If
+
+ActiveSheet.Cells(11, 11).Select
+
+Next productItem 'for all product groups
+
+Workbooks(inputFl).Close False
+Workbooks(outputFl).Save
+
+End Sub
+
+
 
 Public Sub CQ_Calculations()
 
