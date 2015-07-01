@@ -763,7 +763,7 @@ For Each celItem In Range(firstCell, lastCell)
         YTDPasteValue = ""
     
     Case Else
-        Workbooks(outputFlName).Activate
+        Workbooks(outputFlName).Activate ' else case added if cell value has space.
         
     End Select
     ActiveCell.Offset(1, 0).Select
@@ -3650,6 +3650,8 @@ Workbooks(inputFlDI).Close False
 Workbooks(inputFlIGT).Close False
 End Sub
 
+
+'Service information Calculations
 Public Sub Service_Information()
 
 On Error Resume Next
