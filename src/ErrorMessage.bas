@@ -59,6 +59,8 @@ End If
     Dim installFileOpen As String
     Dim TestStr As String
     
+If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
+
     outputPath = ThisWorkbook.Path & "\" & "KPI Summary.xlsx" 'output file path
     TestStr = ""
     TestStr = Dir(outputPath)
@@ -140,8 +142,8 @@ End If
     Dim found2 As String
     
     valFind = Replace(Sheet1.combYear.value, "-", "")
-    warrantyCostFile1 = Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*IGT.xls*")
-    warrantyCostFile2 = Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*DI.xls*")
+    warrantyCostFile1 = Dir(ThisWorkbook.Path & "\" & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb")
+    warrantyCostFile2 = Dir(ThisWorkbook.Path & "\" & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb")
     found = InStr(1, warrantyCostFile1, valFind, vbTextCompare)
     found = InStr(1, warrantyCostFile2, valFind, vbTextCompare)
     
@@ -149,4 +151,92 @@ End If
     MsgBox "Input File with name " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb" & Chr(34) & " or " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb" & Chr(34) & vbCrLf & " doesn't exist!"
     End
     End If
+End If
+
+'validation for files present over shared drive
+If Sheet1.rdbSharedDrive.value = True Then
+    
+    SharedDrive_Path "KPI Summary.xlsx"
+    
+    If fileExists = False Then
+        MsgBox "Output File with name " & Chr(34) & "KPI Summary.xlsx" & Chr(34) & " doesn't exist!"
+        End
+    End If
+    
+    'for service scorecard
+    fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
+    SharedDrive_Path ("Service Scorecard F 6.1_" & fstMonthChk & ".xlsm")
+    
+    If fileExists = False Then
+    MsgBox "Input File name format does not correspond to Selected Month and Year!" & vbCrLf & vbCrLf & "File with Name " & Chr(34) & "Service Scorecard F 6.1_" & fstMonthChk & ".xlsm" & Chr(34) & " Not Found" & vbCrLf & vbCrLf & "Please select the appropriate date or change the input file!"
+    End
+    End If
+    
+    'for innovation file
+    innovationFileName = "KPI dashboard_Innovation_" & fstMonthChk & ".xlsx"
+    SharedDrive_Path innovationFileName
+    
+    If fileExists = False Then
+    MsgBox "Input File name format does not correspond to Selected Month and Year!" & vbCrLf & vbCrLf & "File with Name " & Chr(34) & "KPI dashboard_Innovation_" & fstMonthChk & ".xlsx" & Chr(34) & " Not Found" & vbCrLf & vbCrLf & "Please select the appropriate date or change the input file!"
+    End
+    End If
+
+    'checking Install Hrs file exists
+    installFileOpen = "Install SPAN P95_" & fstMonthChk & ".xlsx"
+    SharedDrive_Path installFileOpen
+    
+    If fileExists = False Then
+        MsgBox "Input File with name " & Chr(34) & "Install SPAN P95_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
+        End
+    End If
+
+    'Checking for FCO OP review file.xlsx
+    fcoFileOpen = "FCO OP review file_" & fstMonthChk & ".xlsx"
+    SharedDrive_Path fcoFileOpen
+    
+    If fileExists = False Then
+        MsgBox "Input File with name " & Chr(34) & "FCO OP review file_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
+        End
+    End If
+    
+    'Escalations_Overview_ALL BIUs.xlsx
+    escOFileOpen = "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx"
+    SharedDrive_Path escOFileOpen
+    
+    If fileExists = False Then
+        MsgBox "Input File with name " & Chr(34) & "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
+        End
+    End If
+    
+    'Customer escalations (Weekly Review) Complaints.xlsx
+    compOFileOpen = "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx"
+    SharedDrive_Path compOFileOpen
+    
+    If fileExists = False Then
+        MsgBox "Input File with name " & Chr(34) & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
+        End
+    End If
+    
+    '2015-05 Installation spend L2-report.xlsb
+    inscostFileOpen = Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb"
+    SharedDrive_Path inscostFileOpen
+    
+        If fileExists = False Then
+        MsgBox "Input File with name " & Chr(34) & Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & " doesn't exist!"
+        End
+    End If
+    
+    'warranty cost file
+    
+    valFind = Replace(Sheet1.combYear.value, "-", "")
+    warrantyCostFile1 = "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb"
+    warrantyCostFile2 = "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb"
+    SharedDrive_Path warrantyCostFile1
+    SharedDrive_Path warrantyCostFile2
+    
+    If fileExists = False Then
+    MsgBox "Input File with name " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb" & Chr(34) & " or " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb" & Chr(34) & vbCrLf & " doesn't exist!"
+    End
+    End If
+End If
 End Sub
