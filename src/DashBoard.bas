@@ -11,6 +11,10 @@ Public mnthNt As Integer 'integer for array month not present
 Public shtNotPresent(20) As String
 Public shtNt As Integer
 Public outputFileGlobal As String
+Public sharedDrivePath As String
+Public inputFileName As String
+Public fileExists As Boolean
+
 
 Public Sub Generate_Dashboard_Output()
 
@@ -72,10 +76,20 @@ fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
 yrSelectedFirst = Sheet1.combYear.value
 
 'Open service scorecard file and install file
-If Sheet1.rdbLocalDrive.value = True Then
+
 inputItem = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Service Scorecard F 6.1_" & fstMonthChk & "*.xls*") 'input file path
 installFlName = ThisWorkbook.Path & "\" & "Install SPAN P95_" & fstMonthChk & ".xlsx"
 installFileOpen = "Install SPAN P95_" & fstMonthChk & ".xlsx"
+inputFlName = "Service Scorecard F 6.1_" & fstMonthChk & ".xlsm"
+'inputFlName = Dir(ThisWorkbook.Path & "\" & "Service Scorecard F 6.1_" & fstMonthChk & "*.xls*") 'Input file name declared
+    
+    'for Shared drive define path
+    If Sheet1.rdbSharedDrive.value = True Then
+        SharedDrive_Path inputFlName
+        inputItem = sharedDrivePath
+        SharedDrive_Path installFileOpen
+        installFlName = sharedDrivePath
+    End If
     
     Application.Workbooks.Open (installFlName), False
     Application.Workbooks.Open (inputItem), False 'false to disable link update message
@@ -88,15 +102,22 @@ installFileOpen = "Install SPAN P95_" & fstMonthChk & ".xlsx"
     
 Application.Workbooks(myWorkBook).Windows(1).Visible = False
 Application.Workbooks(installFileOpen).Windows(1).Visible = False
-End If
+
 
 'declaring output path
 If Sheet1.rdbLocalDrive.value = True Then
 outputPath = ThisWorkbook.Path & "\" & outputFileGlobal
 outputFlName = outputFileGlobal
+End If
+
+If Sheet1.rdbSharedDrive.value = True Then
+SharedDrive_Path outputFileGlobal
+outputPath = sharedDrivePath
+outputFlName = outputFileGlobal
+End If
+
 Application.Workbooks.Open (outputPath), False
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = False
-End If
 
 'Filtering servicescorecard data based on selection
 Dim productGroup As String
@@ -115,8 +136,6 @@ For Each productItem In Sheet1.combProductGroup.List
             End If
     End If
     
-'get input file name
-inputFlName = Dir(ThisWorkbook.Path & "\" & "Service Scorecard F 6.1_" & fstMonthChk & "*.xls*")
 
 'Case select for sheet tab
 KPISheetName = Sheet1.combProductGroup.value
@@ -200,8 +219,6 @@ If pf = "Product Group" Then
     pf.CurrentPage = productGroup
 End If
 Next pf
-
-inputFlName = Dir(ThisWorkbook.Path & "\" & "Service Scorecard F 6.1_" & fstMonthChk & "*.xls*") 'Input file name declared
 
 selYear = Sheet1.combYear.value
 
@@ -813,6 +830,12 @@ fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
 outputFl = outputFileGlobal
 inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "KPI dashboard_Innovation_" & fstMonthChk & "*.xl*")
 
+    'for Shared drive define path
+    If Sheet1.rdbSharedDrive.value = True Then
+        SharedDrive_Path ("KPI dashboard_Innovation_" & fstMonthChk & ".xlsx")
+        inputFl = sharedDrivePath
+    End If
+
 Application.Workbooks.Open (inputFl)
 inputFl = ActiveWorkbook.name
 
@@ -1198,12 +1221,23 @@ fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
 yrSelectedFirst = Sheet1.combYear.value
 
 outputFl = outputFileGlobal
-inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & "*.xls*")
-escInputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs_" & fstMonthChk & "*.xls*")
+
+ 'for Shared drive define path
+    If Sheet1.rdbSharedDrive.value = True Then
+        SharedDrive_Path ("Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx")
+        inputFl = sharedDrivePath
+        SharedDrive_Path ("Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx")
+        escInputFl = sharedDrivePath
+    Else
+    escInputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs_" & fstMonthChk & "*.xls*")
+    inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & "*.xls*")
+    End If
+
 Application.Workbooks.Open (inputFl)
-inputFl = Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & "*.xls*")
 Application.Workbooks.Open (escInputFl)
-escInputFl = Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs_" & fstMonthChk & "*.xls*")
+
+escInputFl = "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx"
+inputFl = "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx"
 
 complaintsProductGroup = Sheet1.combProductGroup.value
 
@@ -2416,9 +2450,17 @@ fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
 yrSelectedFirst = Sheet1.combYear.value
 
 outputFl = outputFileGlobal
-inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "FCO OP review file_" & fstMonthChk & "*.xls*")
+
+    If Sheet1.rdbSharedDrive.value = True Then
+        SharedDrive_Path ("FCO OP review file_" & fstMonthChk & ".xlsx")
+        inputFl = sharedDrivePath
+    Else
+    inputFl = ThisWorkbook.Path & "\" & "FCO OP review file_" & fstMonthChk & ".xlsx"
+    End If
+    
 Application.Workbooks.Open (inputFl)
-inputFl = Dir(ThisWorkbook.Path & "\" & "FCO OP review file_" & fstMonthChk & "*.xls*")
+
+inputFl = "FCO OP review file_" & fstMonthChk & ".xlsx"
 
 fcoProductGroup = Sheet1.combProductGroup.value
 
@@ -2854,6 +2896,12 @@ yrSelectedFirst = Sheet1.combYear.value
 
 outputFl = outputFileGlobal
 inputFlOpen = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & Sheet1.combYear.value & " " & "*Installation spend L2-report*" & "*.xls*")
+
+    If Sheet1.rdbSharedDrive.value = True Then
+        SharedDrive_Path (Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb")
+        inputFlOpen = sharedDrivePath
+    End If
+
 Application.Workbooks.Open (inputFlOpen)
 inputFl = Split(inputFlOpen, "\")(UBound(Split(inputFlOpen, "\")))
 Application.Workbooks(inputFl).Windows(1).Visible = False
@@ -2921,7 +2969,7 @@ magNameFlt = "PrimaryDiagnost DR"
 Case "DXR-MicroDose Mammography-Y"
 KPISheetName = "MicroDose Mammography"
 selectSheet = 1
-magNameFlt = "MicroDose SI"
+magNameFlt = "MicroDose TS"
 
 Case "DXR-MobileDiagnost Opta-N"
 KPISheetName = "MobileDiagnost Opta"
@@ -3101,12 +3149,26 @@ Dim inputFlOpenIGT As String
 Dim inputFlOpenDI As String
 Dim IGTValToPaste As String
 Dim DIValToPaste As String
+Dim warrantyCostFile1 As String
+Dim warrantyCostFile2 As String
+Dim valFind As String
 
+valFind = Replace(Sheet1.combYear.value, "-", "")
 yrSelectedFirst = Sheet1.combYear.value
 
 outputFl = outputFileGlobal
 inputFlOpenIGT = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*IGT.xls*")
 inputFlOpenDI = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*DI.xls*")
+
+    If Sheet1.rdbSharedDrive.value = True Then
+        warrantyCostFile1 = "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb"
+        warrantyCostFile2 = "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb"
+        SharedDrive_Path warrantyCostFile1
+        inputFlOpenIGT = sharedDrivePath
+        SharedDrive_Path warrantyCostFile2
+        inputFlOpenDI = sharedDrivePath
+    End If
+
 Application.Workbooks.Open (inputFlOpenDI)
 Application.Workbooks.Open (inputFlOpenIGT)
 
@@ -3675,6 +3737,12 @@ yrSelectedFirst = Sheet1.combYear.value
 
 outputFl = outputFileGlobal
 inputFl = ThisWorkbook.Path & "\" & "Service_Information_Quality_Completion.xlsx"
+
+If Sheet1.rdbSharedDrive.value = True Then
+    SharedDrive_Path "Service_Information_Quality_Completion.xlsx"
+    inputFl = sharedDrivePath
+End If
+
 Application.Workbooks.Open (inputFl)
 inputFl = "Service_Information_Quality_Completion.xlsx"
 
@@ -3866,6 +3934,12 @@ yrSelectedFirst = Sheet1.combYear.value
 
 outputFl = outputFileGlobal
 inputFl = ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx"
+
+If Sheet1.rdbSharedDrive.value = True Then
+    SharedDrive_Path "CQ_Data_SPM.xlsx"
+    inputFl = sharedDrivePath
+End If
+
 Application.Workbooks.Open (inputFl)
 inputFl = "CQ_Data_SPM.xlsx"
 
@@ -4061,3 +4135,36 @@ For i = 1 To 20
 Next
 
 End Sub
+
+Public Function SharedDrive_Path(inputFileName As String)
+    On Error Resume Next
+    
+    fileExists = False
+    Dim FSO, ofolder, osubfolder, ofile, queue As Collection
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+    Set queue = New Collection
+    
+    If Application.FileDialog(msoFileDialogFolderPicker).SelectedItems.Count = 0 Then
+        If Application.FileDialog(msoFileDialogFolderPicker).Show <> -1 Then
+        MsgBox "No Folder Selected"
+        End If
+    End If
+    
+    queue.Add FSO.GetFolder(Application.FileDialog(msoFileDialogFolderPicker).SelectedItems(1))
+
+    Do While queue.Count > 0
+        Set ofolder = queue(1)
+        queue.Remove 1 'dequeue
+        '...insert any folder processing code here...
+        For Each osubfolder In ofolder.SubFolders
+            queue.Add osubfolder 'enqueue
+        Next osubfolder
+        
+        For Each ofile In ofolder.Files
+            If inputFileName = ofile.name Then
+                sharedDrivePath = ofile.Path
+                fileExists = True
+            End If
+        Next ofile
+    Loop
+End Function
