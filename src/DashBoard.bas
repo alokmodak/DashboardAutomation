@@ -11,9 +11,7 @@ Public mnthNt As Integer 'integer for array month not present
 Public shtNotPresent(20) As String
 Public shtNt As Integer
 Public outputFileGlobal As String
-Public sharedDrivePath As String
-Public inputFileName As String
-Public fileExists As Boolean
+
 
 
 Public Sub Generate_Dashboard_Output()
@@ -98,7 +96,6 @@ inputFlName = "Service Scorecard F 6.1_" & fstMonthChk & ".xlsm"
     ActiveWorkbook.Sheets("Data Analysis Pivot").Activate
     ActiveSheet.Cells(1, 1).Select
     ActiveSheet.UsedRange.Find("Column Labels").Select
-    
     
 Application.Workbooks(myWorkBook).Windows(1).Visible = False
 Application.Workbooks(installFileOpen).Windows(1).Visible = False
@@ -382,23 +379,44 @@ Select Case insFindValue
 Case "IXR-MOS Pulsera-Y"
 insFilterValue1 = "718094"
 insFilterValue2 = "718095"
+insFilterValue3 = ""
+insFilterValue4 = ""
+insFilterValue5 = ""
 
 Case "IXR-MOS BV Vectra-N"
 insFilterValue1 = "718400"
+insFilterValue2 = ""
+insFilterValue3 = ""
+insFilterValue4 = ""
+insFilterValue5 = ""
 
 Case "IXR-MOS Endura-Y"
 insFilterValue1 = "718074"
 insFilterValue2 = "718075"
+insFilterValue3 = ""
+insFilterValue4 = ""
+insFilterValue5 = ""
 
 Case "IXR-MOS Veradius-Y"
 insFilterValue1 = "718130"
 insFilterValue2 = "718131"
+insFilterValue3 = ""
+insFilterValue4 = ""
+insFilterValue5 = ""
 
 Case "IXR-MOS Libra-N"
 insFilterValue1 = ""
+insFilterValue2 = ""
+insFilterValue3 = ""
+insFilterValue4 = ""
+insFilterValue5 = ""
 
 Case "DXR-PrimaryDiagnost Digital-N"
 insFilterValue1 = "712310"
+insFilterValue2 = ""
+insFilterValue3 = ""
+insFilterValue4 = ""
+insFilterValue5 = ""
 
 Case "DXR-MicroDose Mammography-Y"
 insFilterValue1 = "714045"
@@ -409,6 +427,10 @@ insFilterValue5 = "714248"
 
 Case "DXR-MobileDiagnost Opta-N"
 insFilterValue1 = "704310"
+insFilterValue2 = ""
+insFilterValue3 = ""
+insFilterValue4 = ""
+insFilterValue5 = ""
 
 End Select
 
@@ -2969,7 +2991,7 @@ magNameFlt = "PrimaryDiagnost DR"
 Case "DXR-MicroDose Mammography-Y"
 KPISheetName = "MicroDose Mammography"
 selectSheet = 1
-magNameFlt = "MicroDose TS"
+magNameFlt = "MicroDose SI"
 
 Case "DXR-MobileDiagnost Opta-N"
 KPISheetName = "MobileDiagnost Opta"
@@ -3415,8 +3437,7 @@ ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", LookAt:=xlWhole
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(what:="YTD", LookAt:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
-YTDRangeDI = ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address)
-ActiveCell.value = Application.WorksheetFunction.Average(YTDRangeDI)
+ActiveCell.value = Application.WorksheetFunction.Average(ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address))
 End If
 
 
@@ -3573,7 +3594,7 @@ i = 0
 Do Until ActiveCell.value = ""
 
     If ActiveCell.End(xlToLeft).value = "718400" Then
-    mcSysCode1 = ActiveCell.value * 12 * 100 / 45000
+    mcSysCode1 = ActiveCell.value * 12 * 100 / 40000 'Chaned to 40K from 45K as discussed
     End If
     
 ActiveCell.Offset(1, 0).Select
@@ -4136,35 +4157,3 @@ Next
 
 End Sub
 
-Public Function SharedDrive_Path(inputFileName As String)
-    On Error Resume Next
-    
-    fileExists = False
-    Dim FSO, ofolder, osubfolder, ofile, queue As Collection
-    Set FSO = CreateObject("Scripting.FileSystemObject")
-    Set queue = New Collection
-    
-    If Application.FileDialog(msoFileDialogFolderPicker).SelectedItems.Count = 0 Then
-        If Application.FileDialog(msoFileDialogFolderPicker).Show <> -1 Then
-        MsgBox "No Folder Selected"
-        End If
-    End If
-    
-    queue.Add FSO.GetFolder(Application.FileDialog(msoFileDialogFolderPicker).SelectedItems(1))
-
-    Do While queue.Count > 0
-        Set ofolder = queue(1)
-        queue.Remove 1 'dequeue
-        '...insert any folder processing code here...
-        For Each osubfolder In ofolder.SubFolders
-            queue.Add osubfolder 'enqueue
-        Next osubfolder
-        
-        For Each ofile In ofolder.Files
-            If inputFileName = ofile.name Then
-                sharedDrivePath = ofile.Path
-                fileExists = True
-            End If
-        Next ofile
-    Loop
-End Function
