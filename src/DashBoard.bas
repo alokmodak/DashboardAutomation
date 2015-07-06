@@ -3533,7 +3533,7 @@ ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", LookAt:=xlWhole
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(what:="YTD", LookAt:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
-Set myrange = ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToLeft).Address)
+Set myrange = ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address)
 ActiveCell.value = Application.WorksheetFunction.Average(myrange)
 End If
 
