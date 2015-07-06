@@ -377,29 +377,29 @@ pvtName = ActiveCell.PivotTable.name
 Select Case insFindValue
     
 Case "IXR-MOS Pulsera-Y"
-insFilterValue1 = "718094"
-insFilterValue2 = "718095"
+insFilterValue1 = pulseraSysCode1
+insFilterValue2 = pulseraSysCode2
 insFilterValue3 = ""
 insFilterValue4 = ""
 insFilterValue5 = ""
 
 Case "IXR-MOS BV Vectra-N"
-insFilterValue1 = "718400"
+insFilterValue1 = vectraSysCode
 insFilterValue2 = ""
 insFilterValue3 = ""
 insFilterValue4 = ""
 insFilterValue5 = ""
 
 Case "IXR-MOS Endura-Y"
-insFilterValue1 = "718074"
-insFilterValue2 = "718075"
+insFilterValue1 = enduraSysCode1
+insFilterValue2 = enduraSysCode2
 insFilterValue3 = ""
 insFilterValue4 = ""
 insFilterValue5 = ""
 
 Case "IXR-MOS Veradius-Y"
-insFilterValue1 = "718130"
-insFilterValue2 = "718131"
+insFilterValue1 = veradiusSysCode1
+insFilterValue2 = veradiusSysCode2
 insFilterValue3 = ""
 insFilterValue4 = ""
 insFilterValue5 = ""
@@ -412,21 +412,21 @@ insFilterValue4 = ""
 insFilterValue5 = ""
 
 Case "DXR-PrimaryDiagnost Digital-N"
-insFilterValue1 = "712310"
+insFilterValue1 = PDSysCode1
 insFilterValue2 = ""
 insFilterValue3 = ""
 insFilterValue4 = ""
 insFilterValue5 = ""
 
 Case "DXR-MicroDose Mammography-Y"
-insFilterValue1 = "714045"
-insFilterValue2 = "714047"
-insFilterValue3 = "714048"
-insFilterValue4 = "714247"
-insFilterValue5 = "714248"
+insFilterValue1 = mamoSysCode1
+insFilterValue2 = mamoSysCode2
+insFilterValue3 = mamoSysCode3
+insFilterValue4 = mamoSysCode4
+insFilterValue5 = mamoSysCode5
 
 Case "DXR-MobileDiagnost Opta-N"
-insFilterValue1 = "704310"
+insFilterValue1 = optaSysCode1
 insFilterValue2 = ""
 insFilterValue3 = ""
 insFilterValue4 = ""
@@ -589,7 +589,7 @@ For Each celItem In Range(firstCell, lastCell)
     
     Case "Contract Revenue"
         ActiveSheet.UsedRange.Find("Customer").Select
-        ActiveSheet.UsedRange.Find(what:=YTDFindValue, After:=ActiveCell, LookIn:=xlValues).Select
+        ActiveSheet.UsedRange.Find(what:=YTDFindValue, after:=ActiveCell, LookIn:=xlValues).Select
          i = 0
             Do Until ActiveCell.End(xlUp).value = "YTD"
             i = i + 1
@@ -607,7 +607,7 @@ For Each celItem In Range(firstCell, lastCell)
     
     Case "iGM%"
         ActiveSheet.UsedRange.Find("Customer").Select
-        ActiveSheet.UsedRange.Find(what:="Contract Profitability - Gross Margin %", After:=ActiveCell, LookIn:=xlValues).Select
+        ActiveSheet.UsedRange.Find(what:="Contract Profitability - Gross Margin %", after:=ActiveCell, LookIn:=xlValues).Select
          i = 0
             Do Until ActiveCell.End(xlUp).value = "YTD"
             i = i + 1
@@ -1075,7 +1075,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("# of Patterns").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.value = patternValToPaste
 
@@ -1085,7 +1085,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("DAP capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.value = dapValToPaste
 
@@ -1095,7 +1095,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("Remote Capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.value = remoteValToPaste
 
@@ -1171,7 +1171,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("# of Patterns").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.value = patternValToPaste
 
@@ -1181,7 +1181,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("DAP capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.value = dapValToPaste
 
@@ -1191,7 +1191,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("Remote Capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.value = remoteValToPaste
 
@@ -2010,7 +2010,7 @@ cProductGroup = "BV Vectra"
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("CHU synop").Activate
 ActiveSheet.Cells(5, 5).Select
-ActiveSheet.UsedRange.Find(what:=cProductGroup, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=cProductGroup, after:=ActiveCell).Select
 Dim chuYearToFind As Integer
 chuYearToFind = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.value, 1, 4) & "-" & selMonth).Select
@@ -2097,7 +2097,7 @@ cProductGroup = "Allura FC"
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("CHU synop").Activate
 ActiveSheet.Cells(5, 5).Select
-ActiveSheet.UsedRange.Find(what:=cProductGroup, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=cProductGroup, after:=ActiveCell).Select
 chuYearToFind = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.value, 1, 4) & "-" & selMonth).Select
 toMinusVal = CInt(Mid(ActiveCell.Address, 4, 2))
@@ -3343,21 +3343,21 @@ Dim mcSysCode1 As Double, mcSysCode2 As Double, mcSysCode3 As Double, mcSysCode4
 Workbooks(inputFlDI).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.value = ""
 
-    If ActiveCell.End(xlToLeft).value = "714045" Then
-    mcSysCode1 = ActiveCell.value * 12 * 100 / 81909
-    ElseIf ActiveCell.End(xlToLeft).value = "714047" Then
-    mcSysCode2 = ActiveCell.value * 12 * 100 / 116089
-    ElseIf ActiveCell.End(xlToLeft).value = "714048" Then
-    mcSysCode3 = ActiveCell.value * 12 * 100 / 110957
-    ElseIf ActiveCell.End(xlToLeft).value = "714247" Then
-    mcSysCode4 = ActiveCell.value * 12 * 100 / 144790
-    ElseIf ActiveCell.End(xlToLeft).value = "714248" Then
-    mcSysCode5 = ActiveCell.value * 12 * 100 / 112608
+    If ActiveCell.End(xlToLeft).value = mamoSysCode1 Then
+    mcSysCode1 = ActiveCell.value * 12 * 100 / mamographyASP1
+    ElseIf ActiveCell.End(xlToLeft).value = mamoSysCode2 Then
+    mcSysCode2 = ActiveCell.value * 12 * 100 / mamographyASP2
+    ElseIf ActiveCell.End(xlToLeft).value = mamoSysCode3 Then
+    mcSysCode3 = ActiveCell.value * 12 * 100 / mamographyASP3
+    ElseIf ActiveCell.End(xlToLeft).value = mamoSysCode4 Then
+    mcSysCode4 = ActiveCell.value * 12 * 100 / mamographyASP4
+    ElseIf ActiveCell.End(xlToLeft).value = mamoSysCode5 Then
+    mcSysCode5 = ActiveCell.value * 12 * 100 / mamographyASP5
     End If
     
 ActiveCell.Offset(1, 0).Select
@@ -3368,8 +3368,7 @@ End If
 Loop
 
 Dim ytdDIvalToPaste As Double
-DIValToPaste = mcSysCode1 + mcSysCode2 + mcSysCode3 + mcSysCode4 + mcSysCode5
-
+DIValToPaste = Application.WorksheetFunction.Average(mcSysCode1, mcSysCode2, mcSysCode3, mcSysCode4, mcSysCode5)
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
@@ -3400,14 +3399,14 @@ Case "DXR-PrimaryDiagnost Digital-N"
 Workbooks(inputFlDI).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.value = ""
 
-    If ActiveCell.End(xlToLeft).value = "712310" Then
+    If ActiveCell.End(xlToLeft).value = PDSysCode1 Then
     mcSysCode1 = ActiveCell.value
-    ElseIf ActiveCell.End(xlToLeft).value = "704301" Then
+    ElseIf ActiveCell.End(xlToLeft).value = PDSysCode2 Then
     mcSysCode2 = ActiveCell.value
     End If
     
@@ -3418,7 +3417,7 @@ Exit Do
 End If
 Loop
 
-DIValToPaste = (mcSysCode1 + mcSysCode2) * 12 * 100 / 65000
+DIValToPaste = (mcSysCode1 + mcSysCode2) * 12 * 100 / PDASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
@@ -3447,14 +3446,14 @@ Dim ytdIGTvalToPaste As Double
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, after:=ActiveCell).Select
 
 i = 0
 Do Until ActiveCell.value = ""
 
-If ActiveCell.End(xlToLeft).value = "718074" Then
+If ActiveCell.End(xlToLeft).value = enduraSysCode1 Then
     mcSysCode1 = ActiveCell.value
-    ElseIf ActiveCell.End(xlToLeft).value = "718075" Then
+    ElseIf ActiveCell.End(xlToLeft).value = enduraSysCode2 Then
     mcSysCode2 = ActiveCell.value
     End If
     
@@ -3465,7 +3464,7 @@ Exit Do
 End If
 Loop
 
-ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 100 * 12 / 63000
+ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 100 * 12 / enduraASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
@@ -3498,14 +3497,14 @@ Case "IXR-MOS Pulsera-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.value = ""
 
-    If ActiveCell.End(xlToLeft).value = "718094" Then
+    If ActiveCell.End(xlToLeft).value = pulseraSysCode1 Then
     mcSysCode1 = ActiveCell.value
-    ElseIf ActiveCell.End(xlToLeft).value = "718095" Then
+    ElseIf ActiveCell.End(xlToLeft).value = pulseraSysCode2 Then
     mcSysCode2 = ActiveCell.value
     End If
     
@@ -3516,7 +3515,7 @@ Exit Do
 End If
 Loop
 
-ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 12 * 100 / 85000
+ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 12 * 100 / pulseraASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
@@ -3542,16 +3541,16 @@ Case "IXR-MOS Veradius-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.value = ""
 
-    If ActiveCell.End(xlToLeft).value = "718130" Then
+    If ActiveCell.End(xlToLeft).value = veradiusSysCode1 Then
     mcSysCode1 = ActiveCell.value
-    ElseIf ActiveCell.End(xlToLeft).value = "718131" Then
+    ElseIf ActiveCell.End(xlToLeft).value = veradiusSysCode2 Then
     mcSysCode2 = ActiveCell.value
-    ElseIf ActiveCell.End(xlToLeft).value = "718132" Then
+    ElseIf ActiveCell.End(xlToLeft).value = veradiusSysCode3 Then
     mcSysCode3 = ActiveCell.value
     End If
     
@@ -3562,7 +3561,7 @@ Exit Do
 End If
 Loop
 
-ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2 + mcSysCode3) * 12 * 100 / 132000
+ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2 + mcSysCode3) * 12 * 100 / veradiusASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
@@ -3588,13 +3587,13 @@ Case "IXR-MOS BV Vectra-N"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.value = ""
 
-    If ActiveCell.End(xlToLeft).value = "718400" Then
-    mcSysCode1 = ActiveCell.value * 12 * 100 / 40000 'Chaned to 40K from 45K as discussed
+    If ActiveCell.End(xlToLeft).value = vectraSysCode Then
+    mcSysCode1 = ActiveCell.value * 12 * 100 / vectraASP 'Chaned to 40K from 45K as discussed
     End If
     
 ActiveCell.Offset(1, 0).Select
@@ -3635,13 +3634,13 @@ Case "IXR-CV Allura FC-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.value = ""
 
     If ActiveCell.End(xlToLeft).value = "723003" Then
-    mcSysCode1 = ActiveCell.value * 12 * 100 / 120000
+    mcSysCode1 = ActiveCell.value * 12 * 100 / alluraASP
     End If
     
 ActiveCell.Offset(1, 0).Select
@@ -3678,13 +3677,13 @@ Case "DXR-MobileDiagnost Opta-N"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, after:=ActiveCell).Select
 
 i = 0
 Do Until ActiveCell.value = ""
 
-    If ActiveCell.End(xlToLeft).value = "712301" Then
-    mcSysCode1 = ActiveCell.value * 12 * 100 / 55000
+    If ActiveCell.End(xlToLeft).value = optaSysCode1 Then
+    mcSysCode1 = ActiveCell.value * 12 * 100 / optaASP
     End If
     
 ActiveCell.Offset(1, 0).Select
