@@ -58,6 +58,8 @@ End If
     Dim outputPath As String
     Dim installFileOpen As String
     Dim TestStr As String
+    Dim CQDataFile As String
+    Dim serviceInfoDataFile As String
     
 If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
 
@@ -151,8 +153,28 @@ If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
     MsgBox "Input File with name " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb" & Chr(34) & " or " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb" & Chr(34) & vbCrLf & " doesn't exist!"
     End
     End If
+    
+    'For CQ Data File Validation
+    CQDataFile = ""
+    CQDataFile = Dir(ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx")
+    
+    If CQDataFile = "" Then
+    MsgBox "Input File name format does not correspond to Selected Month and Year!" & vbCrLf & vbCrLf & "File with Name " & Chr(34) & "CQ_Data_SPM.xlsx" & Chr(34) & " Not Found" & vbCrLf & vbCrLf & "Please select the appropriate date or change the input file!"
+    End
+    End If
+    
+    'For service information Data File Validation
+    serviceInfoDataFile = ""
+    serviceInfoDataFile = Dir(ThisWorkbook.Path & "\" & "Service_Information_Quality_Completion.xlsx")
+    
+    If CQDataFile = "" Then
+    MsgBox "Input File name format does not correspond to Selected Month and Year!" & vbCrLf & vbCrLf & "File with Name " & Chr(34) & "Service_Information_Quality_Completion.xlsx" & Chr(34) & " Not Found" & vbCrLf & vbCrLf & "Please select the appropriate date or change the input file!"
+    End
+    End If
+    
 End If
 
+    
 'validation for files present over shared drive
 If Sheet1.rdbSharedDrive.value = True Then
     
@@ -221,7 +243,7 @@ If Sheet1.rdbSharedDrive.value = True Then
     inscostFileOpen = Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb"
     SharedDrive_Path inscostFileOpen
     
-        If fileExists = False Then
+    If fileExists = False Then
         MsgBox "Input File with name " & Chr(34) & Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & " doesn't exist!"
         End
     End If
@@ -238,5 +260,25 @@ If Sheet1.rdbSharedDrive.value = True Then
     MsgBox "Input File with name " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb" & Chr(34) & " or " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb" & Chr(34) & vbCrLf & " doesn't exist!"
     End
     End If
+    
+    'For CQ Data File Validation
+    CQDataFile = "CQ_Data_SPM.xlsx"
+    SharedDrive_Path CQDataFile
+    
+    If fileExists = False Then
+    MsgBox "Input File name format does not correspond to Selected Month and Year!" & vbCrLf & vbCrLf & "File with Name " & Chr(34) & "CQ_Data_SPM.xlsx" & Chr(34) & " Not Found" & vbCrLf & vbCrLf & "Please select the appropriate date or change the input file!"
+    End
+    End If
+    
+    'For service information Data File Validation
+    serviceInfoDataFile = "Service_Information_Quality_Completion.xlsx"
+    SharedDrive_Path "Service_Information_Quality_Completion.xlsx"
+    
+    If fileExists = False Then
+    MsgBox "Input File name format does not correspond to Selected Month and Year!" & vbCrLf & vbCrLf & "File with Name " & Chr(34) & "Service_Information_Quality_Completion.xlsx" & Chr(34) & " Not Found" & vbCrLf & vbCrLf & "Please select the appropriate date or change the input file!"
+    End
+    End If
+    
 End If
 End Sub
+    
