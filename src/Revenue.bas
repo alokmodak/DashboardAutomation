@@ -54,9 +54,8 @@ Application.Workbooks(inputFileNameContracts).Close False
 Application.Workbooks(outputFile).Activate
 ActiveWorkbook.Sheets.Add
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-        "Data!R1C1:R74904C23", Version:=xlPivotTableVersion14).CreatePivotTable _
-        TableDestination:="Sheet4!R3C1", TableName:="PivotTable1", DefaultVersion _
-        :=xlPivotTableVersion14
+        "Data!R1C1:R74904C23").CreatePivotTable _
+        TableDestination:="Sheet4!R3C1", TableName:="PivotTable1"
     ActiveSheet.name = "Pivot"
     ActiveWorkbook.Sheets("Pivot").Select
     Cells(3, 1).Select
@@ -228,76 +227,78 @@ If ActiveCell.value <> "" Then
                 If fstVal <= CDate(ActiveCell.Offset(-topCelVal, monthCellForTable).value) And CDate(ActiveCell.Offset(-topCelVal, monthCellForTable).value) <= lstVal Then
                     ActiveCell.Offset(0, monthCellForTable).value = "Yes"
                 Else
-                    ActiveCell.Offset(0, monthCellForTable).value = "No"
+                    'condition not to overwrite Yes values
+                    If ActiveCell.Offset(0, monthCellForTable).value = "" Then
+                        ActiveCell.Offset(0, monthCellForTable).value = "No"
+                    End If
                 End If
         k = k + 1
         Loop Until ActiveCell.Offset(k, 0).value <> ""
 
-If i = 2 And ActiveCell.Offset(0, monthCellForTable).value = "No" Then
-    If ActiveCell.Offset(0, monthCellForTable - 1).value = "Yes" Then
-        If duration <= 12 Then
-            ActiveCell.Offset(0, monthCellForTable + 2).value = "0To1Year"
-        ElseIf 13 >= duration <= 36 Then
-            ActiveCell.Offset(0, monthCellForTable + 2).value = "2To3Years"
-        ElseIf 37 >= duration <= 60 Then
-            ActiveCell.Offset(0, monthCellForTable + 2).value = "3To5Years"
-        ElseIf duration >= 61 Then
-            ActiveCell.Offset(0, monthCellForTable + 2).value = "MoreThan5Years"
+    If i = 2 And ActiveCell.Offset(0, monthCellForTable).value = "No" Then
+        If ActiveCell.Offset(0, monthCellForTable - 1).value = "Yes" Then
+            If duration <= 12 Then
+                ActiveCell.Offset(0, monthCellForTable + 2).value = "0To1Year"
+            ElseIf 13 >= duration <= 36 Then
+                ActiveCell.Offset(0, monthCellForTable + 2).value = "2To3Years"
+            ElseIf 37 >= duration <= 60 Then
+                ActiveCell.Offset(0, monthCellForTable + 2).value = "3To5Years"
+            ElseIf duration >= 61 Then
+                ActiveCell.Offset(0, monthCellForTable + 2).value = "MoreThan5Years"
+            End If
+    
+        'condition for After warranty
+        If ActiveCell.Offset(0, 3).value = "ZCSW" Then
+        j = 1
+        zcswVal = True
+        Do Until ActiveCell.Offset(j, 0) <> ""
+        'condition for last row exit loop
+            If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
+                If ActiveCell.Offset(1, 3).value = "" Then
+                    Exit Do
+            End If
+            zcswVal = False
         End If
-
-    'condition for After warranty
-    If ActiveCell.Offset(0, 3).value = "ZCSW" Then
-    j = 1
-    zcswVal = True
-    Do Until ActiveCell.Offset(j, 0) <> ""
-    'condition for last row exit loop
-        If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
-            If ActiveCell.Offset(1, 3).value = "" Then
-                Exit Do
+        j = j + 1
+        Loop
+        If zcswVal = True Then
+            ActiveCell.Offset(0, monthCellForTable + 2).value = "AfterWarranty"
         End If
-        zcswVal = False
     End If
-    j = j + 1
-    Loop
-    If zcswVal = True Then
-        ActiveCell.Offset(0, monthCellForTable + 2).value = "AfterWarranty"
+
+End If
+End If
+
+    If i > 2 And ActiveCell.Offset(0, monthCellForTable).value = "No" Then
+        If ActiveCell.Offset(0, monthCellForTable - 3).value = "Yes" Then
+            If duration <= 12 Then
+                ActiveCell.Offset(0, monthCellForTable + 2).value = "0To1Year"
+            ElseIf 13 >= duration <= 36 Then
+                ActiveCell.Offset(0, monthCellForTable + 2).value = "2To3Years"
+            ElseIf 37 >= duration <= 60 Then
+                ActiveCell.Offset(0, monthCellForTable + 2).value = "3To5Years"
+            ElseIf duration >= 61 Then
+                ActiveCell.Offset(0, monthCellForTable + 2).value = "MoreThan5Years"
+            End If
+    
+            If ActiveCell.Offset(0, 3).value = "ZCSW" Then
+            j = 1
+            zcswVal = True
+            Do Until ActiveCell.Offset(j, 0) <> ""
+            'condition for last row exit loop
+                If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
+                    If ActiveCell.Offset(1, 3).value = "" Then
+                        Exit Do
+                    End If
+                zcswVal = False
+                End If
+                j = j + 1
+            Loop
+            If zcswVal = True Then
+                ActiveCell.Offset(0, monthCellForTable + 2).value = "AfterWarranty"
+            End If
+            End If
     End If
-End If
-
-End If
-End If
-If i > 2 And ActiveCell.Offset(0, monthCellForTable).value = "No" Then
-
-If ActiveCell.Offset(0, monthCellForTable - 3).value = "Yes" Then
-If duration <= 12 Then
-ActiveCell.Offset(0, monthCellForTable + 2).value = "0To1Year"
-ElseIf 13 >= duration <= 36 Then
-ActiveCell.Offset(0, monthCellForTable + 2).value = "2To3Years"
-ElseIf 37 >= duration <= 60 Then
-ActiveCell.Offset(0, monthCellForTable + 2).value = "3To5Years"
-ElseIf duration >= 61 Then
-ActiveCell.Offset(0, monthCellForTable + 2).value = "MoreThan5Years"
-End If
-
-If ActiveCell.Offset(0, 3).value = "ZCSW" Then
-j = 1
-zcswVal = True
-Do Until ActiveCell.Offset(j, 0) <> ""
-'condition for last row exit loop
-If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
-If ActiveCell.Offset(1, 3).value = "" Then
-Exit Do
-End If
-zcswVal = False
-End If
-j = j + 1
-Loop
-If zcswVal = True Then
-ActiveCell.Offset(0, monthCellForTable + 2).value = "AfterWarranty"
-End If
-End If
-
-End If
 End If
 
 
@@ -333,46 +334,46 @@ Do Until ActiveCell.Offset(j, 0) <> ""
 
     End If
 End If
-                    If i > 2 And ActiveCell.Offset(0, monthCellForTable).value = "Yes" Then
-                        
-                        If ActiveCell.Offset(0, monthCellForTable - 3).value = "No" Then
-                            If duration <= 12 Then
-                                ActiveCell.Offset(0, monthCellForTable + 1).value = "0To1Year"
-                            ElseIf 13 >= duration <= 36 Then
-                                ActiveCell.Offset(0, monthCellForTable + 1).value = "2To3Years"
-                            ElseIf 37 >= duration <= 60 Then
-                                ActiveCell.Offset(0, monthCellForTable + 1).value = "3To5Years"
-                            ElseIf duration >= 61 Then
-                                ActiveCell.Offset(0, monthCellForTable + 1).value = "MoreThan5Years"
-                            End If
-                            
-                            'condition for After warranty
-                            If ActiveCell.Offset(0, 3).value = "ZCSW" Then
-                                j = 1
-                                zcswVal = True
-                                    Do Until ActiveCell.Offset(j, 0) <> ""
-                                        'condition for last row exit loop
-                                        If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
-                                            If ActiveCell.Offset(1, 3).value = "" Then
-                                                Exit Do
-                                            End If
-                                            zcswVal = False
-                                        End If
-                                    j = j + 1
-                                    Loop
-                                    If zcswVal = True Then
-                                        ActiveCell.Offset(0, monthCellForTable + 1).value = "AfterWarranty"
-                                    End If
-                            End If
-                        End If
+            If i > 2 And ActiveCell.Offset(0, monthCellForTable).value = "Yes" Then
+                
+                If ActiveCell.Offset(0, monthCellForTable - 3).value = "No" Then
+                    If duration <= 12 Then
+                        ActiveCell.Offset(0, monthCellForTable + 1).value = "0To1Year"
+                    ElseIf 13 >= duration <= 36 Then
+                        ActiveCell.Offset(0, monthCellForTable + 1).value = "2To3Years"
+                    ElseIf 37 >= duration <= 60 Then
+                        ActiveCell.Offset(0, monthCellForTable + 1).value = "3To5Years"
+                    ElseIf duration >= 61 Then
+                        ActiveCell.Offset(0, monthCellForTable + 1).value = "MoreThan5Years"
                     End If
-
-                If i > 1 Then
-                    monthCellForTable = monthCellForTable + 3
-                Else
-                    monthCellForTable = monthCellForTable + 1
+                    
+                    'condition for After warranty
+                    If ActiveCell.Offset(0, 3).value = "ZCSW" Then
+                        j = 1
+                        zcswVal = True
+                            Do Until ActiveCell.Offset(j, 0) <> ""
+                                'condition for last row exit loop
+                                If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
+                                    If ActiveCell.Offset(1, 3).value = "" Then
+                                        Exit Do
+                                    End If
+                                    zcswVal = False
+                                End If
+                            j = j + 1
+                            Loop
+                            If zcswVal = True Then
+                                ActiveCell.Offset(0, monthCellForTable + 1).value = "AfterWarranty"
+                            End If
+                    End If
                 End If
-            Next
+            End If
+
+        If i > 1 Then
+            monthCellForTable = monthCellForTable + 3
+        Else
+            monthCellForTable = monthCellForTable + 1
+        End If
+    Next
 End If
 topCelVal = topCelVal + 1
 ActiveCell.Offset(1, 0).Select
@@ -381,7 +382,7 @@ Next
 'Calculating total numbers for dropped and up
 
 ActiveCell.Offset(3, 3).Select
-ActiveCell.value = "Total"
+ActiveCell.value = "Ends"
 ActiveCell.Offset(1, 0).value = "0To1Year"
 ActiveCell.Offset(2, 0).value = "2To3Years"
 ActiveCell.Offset(3, 0).value = "3To5Years"
@@ -389,31 +390,342 @@ ActiveCell.Offset(4, 0).value = "MoreThan5Years"
 ActiveCell.Offset(5, 0).value = "AfterWarranty"
 ActiveCell.Offset(6, 0).value = "EOL"
 
+Dim fstTotalCel As String
+fstTotalCel = ActiveCell.Address
+ActiveCell.Offset(0, 1).Select
 Dim totalVal As Integer
-totalVal = 0
 'loop for counting totals
 For i = 1 To 36
-    If i >= 2 Then
-        countLstAddress = ActiveCell.Offset(-3, 1).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 1).Address
+        countLstAddress = ActiveCell.Offset(-3, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
             If cell.value = "Yes" Then
-            
+             totalVal = totalVal + 1
             End If
         Next
-        
-        ActiveCell.value = Application.WorksheetFunction.CountA(Range(countFstAddress, countLstAddress))
-        countLstAddress = ActiveCell.Offset(0, 1).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 1).Address
-        ActiveCell.Offset(0, 1).value = Application.WorksheetFunction.CountA(Range(countFstAddress, countLstAddress))
-        countLstAddress = ActiveCell.Offset(0, 2).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 2).Address
-        ActiveCell.Offset(0, 2).value = Application.WorksheetFunction.CountA(Range(countFstAddress, countLstAddress))
-        ActiveCell.Offset(0, 3).Select
-    Else
+        ActiveCell.value = totalVal
+        If i = 1 Then
+            ActiveCell.Offset(-1, 0).value = Format(ActiveCell.Offset(-(topCelVal + 3), 0).value, "mmmyy")
+            ActiveCell.Offset(0, 1).Select
+            ActiveCell.Offset(-1, 1).value = ActiveCell.Offset(-(topCelVal + 3), 1).value
+            ActiveCell.Offset(-1, 2).value = ActiveCell.Offset(-(topCelVal + 3), 2).value
+        Else
+            ActiveCell.Offset(-1, 0).value = Format(ActiveCell.Offset(-(topCelVal + 3), 0).value, "mmmyy")
+            ActiveCell.Offset(0, 3).Select
+            ActiveCell.Offset(-1, 1).value = ActiveCell.Offset(-(topCelVal + 3), 1).value
+            ActiveCell.Offset(-1, 2).value = ActiveCell.Offset(-(topCelVal + 3), 2).value
+        End If
+Next
+
+ActiveSheet.Range(fstTotalCel).Select
+ActiveCell.Offset(1, 0).Select
+Dim fstYear As String
+fstYear = ActiveCell.Address
+
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-4, 1).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 3), 1).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "0To1Year" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.Offset(0, 1).value = totalVal
+    End If
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
+
+ActiveSheet.Range(fstYear).Select
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-4, 2).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 3), 2).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "0To1Year" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.Offset(0, 2).value = totalVal
+    End If
+    If i <= 2 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 3).Select
+    End If
+Next
+
+ActiveSheet.Range(fstYear).Select
+ActiveCell.Offset(1, 0).Select
+Dim fst1To2Year As String
+fst1To2Year = ActiveCell.Address
+
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-5, 1).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 4), 1).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "2To3Years" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.Offset(0, 1).value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 3).Select
+    End If
+Next
+
+ActiveSheet.Range(fst1To2Year).Select
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-5, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 5).Select
+    End If
+Next
+
+ActiveSheet.Range(fst1To2Year).Select
+ActiveCell.Offset(1, 0).Select
+Dim fst2To3Year As String
+fst2To3Year = ActiveCell.Address
+
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-6, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 4).Select
+    End If
+Next
+
+ActiveSheet.Range(fst2To3Year).Select
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-6, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 5).Select
+    End If
+Next
+
+ActiveSheet.Range(fst2To3Year).Select
+ActiveCell.Offset(1, 0).Select
+Dim fst3To5Year As String
+fst3To5Year = ActiveCell.Address
+
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-7, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 4).Select
+    End If
+Next
+
+ActiveSheet.Range(fst3To5Year).Select
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-7, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 5).Select
+    End If
+Next
+
+ActiveSheet.Range(fst3To5Year).Select
+ActiveCell.Offset(1, 0).Select
+Dim fstMoreThan5Year As String
+fstMoreThan5Year = ActiveCell.Address
+
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-8, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 4).Select
+    End If
+Next
+
+ActiveSheet.Range(fstMoreThan5Year).Select
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-8, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 5).Select
+    End If
+Next
+
+ActiveSheet.Range(fstMoreThan5Year).Select
+ActiveCell.Offset(1, 0).Select
+Dim fstAfterWarranty As String
+fstAfterWarranty = ActiveCell.Address
+
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-9, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 4).Select
+    End If
+Next
+
+ActiveSheet.Range(fstAfterWarranty).Select
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-9, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 5).Select
+    End If
+Next
+
+ActiveSheet.Range(fstAfterWarranty).Select
+ActiveCell.Offset(1, 0).Select
+Dim fstEOL As String
+fstEOL = ActiveCell.Address
+
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-10, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 4).Select
+    End If
+Next
+
+ActiveSheet.Range(fstEOL).Select
+For i = 1 To 36
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(-10, 0).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+        totalVal = 0
+        For Each cell In Range(countFstAddress, countLstAddress)
+            If cell.value = "Yes" Then
+             totalVal = totalVal + 1
+            End If
+        Next
+        ActiveCell.value = totalVal
+    End If
+    If i = 1 Then
+        ActiveCell.Offset(0, 1).Select
+    Else
+        ActiveCell.Offset(0, 5).Select
+    End If
+Next
+
 
 ActiveWorkbook.Sheets("Pivot").delete
 ActiveWorkbook.Sheets("Data").delete
