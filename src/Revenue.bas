@@ -140,13 +140,13 @@ ActiveSheet.Range(fstAddForPivot, lstAddForPivot).Select
 Selection.Copy
 
 ActiveWorkbook.Sheets.Add
-With ActiveSheet.Cells(2, 27)
+With ActiveSheet.Cells(2, 36)
     .PasteSpecial xlPasteValues
 End With
 ActiveSheet.name = "Endura"
 
 ActiveWorkbook.Sheets("Endura").Activate
-ActiveSheet.Cells(2, 27).Select
+ActiveSheet.Cells(2, 36).Select
 Dim fstTableAdd As String
 fstTableAdd = ActiveCell.Address
 ActiveCell.End(xlToRight).Select
@@ -383,12 +383,13 @@ Next
 
 ActiveCell.Offset(3, 3).Select
 ActiveCell.value = "Ends"
-ActiveCell.Offset(1, 0).value = "0To1Year"
-ActiveCell.Offset(2, 0).value = "2To3Years"
-ActiveCell.Offset(3, 0).value = "3To5Years"
-ActiveCell.Offset(4, 0).value = "MoreThan5Years"
-ActiveCell.Offset(5, 0).value = "AfterWarranty"
-ActiveCell.Offset(6, 0).value = "EOL"
+ActiveCell.Offset(2, 0).value = "0To1Year"
+ActiveCell.Offset(3, 0).value = "2To3Years"
+ActiveCell.Offset(4, 0).value = "3To5Years"
+ActiveCell.Offset(5, 0).value = "MoreThan5Years"
+ActiveCell.Offset(6, 0).value = "AfterWarranty"
+ActiveCell.Offset(7, 0).value = "EOL"
+ActiveCell.Offset(1, 0).value = "Blanks"
 
 Dim fstTotalCel As String
 fstTotalCel = ActiveCell.Address
@@ -425,8 +426,8 @@ fstYear = ActiveCell.Address
 
 For i = 1 To 37
     If i > 2 Then
-        countLstAddress = ActiveCell.Offset(-4, 1).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 3), 1).Address
+        countLstAddress = ActiveCell.Offset(-5, 1).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 4), 1).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
             If cell.value = "0To1Year" Then
@@ -445,8 +446,8 @@ Next
 ActiveSheet.Range(fstYear).Select
 For i = 1 To 37
     If i > 2 Then
-        countLstAddress = ActiveCell.Offset(-4, 2).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 3), 2).Address
+        countLstAddress = ActiveCell.Offset(-5, 2).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 4), 2).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
             If cell.value = "0To1Year" Then
@@ -467,10 +468,10 @@ ActiveCell.Offset(1, 0).Select
 Dim fst1To2Year As String
 fst1To2Year = ActiveCell.Address
 
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-5, 1).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 4), 1).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-6, 1).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 5), 1).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
             If cell.value = "2To3Years" Then
@@ -479,7 +480,7 @@ For i = 1 To 36
         Next
         ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -487,22 +488,22 @@ For i = 1 To 36
 Next
 
 ActiveSheet.Range(fst1To2Year).Select
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-5, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-6, 2).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 5), 2).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
+            If cell.value = "2To3Years" Then
              totalVal = totalVal + 1
             End If
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 5).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
@@ -511,42 +512,42 @@ ActiveCell.Offset(1, 0).Select
 Dim fst2To3Year As String
 fst2To3Year = ActiveCell.Address
 
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-6, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-7, 1).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 6), 1).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
+            If cell.value = "3To5Years" Then
              totalVal = totalVal + 1
             End If
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 4).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
 ActiveSheet.Range(fst2To3Year).Select
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-6, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-7, 2).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 6), 2).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
+            If cell.value = "3To5Years" Then
              totalVal = totalVal + 1
             End If
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 5).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
@@ -555,42 +556,42 @@ ActiveCell.Offset(1, 0).Select
 Dim fst3To5Year As String
 fst3To5Year = ActiveCell.Address
 
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-7, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-8, 1).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 7), 1).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
+            If cell.value = "MoreThan5Years" Then
              totalVal = totalVal + 1
             End If
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 4).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
 ActiveSheet.Range(fst3To5Year).Select
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-7, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-8, 2).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 7), 2).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
+            If cell.value = "MoreThan5Years" Then
              totalVal = totalVal + 1
             End If
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 5).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
@@ -599,42 +600,42 @@ ActiveCell.Offset(1, 0).Select
 Dim fstMoreThan5Year As String
 fstMoreThan5Year = ActiveCell.Address
 
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-8, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-9, 1).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 8), 1).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
+            If cell.value = "AfterWarranty" Then
              totalVal = totalVal + 1
             End If
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 4).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
 ActiveSheet.Range(fstMoreThan5Year).Select
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-8, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-9, 2).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 8), 2).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
+            If cell.value = "AfterWarranty" Then
              totalVal = totalVal + 1
             End If
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 5).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
@@ -643,90 +644,138 @@ ActiveCell.Offset(1, 0).Select
 Dim fstAfterWarranty As String
 fstAfterWarranty = ActiveCell.Address
 
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-9, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-10, 1).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 9), 1).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
+            If cell.value = "EOL" Then
              totalVal = totalVal + 1
             End If
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 4).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
 ActiveSheet.Range(fstAfterWarranty).Select
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-9, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(-10, 2).Address
+        countFstAddress = ActiveCell.Offset(-(topCelVal + 9), 2).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
+            If cell.value = "EOL" Then
              totalVal = totalVal + 1
             End If
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 5).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
-ActiveSheet.Range(fstAfterWarranty).Select
+ActiveSheet.Range(fstTotalCel).Select
 ActiveCell.Offset(1, 0).Select
-Dim fstEOL As String
-fstEOL = ActiveCell.Address
+Dim fstBlanks As String
+fstBlanks = ActiveCell.Address
 
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-10, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(0, 1).Address
+        countFstAddress = ActiveCell.Offset(5, 1).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
-             totalVal = totalVal + 1
-            End If
+            totalVal = totalVal + cell.value
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 1).value = ActiveCell.Offset(-1, 0).value - totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 4).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
-ActiveSheet.Range(fstEOL).Select
-For i = 1 To 36
-    If i > 1 Then
-        countLstAddress = ActiveCell.Offset(-10, 0).Address
-        countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
+ActiveSheet.Range(fstBlanks).Select
+For i = 1 To 37
+    If i > 2 Then
+        countLstAddress = ActiveCell.Offset(0, 2).Address
+        countFstAddress = ActiveCell.Offset(5, 2).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
-             totalVal = totalVal + 1
-            End If
+            totalVal = totalVal + cell.value
         Next
-        ActiveCell.value = totalVal
+        ActiveCell.Offset(0, 2).value = ActiveCell.Offset(-1, 0).value - totalVal
     End If
-    If i = 1 Then
+    If i <= 2 Then
         ActiveCell.Offset(0, 1).Select
     Else
-        ActiveCell.Offset(0, 5).Select
+        ActiveCell.Offset(0, 3).Select
     End If
 Next
 
+    Range("AD2923:EF2931").Select
+    ActiveSheet.Shapes.AddChart.Select
+    ActiveChart.ChartType = xlColumnStacked
+    ActiveChart.SetSourceData Source:=Range("Endura!$AM$2923:$EO$2931")
+    ActiveChart.SeriesCollection(2).Select
+    ActiveChart.ClearToMatchStyle
+    ActiveChart.ChartStyle = 18
+    ActiveChart.ClearToMatchStyle
+    Selection.Format.Fill.Visible = msoFalse
+    ActiveChart.SeriesCollection(1).Select
+    ActiveChart.ChartGroups(1).GapWidth = 0
+    
+    ActiveChart.PlotArea.Select
+    ActiveChart.ChartArea.Select
+    ActiveChart.Axes(xlCategory).Select
+    ActiveChart.SeriesCollection(1).Select
+    ActiveChart.SeriesCollection(1).ApplyDataLabels
+    
+    ActiveChart.SetElement (msoElementDataLabelCenter)
+    ActiveChart.SetElement (msoElementChartTitleCenteredOverlay)
+    ActiveChart.ChartTitle.Select
+    ActiveChart.ChartTitle.Text = "Endura"
+    Selection.Format.TextFrame2.TextRange.Characters.Text = "Endura"
+    With Selection.Format.TextFrame2.TextRange.Characters(1, 6).ParagraphFormat
+        .TextDirection = msoTextDirectionLeftToRight
+        .Alignment = msoAlignCenter
+    End With
+    With Selection.Format.TextFrame2.TextRange.Characters(1, 6).Font
+        .BaselineOffset = 0
+        .Bold = msoTrue
+        .NameComplexScript = "+mn-cs"
+        .NameFarEast = "+mn-ea"
+        .Fill.Visible = msoTrue
+        .Fill.ForeColor.RGB = RGB(0, 0, 0)
+        .Fill.Transparency = 0
+        .Fill.Solid
+        .Size = 18
+        .Italic = msoFalse
+        .Kerning = 12
+        .name = "+mn-lt"
+        .UnderlineStyle = msoNoUnderline
+        .Strike = msoNoStrike
+    End With
+    ActiveChart.ChartArea.Select
+    ActiveChart.SetElement (msoElementLegendLeft)
+    With ActiveChart.Parent
+         .Height = 325 ' resize
+         .Width = 1500  ' resize
+         .Top = 10    ' reposition
+         .Left = 10   ' reposition
+     End With
 
+ActiveSheet.Cells(1, 1).Select
 ActiveWorkbook.Sheets("Pivot").delete
 ActiveWorkbook.Sheets("Data").delete
 End Sub
