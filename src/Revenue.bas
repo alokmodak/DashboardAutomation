@@ -21,15 +21,30 @@ Dim zcswVal As Boolean
 Dim countFstAddress As String
 Dim countLstAddress As String
 
+Dim PvtTbl As PivotTable
+Dim wsData As Worksheet
+Dim rngData As Range
+Dim PvtTblCache As PivotCache
+Dim pvtFld As PivotField
+Dim lastRow
+Dim lastColumn
+Dim rngDataForPivot As String
+Dim pvtItem As PivotItem
+
+
 'Copy Data from SAP file
+inputRevenue = "EPV_2014YTD2015.xlsx"
+SharedDrive_Path inputRevenue
+Application.Workbooks.Open (sharedDrivePath)
+inputFileNameContracts = inputRevenue
+outputFile = Left(sharedDrivePath, InStrRev(sharedDrivePath, "\") - 1) & "\" & "ContractDynamics_Waterfall_Jul15.xlsx"
 Application.AlertBeforeOverwriting = False
 Application.DisplayAlerts = False
 Application.Workbooks.Add
-ActiveWorkbook.SaveAs fileName:="D:\Philips\Assignments\Revenue\ContractDynamics_Waterfall_Jul15.xlsx", AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
+ActiveWorkbook.SaveAs fileName:=outputFile, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
 outputFile = ActiveWorkbook.name
-inputRevenue = "D:\Philips\Assignments\Revenue\ContractDynamics_Waterfall.xlsx"
-Application.Workbooks.Open (inputRevenue)
-inputFileNameContracts = Split(inputRevenue, "\")(UBound(Split(inputRevenue, "\")))
+
+Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole).Select
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole, after:=ActiveCell).Select
@@ -51,64 +66,93 @@ ActiveSheet.name = "Data"
 'Creating PivotTable
 Application.Workbooks(inputFileNameContracts).Close False
 
-Application.Workbooks(outputFile).Activate
-ActiveWorkbook.Sheets.Add
-    ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-        "Data!R1C1:R74904C23").CreatePivotTable _
-        TableDestination:="Sheet4!R3C1", TableName:="PivotTable1"
-    ActiveSheet.name = "Pivot"
+'determine the worksheet which contains the source data
+Set wsData = Worksheets("Data")
+
+'A Pivot Cache represents the memory cache for a PivotTable report. Each Pivot Table report has one cache only. Create a new PivotTable cache, and then create a new PivotTable report based on the cache.
+
+'determine source data range (dynamic):
+'last row in column no. 1:
+lastRow = wsData.Cells(Rows.Count, 1).End(xlUp).Row
+'last column in row no. 1:
+lastColumn = wsData.Cells(1, Columns.Count).End(xlToLeft).Column
+
+Set rngData = wsData.Cells(1, 1).Resize(lastRow, lastColumn)
+rngDataForPivot = rngData.Address
+'for creating a Pivot Cache (version excel 2003), use the PivotCaches.Create Method. When version is not specified, default version of the PivotTable will be xlPivotTableVersion12:
+Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion14)
+
+'create a PivotTable report based on a Pivot Cache, using the PivotCache.CreatePivotTable method. TableDestination is mandatory to specify in this method.
+
+'create PivotTable in a new worksheet:
+Sheets.Add
+ActiveSheet.name = "Pivot"
+Set PvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion14)
+
+'change style of the new PivotTable:
+PvtTbl.TableStyle2 = "PivotStyleMedium3"
+
+'to view the PivotTable in Classic Pivot Table Layout, set InGridDropZones property to True, else set to False:
+PvtTbl.InGridDropZones = True
+
+'Default value of ManualUpdate property is False wherein a PivotTable report is recalculated automatically on each change. Turn off automatic updation of Pivot Table during the process of its creation to speed up code.
+PvtTbl.ManualUpdate = True
+
+Dim pvtTblName As String
+pvtTblName = PvtTbl.name
+'Add row, column and page fields in a Pivot Table using the AddFields method:
     ActiveWorkbook.Sheets("Pivot").Select
     Cells(3, 1).Select
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] System Code Material (Material no of  R Eq)")
         .Orientation = xlPageField
         .Position = 1
     End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields("Country")
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Company Code")
         .Orientation = xlPageField
         .Position = 1
     End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Reference Equipment")
         .Orientation = xlRowField
         .Position = 1
     End With
     Range("A5").Select
-    ActiveSheet.PivotTables("PivotTable1").PivotFields("[C,S] Reference Equipment") _
+    ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Reference Equipment") _
         .Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
         False, False)
-    With ActiveSheet.PivotTables("PivotTable1")
+    With ActiveSheet.PivotTables(pvtTblName)
         .InGridDropZones = True
         .RowAxisLayout xlTabularRow
     End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Reference Equipment")
         .PivotItems("#").Visible = False
     End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract Start Date (Header)")
         .Orientation = xlRowField
         .Position = 2
     End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract End Date (Header)")
         .Orientation = xlRowField
         .Position = 3
     End With
     Range("B6").Select
-    ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+    ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract Start Date (Header)").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
     With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
         "[C,S] Contract Start Date (Header)")
         .PivotItems("#").Visible = False
     End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract End Date (Header)")
         .PivotItems("#").Visible = False
     End With
     Range("C7").Select
-    ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+    ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract End Date (Header)").Subtotals = Array(False, False, False, False, _
         False, False, False, False, False, False, False, False)
     With ActiveSheet.PivotTables("PivotTable1").PivotFields("[C,S] Contract Type")
@@ -116,19 +160,37 @@ ActiveWorkbook.Sheets.Add
         .Position = 4
     End With
     Range("D5").Select
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields("[C,S] Contract Type")
-        .PivotItems("#").Visible = False
-        .PivotItems("MV").Visible = False
-        .PivotItems("ZPO").Visible = False
-        .PivotItems("ZSO").Visible = False
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Contract Type")
+        For Each pvtItem In ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Contract Type").PivotItems
+            If pvtItem.name = "#" Then
+            .PivotItems("#").Visible = False
+            ElseIf pvtItem.name = "MV" Then
+            .PivotItems("MV").Visible = False
+            ElseIf pvtItem.name = "ZPO" Then
+            .PivotItems("ZPO").Visible = False
+            ElseIf pvtItem.name = "ZSO" Then
+            .PivotItems("ZSO").Visible = False
+            Else
+            pvtItem.Visible = True
+            End If
+        Next
     End With
-    ActiveSheet.PivotTables("PivotTable1").PivotFields("[C,S] Contract Type"). _
+    ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Contract Type"). _
         Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
         False, False)
-    ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+    ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] System Code Material (Material no of  R Eq)").ClearAllFilters
-    ActiveSheet.PivotTables("PivotTable1").PivotFields( _
-        "[C,S] System Code Material (Material no of  R Eq)").CurrentPage = "718074"
+    For Each pvtItem In ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "[C,S] System Code Material (Material no of  R Eq)").PivotItems
+    
+        If pvtItem = "718094" Or pvtItem = "718095" Then
+            pvtItem.Visible = True
+        Else
+            pvtItem.Visible = False
+        End If
+    Next
+'turn on automatic update / calculation in the Pivot Table
+PvtTbl.ManualUpdate = False
 
 'Copy Pivot table values to new sheet
 ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", LookAt:=xlWhole).Select
@@ -157,14 +219,10 @@ ActiveCell.Offset(0, 1).Select
 For monthCellForTable = 2 To 37
     ActiveCell.value = monthsForTable
     ActiveCell.NumberFormat = "[$-409]mmm-yy;@"
-        If monthCellForTable > 2 Then
+        If monthCellForTable > 1 Then
             ActiveCell.Offset(0, 3).Select
-            ActiveCell.Offset(0, 1).value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Joined"
-            ActiveCell.Offset(0, 2).value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Dropped"
-        Else
-            ActiveCell.Offset(0, 1).Select
-            ActiveCell.Offset(0, 1).value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Joined"
-            ActiveCell.Offset(0, 2).value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Dropped"
+            ActiveCell.Offset(0, -1).value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Joined"
+            ActiveCell.Offset(0, -2).value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Dropped"
         End If
     monthsForTable = DateAdd("m", 1, monthsForTable)
 Next
@@ -236,15 +294,15 @@ If ActiveCell.value <> "" Then
         Loop Until ActiveCell.Offset(k, 0).value <> ""
 
     If i = 2 And ActiveCell.Offset(0, monthCellForTable).value = "No" Then
-        If ActiveCell.Offset(0, monthCellForTable - 1).value = "Yes" Then
+        If ActiveCell.Offset(0, monthCellForTable - 3).value = "Yes" Then
             If duration <= 12 Then
-                ActiveCell.Offset(0, monthCellForTable + 2).value = "0To1Year"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "0To1Year"
             ElseIf 13 >= duration <= 36 Then
-                ActiveCell.Offset(0, monthCellForTable + 2).value = "2To3Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "2To3Years"
             ElseIf 37 >= duration <= 60 Then
-                ActiveCell.Offset(0, monthCellForTable + 2).value = "3To5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "3To5Years"
             ElseIf duration >= 61 Then
-                ActiveCell.Offset(0, monthCellForTable + 2).value = "MoreThan5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "MoreThan5Years"
             End If
     
         'condition for After warranty
@@ -262,7 +320,7 @@ If ActiveCell.value <> "" Then
         j = j + 1
         Loop
         If zcswVal = True Then
-            ActiveCell.Offset(0, monthCellForTable + 2).value = "AfterWarranty"
+            ActiveCell.Offset(0, monthCellForTable - 2).value = "AfterWarranty"
         End If
     End If
 
@@ -272,13 +330,13 @@ End If
     If i > 2 And ActiveCell.Offset(0, monthCellForTable).value = "No" Then
         If ActiveCell.Offset(0, monthCellForTable - 3).value = "Yes" Then
             If duration <= 12 Then
-                ActiveCell.Offset(0, monthCellForTable + 2).value = "0To1Year"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "0To1Year"
             ElseIf 13 >= duration <= 36 Then
-                ActiveCell.Offset(0, monthCellForTable + 2).value = "2To3Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "2To3Years"
             ElseIf 37 >= duration <= 60 Then
-                ActiveCell.Offset(0, monthCellForTable + 2).value = "3To5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "3To5Years"
             ElseIf duration >= 61 Then
-                ActiveCell.Offset(0, monthCellForTable + 2).value = "MoreThan5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "MoreThan5Years"
             End If
     
             If ActiveCell.Offset(0, 3).value = "ZCSW" Then
@@ -295,7 +353,7 @@ End If
                 j = j + 1
             Loop
             If zcswVal = True Then
-                ActiveCell.Offset(0, monthCellForTable + 2).value = "AfterWarranty"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "AfterWarranty"
             End If
             End If
     End If
@@ -303,15 +361,15 @@ End If
 
 
 If i = 2 And ActiveCell.Offset(0, monthCellForTable).value = "Yes" Then
-  If ActiveCell.Offset(0, monthCellForTable - 1).value = "No" Then
+  If ActiveCell.Offset(0, monthCellForTable - 3).value = "No" Then
    If duration <= 12 Then
-     ActiveCell.Offset(0, monthCellForTable + 1).value = "0To1Year"
+     ActiveCell.Offset(0, monthCellForTable - 1).value = "0To1Year"
    ElseIf 13 >= duration <= 36 Then
-     ActiveCell.Offset(0, monthCellForTable + 1).value = "2To3Years"
+     ActiveCell.Offset(0, monthCellForTable - 1).value = "2To3Years"
    ElseIf 37 >= duration <= 60 Then
-     ActiveCell.Offset(0, monthCellForTable + 1).value = "3To5Years"
+     ActiveCell.Offset(0, monthCellForTable - 1).value = "3To5Years"
    ElseIf duration >= 61 Then
-     ActiveCell.Offset(0, monthCellForTable + 1).value = "MoreThan5Years"
+     ActiveCell.Offset(0, monthCellForTable - 1).value = "MoreThan5Years"
    End If
 'condition for After warranty
 If ActiveCell.Offset(0, 3).value = "ZCSW" Then
@@ -328,7 +386,7 @@ Do Until ActiveCell.Offset(j, 0) <> ""
                 j = j + 1
                 Loop
                 If zcswVal = True Then
-                    ActiveCell.Offset(0, monthCellForTable + 1).value = "AfterWarranty"
+                    ActiveCell.Offset(0, monthCellForTable - 1).value = "AfterWarranty"
                 End If
         End If
 
@@ -338,13 +396,13 @@ End If
                 
                 If ActiveCell.Offset(0, monthCellForTable - 3).value = "No" Then
                     If duration <= 12 Then
-                        ActiveCell.Offset(0, monthCellForTable + 1).value = "0To1Year"
+                        ActiveCell.Offset(0, monthCellForTable - 1).value = "0To1Year"
                     ElseIf 13 >= duration <= 36 Then
-                        ActiveCell.Offset(0, monthCellForTable + 1).value = "2To3Years"
+                        ActiveCell.Offset(0, monthCellForTable - 1).value = "2To3Years"
                     ElseIf 37 >= duration <= 60 Then
-                        ActiveCell.Offset(0, monthCellForTable + 1).value = "3To5Years"
+                        ActiveCell.Offset(0, monthCellForTable - 1).value = "3To5Years"
                     ElseIf duration >= 61 Then
-                        ActiveCell.Offset(0, monthCellForTable + 1).value = "MoreThan5Years"
+                        ActiveCell.Offset(0, monthCellForTable - 1).value = "MoreThan5Years"
                     End If
                     
                     'condition for After warranty
@@ -362,17 +420,13 @@ End If
                             j = j + 1
                             Loop
                             If zcswVal = True Then
-                                ActiveCell.Offset(0, monthCellForTable + 1).value = "AfterWarranty"
+                                ActiveCell.Offset(0, monthCellForTable - 1).value = "AfterWarranty"
                             End If
                     End If
                 End If
             End If
 
-        If i > 1 Then
             monthCellForTable = monthCellForTable + 3
-        Else
-            monthCellForTable = monthCellForTable + 1
-        End If
     Next
 End If
 topCelVal = topCelVal + 1
@@ -406,26 +460,19 @@ For i = 1 To 36
             End If
         Next
         ActiveCell.value = totalVal
-        If i = 1 Then
-            ActiveCell.Offset(-1, 0).value = Format(ActiveCell.Offset(-(topCelVal + 3), 0).value, "mmmyy")
-            ActiveCell.Offset(0, 1).Select
-            ActiveCell.Offset(-1, 1).value = ActiveCell.Offset(-(topCelVal + 3), 1).value
-            ActiveCell.Offset(-1, 2).value = ActiveCell.Offset(-(topCelVal + 3), 2).value
-        Else
             ActiveCell.Offset(-1, 0).value = Format(ActiveCell.Offset(-(topCelVal + 3), 0).value, "mmmyy")
             ActiveCell.Offset(0, 3).Select
-            ActiveCell.Offset(-1, 1).value = ActiveCell.Offset(-(topCelVal + 3), 1).value
-            ActiveCell.Offset(-1, 2).value = ActiveCell.Offset(-(topCelVal + 3), 2).value
-        End If
+            ActiveCell.Offset(-1, -1).value = ActiveCell.Offset(-(topCelVal + 3), -1).value
+            ActiveCell.Offset(-1, -2).value = ActiveCell.Offset(-(topCelVal + 3), -2).value
 Next
 
 ActiveSheet.Range(fstTotalCel).Select
-ActiveCell.Offset(1, 0).Select
+ActiveCell.Offset(2, 0).Select
 Dim fstYear As String
 fstYear = ActiveCell.Address
 
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-5, 1).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 4), 1).Address
         totalVal = 0
@@ -436,7 +483,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -445,7 +492,7 @@ Next
 
 ActiveSheet.Range(fstYear).Select
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-5, 2).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 4), 2).Address
         totalVal = 0
@@ -456,7 +503,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -469,7 +516,7 @@ Dim fst1To2Year As String
 fst1To2Year = ActiveCell.Address
 
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-6, 1).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 5), 1).Address
         totalVal = 0
@@ -480,7 +527,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -489,7 +536,7 @@ Next
 
 ActiveSheet.Range(fst1To2Year).Select
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-6, 2).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 5), 2).Address
         totalVal = 0
@@ -500,7 +547,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -513,7 +560,7 @@ Dim fst2To3Year As String
 fst2To3Year = ActiveCell.Address
 
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-7, 1).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 6), 1).Address
         totalVal = 0
@@ -524,7 +571,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -533,7 +580,7 @@ Next
 
 ActiveSheet.Range(fst2To3Year).Select
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-7, 2).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 6), 2).Address
         totalVal = 0
@@ -544,7 +591,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -557,7 +604,7 @@ Dim fst3To5Year As String
 fst3To5Year = ActiveCell.Address
 
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-8, 1).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 7), 1).Address
         totalVal = 0
@@ -568,7 +615,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -577,7 +624,7 @@ Next
 
 ActiveSheet.Range(fst3To5Year).Select
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-8, 2).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 7), 2).Address
         totalVal = 0
@@ -588,7 +635,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -601,7 +648,7 @@ Dim fstMoreThan5Year As String
 fstMoreThan5Year = ActiveCell.Address
 
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-9, 1).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 8), 1).Address
         totalVal = 0
@@ -612,7 +659,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -621,7 +668,7 @@ Next
 
 ActiveSheet.Range(fstMoreThan5Year).Select
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-9, 2).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 8), 2).Address
         totalVal = 0
@@ -632,7 +679,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -645,7 +692,7 @@ Dim fstAfterWarranty As String
 fstAfterWarranty = ActiveCell.Address
 
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-10, 1).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 9), 1).Address
         totalVal = 0
@@ -656,7 +703,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 1).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -665,7 +712,7 @@ Next
 
 ActiveSheet.Range(fstAfterWarranty).Select
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(-10, 2).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 9), 2).Address
         totalVal = 0
@@ -676,7 +723,7 @@ For i = 1 To 37
         Next
         ActiveCell.Offset(0, 2).value = totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -689,16 +736,16 @@ Dim fstBlanks As String
 fstBlanks = ActiveCell.Address
 
 For i = 1 To 37
-    If i > 2 Then
+    If i > 1 Then
         countLstAddress = ActiveCell.Offset(0, 1).Address
-        countFstAddress = ActiveCell.Offset(5, 1).Address
+        countFstAddress = ActiveCell.Offset(6, 1).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
             totalVal = totalVal + cell.value
         Next
         ActiveCell.Offset(0, 1).value = ActiveCell.Offset(-1, 0).value - totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
@@ -707,26 +754,37 @@ Next
 
 ActiveSheet.Range(fstBlanks).Select
 For i = 1 To 37
-    If i > 2 Then
-        countLstAddress = ActiveCell.Offset(0, 2).Address
-        countFstAddress = ActiveCell.Offset(5, 2).Address
+    If i > 1 Then
+        countLstAddress = ActiveCell.Offset(6, 2).Address
+        countFstAddress = ActiveCell.Offset(1, 2).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
             totalVal = totalVal + cell.value
         Next
-        ActiveCell.Offset(0, 2).value = ActiveCell.Offset(-1, 0).value - totalVal
+        ActiveCell.Offset(0, 2).value = ActiveCell.Offset(-1, 3).value - totalVal
     End If
-    If i <= 2 Then
+    If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 3).Select
     End If
 Next
 
-    Range("AD2923:EF2931").Select
+'Creating chart
+Dim lstChartAdd As String
+Dim fstChartAdd As String
+Dim chartRange As String
+ActiveCell.Offset(0, -1).Select
+lstChartAdd = ActiveCell.End(xlDown).Address
+ActiveSheet.Range(fstTotalCel).Select
+ActiveCell.Offset(-1, 0).Select
+fstChartAdd = ActiveCell.Address
+chartRange = Range(fstChartAdd, lstChartAdd).Address
+
+    Range(fstChartAdd, lstChartAdd).Select
     ActiveSheet.Shapes.AddChart.Select
     ActiveChart.ChartType = xlColumnStacked
-    ActiveChart.SetSourceData Source:=Range("Endura!$AM$2923:$EO$2931")
+    ActiveChart.SetSourceData Source:=Range("Endura!" & chartRange)
     ActiveChart.SeriesCollection(2).Select
     ActiveChart.ClearToMatchStyle
     ActiveChart.ChartStyle = 18

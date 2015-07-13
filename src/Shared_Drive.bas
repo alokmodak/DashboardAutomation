@@ -21,6 +21,7 @@ fileExists = False
 FileNotPresent:
         If Application.FileDialog(msoFileDialogFolderPicker).Show <> -1 Then
         MsgBox "No Folder Selected"
+        End
         End If
     End If
     

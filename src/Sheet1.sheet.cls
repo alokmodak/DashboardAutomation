@@ -1,6 +1,6 @@
 Option Explicit
 
-Private Sub chkDashboard_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+Private Sub chkDashboard_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
 Call showInfoTip(lblDashboard)
 End Sub
 
@@ -70,6 +70,28 @@ End Sub
 Private Sub cmbDecreaseMonth_Click()
 
 Call Decrease_Year_And_Month_Value
+End Sub
+
+
+Private Sub cmb6NC2OK_Click()
+On Error Resume Next
+    Sheet1.lstBx6NC.Visible = False
+    Sheet1.cmb6NC2OK.Visible = False
+    Sheet1.comb6NC2.value = ""
+    Dim i As Integer
+    For i = 0 To 20
+        If Sheet1.lstBx6NC.Selected(i) = True Then
+            Sheet1.comb6NC2.value = Sheet1.comb6NC2.value & " " & Sheet1.lstBx6NC.List(i) & ","
+        End If
+    Next
+End Sub
+
+
+Private Sub comb6NC2_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    If Sheet1.lstBx6NC.Visible = False Then
+        Sheet1.lstBx6NC.Visible = True
+        Sheet1.cmb6NC2OK.Visible = True
+    End If
 End Sub
 
 Private Sub helpMenu_Click()

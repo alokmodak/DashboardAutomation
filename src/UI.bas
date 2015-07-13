@@ -24,6 +24,13 @@ With Sheet1.combProductGroup
 .AddItem ("DXR-MobileDiagnost Opta-N")
 End With
 
+Sheet1.lstBx6NC.Visible = False
+Sheet1.cmb6NC2OK.Visible = False
+With Sheet1.lstBx6NC
+.AddItem "718094"
+.AddItem "718095"
+End With
+
 Sheet1.rdbLocalDrive.value = True
 Sheet1.processTime.value = 0
 Sheet1.processTime.Enabled = False
