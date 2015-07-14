@@ -27,8 +27,23 @@ End With
 Sheet1.lstBx6NC.Visible = False
 Sheet1.cmb6NC2OK.Visible = False
 With Sheet1.lstBx6NC
-.AddItem "718094"
-.AddItem "718095"
+.AddItem "718094" 'pulseraSysCode1
+.AddItem "718095" 'pulseraSysCode2
+.AddItem "718400" 'vectraSysCode
+.AddItem "718074" 'enduraSysCode1
+.AddItem "718075" 'enduraSysCode2
+.AddItem "718130" 'veradiusSysCode1
+.AddItem "718131" 'veradiusSysCode2
+.AddItem "718132" 'veradiusSysCode3
+.AddItem "712310" 'PDSysCode1
+.AddItem "704310" 'PDSysCode2
+.AddItem "714045" 'mamoSysCode1
+.AddItem "714047" 'mamoSysCode2
+.AddItem "714048" 'mamoSysCode3
+.AddItem "714247" 'mamoSysCode4
+.AddItem "714248" 'mamoSysCode5
+.AddItem "712301" 'optaSysCode1
+.AddItem "704301" 'optaSysCode2
 End With
 
 Sheet1.rdbLocalDrive.value = True

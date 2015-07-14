@@ -3,6 +3,8 @@ Option Explicit
 
 Public Sub Revenue_Graph_Creation()
 
+Dim NCNotPresent(20) As String
+Dim ncNt As Integer
 Dim inputFileNameContracts As String
 Dim outputFile As String
 Dim inputRevenue As String
@@ -21,7 +23,7 @@ Dim zcswVal As Boolean
 Dim countFstAddress As String
 Dim countLstAddress As String
 
-Dim PvtTbl As PivotTable
+Dim pvtTbl As PivotTable
 Dim wsData As Worksheet
 Dim rngData As Range
 Dim PvtTblCache As PivotCache
@@ -31,23 +33,48 @@ Dim lastColumn
 Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 
-
+On Error Resume Next
+ncNt = 1
 'Copy Data from SAP file
 inputRevenue = "EPV_2014YTD2015.xlsx"
 SharedDrive_Path inputRevenue
 Application.Workbooks.Open (sharedDrivePath)
 inputFileNameContracts = inputRevenue
-outputFile = Left(sharedDrivePath, InStrRev(sharedDrivePath, "\") - 1) & "\" & "ContractDynamics_Waterfall_Jul15.xlsx"
+Workbooks(inputFileNameContracts).Activate
+ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
+
+'verify selected system code values are present in SAP data
+Dim findSysCode As Integer
+For findSysCode = 0 To Sheet1.lstBx6NC.ListCount - 1
+    If Sheet1.lstBx6NC.Selected(findSysCode) = True Then
+        If Not ActiveSheet.UsedRange.Find(what:=Sheet1.lstBx6NC.List(findSysCode), Lookat:=xlWhole) = True Then
+            If Sheet1.chkAllGroups.value = True Then
+                NCNotPresent(ncNt) = "The System Code " & Sheet1.lstBx6NC.List(findSysCode) & " Not Available in SAP data!"
+                ncNt = ncNt + 1
+            Else
+                MsgBox "The System Code " & Sheet1.lstBx6NC.List(findSysCode) & " Not Available in SAP data!"
+                End
+            End If
+        End If
+    End If
+Next
+
+outputFile = Left(sharedDrivePath, InStrRev(sharedDrivePath, "\") - 1) & "\" & "ContractDynamics_Waterfall_" & Format(Now, "mmmyy") & ".xlsx"
 Application.AlertBeforeOverwriting = False
 Application.DisplayAlerts = False
-Application.Workbooks.Add
-ActiveWorkbook.SaveAs fileName:=outputFile, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
-outputFile = ActiveWorkbook.name
+If Dir(outputFile) = "" Then
+    Application.Workbooks.Add
+    ActiveWorkbook.SaveAs fileName:=outputFile, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
+    outputFile = ActiveWorkbook.name
+Else
+    Application.Workbooks.Open (outputFile)
+    outputFile = ActiveWorkbook.name
+End If
 
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole, after:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", Lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", Lookat:=xlWhole, after:=ActiveCell).Select
 fstAddForPivot = ActiveCell.Address
 ActiveCell.End(xlDown).Select
 ActiveCell.End(xlToRight).Select
@@ -57,7 +84,7 @@ Selection.Copy
 
 'Paste Copied data in new workbook
 Workbooks(outputFile).Activate
-ActiveWorkbook.Sheets(1).Activate
+Sheets.Add
 With ActiveSheet.Range("A:A")
     .PasteSpecial xlPasteValues
 End With
@@ -87,19 +114,19 @@ Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, Sour
 'create PivotTable in a new worksheet:
 Sheets.Add
 ActiveSheet.name = "Pivot"
-Set PvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion14)
+Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion14)
 
 'change style of the new PivotTable:
-PvtTbl.TableStyle2 = "PivotStyleMedium3"
+pvtTbl.TableStyle2 = "PivotStyleMedium3"
 
 'to view the PivotTable in Classic Pivot Table Layout, set InGridDropZones property to True, else set to False:
-PvtTbl.InGridDropZones = True
+pvtTbl.InGridDropZones = True
 
 'Default value of ManualUpdate property is False wherein a PivotTable report is recalculated automatically on each change. Turn off automatic updation of Pivot Table during the process of its creation to speed up code.
-PvtTbl.ManualUpdate = True
+pvtTbl.ManualUpdate = True
 
 Dim pvtTblName As String
-pvtTblName = PvtTbl.name
+pvtTblName = pvtTbl.name
 'Add row, column and page fields in a Pivot Table using the AddFields method:
     ActiveWorkbook.Sheets("Pivot").Select
     Cells(3, 1).Select
@@ -180,23 +207,60 @@ pvtTblName = PvtTbl.name
         False, False)
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] System Code Material (Material no of  R Eq)").ClearAllFilters
-    For Each pvtItem In ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "[C,S] System Code Material (Material no of  R Eq)").PivotItems
+
+'Loop for all 6NC's
+Dim selectAll As Integer
+For selectAll = 0 To Sheet1.lstBx6NC.ListCount - 1
+    If Sheet1.chkAllGroups.value = True Then
+        Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
+        Sheet1.lstBx6NC.value = ""
+        Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
+        Sheet1.lstBx6NC.Selected(selectAll) = True
+        Sheet1.comb6NC2.value = Sheet1.lstBx6NC.List(selectAll)
+           If Not Sheets("Data").UsedRange.Find(what:=Sheet1.lstBx6NC.List(selectAll), Lookat:=xlWhole) = True Then
+               GoTo NCNotPresent
+           End If
+               
+            'exit for for end of list
+            If Sheet1.lstBx6NC.List(selectAll) = "" Then
+            Exit For
+            End If
+    End If
     
-        If pvtItem = "718094" Or pvtItem = "718095" Then
-            pvtItem.Visible = True
-        Else
-            pvtItem.Visible = False
-        End If
-    Next
+    Dim filterSelectedValues As Integer
+    Dim secondLoop As Integer
+    secondLoop = 1
+    
+    ActiveWorkbook.Sheets("Pivot").Activate
+    If Sheet1.chkAllGroups.value = True Then
+        ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "[C,S] System Code Material (Material no of  R Eq)").CurrentPage = Sheet1.lstBx6NC.List(selectAll)
+    Else
+        For filterSelectedValues = 0 To Sheet1.lstBx6NC.ListCount - 1
+            If Sheet1.lstBx6NC.Selected(filterSelectedValues) Then
+                For Each pvtItem In ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+                    "[C,S] System Code Material (Material no of  R Eq)").PivotItems
+                    If Sheet1.lstBx6NC.List(filterSelectedValues) <> pvtItem Then
+                        If secondLoop < 2 Then
+                            pvtItem.Visible = False
+                        End If
+                    Else
+                        pvtItem.Visible = True
+                    End If
+                Next
+                secondLoop = secondLoop + 1 'secondloop value is added to avoid visible = false for all selected values
+            End If
+        Next
+    End If
 'turn on automatic update / calculation in the Pivot Table
-PvtTbl.ManualUpdate = False
+pvtTbl.ManualUpdate = False
 
 'Copy Pivot table values to new sheet
-ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", LookAt:=xlWhole).Select
+ActiveWorkbook.Sheets("Pivot").Activate
+ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", Lookat:=xlWhole).Select
 fstAddForPivot = ActiveCell.Address
+ActiveCell.End(xlToRight).Select
 ActiveCell.End(xlDown).Select
-ActiveCell.End(xlToLeft).Select
 lstAddForPivot = ActiveCell.Address
 ActiveSheet.Range(fstAddForPivot, lstAddForPivot).Select
 Selection.Copy
@@ -205,9 +269,10 @@ ActiveWorkbook.Sheets.Add
 With ActiveSheet.Cells(2, 36)
     .PasteSpecial xlPasteValues
 End With
-ActiveSheet.name = "Endura"
 
-ActiveWorkbook.Sheets("Endura").Activate
+ActiveSheet.name = "Contracts-Chart"
+
+ActiveWorkbook.Sheets("Contracts-Chart").Activate
 ActiveSheet.Cells(2, 36).Select
 Dim fstTableAdd As String
 fstTableAdd = ActiveCell.Address
@@ -770,6 +835,9 @@ For i = 1 To 37
     End If
 Next
 
+Dim lstMinValueRange As String 'to calculate minimum value in blanks for chart
+lstMinValueRange = ActiveCell.Offset(0, -1).Address
+
 'Creating chart
 Dim lstChartAdd As String
 Dim fstChartAdd As String
@@ -784,7 +852,7 @@ chartRange = Range(fstChartAdd, lstChartAdd).Address
     Range(fstChartAdd, lstChartAdd).Select
     ActiveSheet.Shapes.AddChart.Select
     ActiveChart.ChartType = xlColumnStacked
-    ActiveChart.SetSourceData Source:=Range("Endura!" & chartRange)
+    ActiveChart.SetSourceData Source:=Range("Contracts-Chart!" & chartRange)
     ActiveChart.SeriesCollection(2).Select
     ActiveChart.ClearToMatchStyle
     ActiveChart.ChartStyle = 18
@@ -802,8 +870,8 @@ chartRange = Range(fstChartAdd, lstChartAdd).Address
     ActiveChart.SetElement (msoElementDataLabelCenter)
     ActiveChart.SetElement (msoElementChartTitleCenteredOverlay)
     ActiveChart.ChartTitle.Select
-    ActiveChart.ChartTitle.Text = "Endura"
-    Selection.Format.TextFrame2.TextRange.Characters.Text = "Endura"
+    ActiveChart.ChartTitle.Text = Sheet1.comb6NC2.value
+    Selection.Format.TextFrame2.TextRange.Characters.Text = Sheet1.comb6NC2.value
     With Selection.Format.TextFrame2.TextRange.Characters(1, 6).ParagraphFormat
         .TextDirection = msoTextDirectionLeftToRight
         .Alignment = msoAlignCenter
@@ -832,8 +900,51 @@ chartRange = Range(fstChartAdd, lstChartAdd).Address
          .Top = 10    ' reposition
          .Left = 10   ' reposition
      End With
+     
+Dim rngMinValue As Range
+Dim minValue As Integer
+Dim maxValue As Integer
+Set rngMinValue = ActiveSheet.Range(fstBlanks, lstMinValueRange)
+minValue = Application.WorksheetFunction.Max(rngMinValue)
+maxValue = Application.WorksheetFunction.Max(rngMinValue)
+For Each cell In rngMinValue
+    If cell > 0 And cell < minValue Then
+        minValue = cell
+    End If
+Next
 
+ActiveChart.Axes(xlValue).Select
+ActiveChart.Axes(xlValue).MinimumScale = minValue + 10
+'deleting old chart
+Dim ws As Worksheet
+For Each ws In ActiveWorkbook.Sheets
+    If ws.name = Sheet1.comb6NC2.value Then
+        ws.delete
+    End If
+Next
+ActiveWorkbook.Sheets("Contracts-Chart").Activate
+ActiveSheet.name = Sheet1.comb6NC2.value
 ActiveSheet.Cells(1, 1).Select
+NCNotPresent:
+'exit loop if all groups option is not selected
+If Sheet1.chkAllGroups.value = False Then
+    Exit For
+End If
+Next
+
+Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
+Sheet1.lstBx6NC.value = ""
+Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
+Sheet1.comb6NC2.value = ""
 ActiveWorkbook.Sheets("Pivot").delete
 ActiveWorkbook.Sheets("Data").delete
+Application.Workbooks(outputFile).Save
+
+'loop for showing all NC's not present
+For ncNt = 1 To 20
+    If NCNotPresent(ncNt) <> "" Then
+        MsgBox NCNotPresent(ncNt)
+        NCNotPresent(ncNt) = ""
+    End If
+Next
 End Sub

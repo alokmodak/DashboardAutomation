@@ -38,7 +38,8 @@ startTime = Second(Now())
             Call CQ_Calculations
             
     ElseIf Sheet1.chkRevenue.value = True Then
-    'Call Revenue_Product_Group_Select
+    
+            Call Revenue_Graph_Creation
     
     ElseIf Sheet1.chkCTS.value = True Then
     
@@ -81,7 +82,7 @@ On Error Resume Next
     Dim i As Integer
     For i = 0 To 20
         If Sheet1.lstBx6NC.Selected(i) = True Then
-            Sheet1.comb6NC2.value = Sheet1.comb6NC2.value & " " & Sheet1.lstBx6NC.List(i) & ","
+            Sheet1.comb6NC2.value = Sheet1.comb6NC2.value & " " & Sheet1.lstBx6NC.List(i) & " "
         End If
     Next
 End Sub
@@ -112,6 +113,10 @@ Private Sub chkAllGroups_Click()
         Sheet1.comb6NC2.Enabled = False
         Sheet1.combProductGroup.value = ""
         Sheet1.combProductGroup.Enabled = False
+        Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
+        Sheet1.lstBx6NC.value = ""
+        Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
+        Sheet1.comb6NC2.value = ""
     Else
         Sheet1.comb6NC1.Enabled = True
         Sheet1.comb6NC2.Enabled = True
