@@ -107,14 +107,21 @@ lastColumn = wsData.Cells(1, Columns.Count).End(xlToLeft).Column
 Set rngData = wsData.Cells(1, 1).Resize(lastRow, lastColumn)
 rngDataForPivot = rngData.Address
 'for creating a Pivot Cache (version excel 2003), use the PivotCaches.Create Method. When version is not specified, default version of the PivotTable will be xlPivotTableVersion12:
+If Application.Version = "14.0" Then
 Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion14)
-
+Else
+'Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion15)
+End If
 'create a PivotTable report based on a Pivot Cache, using the PivotCache.CreatePivotTable method. TableDestination is mandatory to specify in this method.
 
 'create PivotTable in a new worksheet:
 Sheets.Add
 ActiveSheet.name = "Pivot"
+If Application.Version = "14.0" Then
 Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion14)
+Else
+'Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion15)
+End If
 
 'change style of the new PivotTable:
 pvtTbl.TableStyle2 = "PivotStyleMedium3"
@@ -525,7 +532,8 @@ For i = 1 To 36
             End If
         Next
         ActiveCell.value = totalVal
-            ActiveCell.Offset(-1, 0).value = Format(ActiveCell.Offset(-(topCelVal + 3), 0).value, "mmmyy")
+            ActiveCell.Offset(-1, 0).value = ActiveCell.Offset(-(topCelVal + 3), 0).value
+            ActiveCell.Offset(-1, 0).NumberFormat = "[$-409]mmm-yy;@"
             ActiveCell.Offset(0, 3).Select
             ActiveCell.Offset(-1, -1).value = ActiveCell.Offset(-(topCelVal + 3), -1).value
             ActiveCell.Offset(-1, -2).value = ActiveCell.Offset(-(topCelVal + 3), -2).value
@@ -914,7 +922,26 @@ For Each cell In rngMinValue
 Next
 
 ActiveChart.Axes(xlValue).Select
-ActiveChart.Axes(xlValue).MinimumScale = minValue + 10
+ActiveChart.Axes(xlValue).MinimumScale = minValue - 50
+
+'hilighting current month in chart
+ActiveChart.SeriesCollection(1).Points(73).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent1
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0
+        .Solid
+    End With
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.25
+        .Transparency = 0
+        .Solid
+    End With
+    
 'deleting old chart
 Dim ws As Worksheet
 For Each ws In ActiveWorkbook.Sheets
@@ -930,6 +957,12 @@ NCNotPresent:
 If Sheet1.chkAllGroups.value = False Then
     Exit For
 End If
+Next
+
+For Each ws In ActiveWorkbook.Sheets
+    If ws.name = "Contracts-Chart" Then
+        ws.delete
+    End If
 Next
 
 Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle

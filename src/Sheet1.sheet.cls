@@ -1,4 +1,5 @@
 Option Explicit
+Public exitLoop As Integer
 
 Private Sub chkDashboard_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
 Call showInfoTip(lblDashboard)
@@ -38,7 +39,9 @@ startTime = Second(Now())
             Call CQ_Calculations
             
     ElseIf Sheet1.chkRevenue.value = True Then
-    
+            
+            Call Revenue_Error
+            
             Call Revenue_Graph_Creation
     
     ElseIf Sheet1.chkCTS.value = True Then

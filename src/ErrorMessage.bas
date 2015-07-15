@@ -282,3 +282,12 @@ If Sheet1.rdbSharedDrive.value = True Then
 End If
 End Sub
     
+    Public Sub Revenue_Error()
+    'revenue value not selected
+    If Sheet1.chkRevenue.value = True Then
+        If Sheet1.comb6NC2.value = "" Then
+            MsgBox "Please select a System code to Generate Revenue Graph!"
+            End
+        End If
+    End If
+    End Sub

@@ -26,23 +26,32 @@ End With
 
 Sheet1.lstBx6NC.Visible = False
 Sheet1.cmb6NC2OK.Visible = False
+Sheet1.lstBx6NC.ColumnCount = 2
 With Sheet1.lstBx6NC
 .AddItem "718094" 'pulseraSysCode1
+.List(.ListCount - 1, 1) = "Pulsera"
 .AddItem "718095" 'pulseraSysCode2
+
 .AddItem "718400" 'vectraSysCode
+.List(.ListCount - 1, 1) = "Vectra"
 .AddItem "718074" 'enduraSysCode1
+.List(.ListCount - 1, 1) = "Endura"
 .AddItem "718075" 'enduraSysCode2
 .AddItem "718130" 'veradiusSysCode1
+.List(.ListCount - 1, 1) = "Veradius"
 .AddItem "718131" 'veradiusSysCode2
 .AddItem "718132" 'veradiusSysCode3
 .AddItem "712310" 'PDSysCode1
+.List(.ListCount - 1, 1) = "Primary Diagnost"
 .AddItem "704310" 'PDSysCode2
 .AddItem "714045" 'mamoSysCode1
+.List(.ListCount - 1, 1) = "MicroDose Mammography"
 .AddItem "714047" 'mamoSysCode2
 .AddItem "714048" 'mamoSysCode3
 .AddItem "714247" 'mamoSysCode4
 .AddItem "714248" 'mamoSysCode5
 .AddItem "712301" 'optaSysCode1
+.List(.ListCount - 1, 1) = "Opta"
 .AddItem "704301" 'optaSysCode2
 End With
 
@@ -144,4 +153,6 @@ End Select
 Sheet1.combYear.value = valYear
 
 End Sub
+
+
 
