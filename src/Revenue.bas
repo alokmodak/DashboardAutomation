@@ -370,7 +370,7 @@ If ActiveCell.value <> "" Then
             If duration <= 12 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).value = "0To1Year"
             ElseIf 13 >= duration <= 36 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "2To3Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "1To3Years"
             ElseIf 37 >= duration <= 60 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).value = "3To5Years"
             ElseIf duration >= 61 Then
@@ -392,7 +392,7 @@ If ActiveCell.value <> "" Then
         j = j + 1
         Loop
         If zcswVal = True Then
-            ActiveCell.Offset(0, monthCellForTable - 2).value = "AfterWarranty"
+            ActiveCell.Offset(0, monthCellForTable - 2).value = "Warranty"
         End If
     End If
 
@@ -404,7 +404,7 @@ End If
             If duration <= 12 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).value = "0To1Year"
             ElseIf 13 >= duration <= 36 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "2To3Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "1To3Years"
             ElseIf 37 >= duration <= 60 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).value = "3To5Years"
             ElseIf duration >= 61 Then
@@ -425,7 +425,7 @@ End If
                 j = j + 1
             Loop
             If zcswVal = True Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "AfterWarranty"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "Warranty"
             End If
             End If
     End If
@@ -437,7 +437,7 @@ If i = 2 And ActiveCell.Offset(0, monthCellForTable).value = "Yes" Then
    If duration <= 12 Then
      ActiveCell.Offset(0, monthCellForTable - 1).value = "0To1Year"
    ElseIf 13 >= duration <= 36 Then
-     ActiveCell.Offset(0, monthCellForTable - 1).value = "2To3Years"
+     ActiveCell.Offset(0, monthCellForTable - 1).value = "1To3Years"
    ElseIf 37 >= duration <= 60 Then
      ActiveCell.Offset(0, monthCellForTable - 1).value = "3To5Years"
    ElseIf duration >= 61 Then
@@ -458,7 +458,7 @@ Do Until ActiveCell.Offset(j, 0) <> ""
                 j = j + 1
                 Loop
                 If zcswVal = True Then
-                    ActiveCell.Offset(0, monthCellForTable - 1).value = "AfterWarranty"
+                    ActiveCell.Offset(0, monthCellForTable - 1).value = "Warranty"
                 End If
         End If
 
@@ -470,7 +470,7 @@ End If
                     If duration <= 12 Then
                         ActiveCell.Offset(0, monthCellForTable - 1).value = "0To1Year"
                     ElseIf 13 >= duration <= 36 Then
-                        ActiveCell.Offset(0, monthCellForTable - 1).value = "2To3Years"
+                        ActiveCell.Offset(0, monthCellForTable - 1).value = "1To3Years"
                     ElseIf 37 >= duration <= 60 Then
                         ActiveCell.Offset(0, monthCellForTable - 1).value = "3To5Years"
                     ElseIf duration >= 61 Then
@@ -492,7 +492,7 @@ End If
                             j = j + 1
                             Loop
                             If zcswVal = True Then
-                                ActiveCell.Offset(0, monthCellForTable - 1).value = "AfterWarranty"
+                                ActiveCell.Offset(0, monthCellForTable - 1).value = "Warranty"
                             End If
                     End If
                 End If
@@ -506,35 +506,56 @@ ActiveCell.Offset(1, 0).Select
 Next
 
 'Calculating total numbers for dropped and up
-
+Dim celNumber As Integer
+celNumber = 0
 ActiveCell.Offset(3, 3).Select
-ActiveCell.value = "Ends"
+ActiveCell.value = "ZCSS"
 ActiveCell.Offset(2, 0).value = "0To1Year"
-ActiveCell.Offset(3, 0).value = "2To3Years"
+ActiveCell.Offset(3, 0).value = "1To3Years"
 ActiveCell.Offset(4, 0).value = "3To5Years"
 ActiveCell.Offset(5, 0).value = "MoreThan5Years"
-ActiveCell.Offset(6, 0).value = "AfterWarranty"
+ActiveCell.Offset(6, 0).value = "Warranty"
 ActiveCell.Offset(7, 0).value = "EOL"
+ActiveCell.Offset(8, 0).value = "ZCSP"
+ActiveCell.Offset(9, 0).value = "ZCSW"
 ActiveCell.Offset(1, 0).value = "Blanks"
 
 Dim fstTotalCel As String
+Dim contractCel As Integer
+contractCel = 1
 fstTotalCel = ActiveCell.Address
 ActiveCell.Offset(0, 1).Select
 Dim totalVal As Integer
+Dim totalValSP As Integer
+Dim totalValSW As Integer
+
 'loop for counting totals
 For i = 1 To 36
         countLstAddress = ActiveCell.Offset(-3, 0).Address
         countFstAddress = ActiveCell.Offset(-(topCelVal + 2), 0).Address
         totalVal = 0
+        totalValSP = 0
+        totalValSW = 0
+        ActiveSheet.Range(countFstAddress).Select
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "Yes" Then
+            If ActiveCell.value = "Yes" And ActiveCell.Offset(0, -contractCel).value = "ZCSS" Then
              totalVal = totalVal + 1
+            ElseIf ActiveCell.value = "Yes" And ActiveCell.Offset(0, -contractCel).value = "ZCSP" Then
+             totalValSP = totalValSP + 1
+            ElseIf ActiveCell.value = "Yes" And ActiveCell.Offset(0, -contractCel).value = "ZCSW" Then
+             totalValSW = totalValSW + 1
             End If
+            ActiveCell.Offset(1, 0).Select
         Next
+        ActiveSheet.Range(fstTotalCel).Select
+        ActiveCell.Offset(0, contractCel).Select
         ActiveCell.value = totalVal
+        ActiveCell.Offset(8, 0).value = totalValSP
+        ActiveCell.Offset(9, 0).value = totalValSW
             ActiveCell.Offset(-1, 0).value = ActiveCell.Offset(-(topCelVal + 3), 0).value
             ActiveCell.Offset(-1, 0).NumberFormat = "[$-409]mmm-yy;@"
             ActiveCell.Offset(0, 3).Select
+            contractCel = contractCel + 3
             ActiveCell.Offset(-1, -1).value = ActiveCell.Offset(-(topCelVal + 3), -1).value
             ActiveCell.Offset(-1, -2).value = ActiveCell.Offset(-(topCelVal + 3), -2).value
 Next
@@ -594,7 +615,7 @@ For i = 1 To 37
         countFstAddress = ActiveCell.Offset(-(topCelVal + 5), 1).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "2To3Years" Then
+            If cell.value = "1To3Years" Then
              totalVal = totalVal + 1
             End If
         Next
@@ -614,7 +635,7 @@ For i = 1 To 37
         countFstAddress = ActiveCell.Offset(-(topCelVal + 5), 2).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "2To3Years" Then
+            If cell.value = "1To3Years" Then
              totalVal = totalVal + 1
             End If
         Next
@@ -726,7 +747,7 @@ For i = 1 To 37
         countFstAddress = ActiveCell.Offset(-(topCelVal + 8), 1).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "AfterWarranty" Then
+            If cell.value = "Warranty" Then
              totalVal = totalVal + 1
             End If
         Next
@@ -746,7 +767,7 @@ For i = 1 To 37
         countFstAddress = ActiveCell.Offset(-(topCelVal + 8), 2).Address
         totalVal = 0
         For Each cell In Range(countFstAddress, countLstAddress)
-            If cell.value = "AfterWarranty" Then
+            If cell.value = "Warranty" Then
              totalVal = totalVal + 1
             End If
         Next
@@ -816,7 +837,7 @@ For i = 1 To 37
         For Each cell In Range(countFstAddress, countLstAddress)
             totalVal = totalVal + cell.value
         Next
-        ActiveCell.Offset(0, 1).value = ActiveCell.Offset(-1, 0).value - totalVal
+        ActiveCell.Offset(0, 1).value = (ActiveCell.Offset(-1, 0).value + ActiveCell.Offset(7, 0).value + ActiveCell.Offset(8, 0).value) - totalVal
     End If
     If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
@@ -834,7 +855,7 @@ For i = 1 To 37
         For Each cell In Range(countFstAddress, countLstAddress)
             totalVal = totalVal + cell.value
         Next
-        ActiveCell.Offset(0, 2).value = ActiveCell.Offset(-1, 3).value - totalVal
+        ActiveCell.Offset(0, 2).value = (ActiveCell.Offset(-1, 3).value + ActiveCell.Offset(7, 3).value + ActiveCell.Offset(8, 3).value) - totalVal
     End If
     If i <= 1 Then
         ActiveCell.Offset(0, 1).Select
@@ -851,7 +872,9 @@ Dim lstChartAdd As String
 Dim fstChartAdd As String
 Dim chartRange As String
 ActiveCell.Offset(0, -1).Select
-lstChartAdd = ActiveCell.End(xlDown).Address
+ActiveCell.End(xlDown).Select
+ActiveCell.Offset(2, 0).Select
+lstChartAdd = ActiveCell.Address
 ActiveSheet.Range(fstTotalCel).Select
 ActiveCell.Offset(-1, 0).Select
 fstChartAdd = ActiveCell.Address
@@ -908,7 +931,41 @@ chartRange = Range(fstChartAdd, lstChartAdd).Address
          .Top = 10    ' reposition
          .Left = 10   ' reposition
      End With
-     
+    ActiveChart.SeriesCollection(9).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent3
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.5
+        .Solid
+    End With
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorText2
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.400000006
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.SeriesCollection(10).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorText2
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.400000006
+        .Solid
+    End With
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorText2
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.6000000238
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.Legend.LegendEntries(9).Select
+    Selection.delete
+    
 Dim rngMinValue As Range
 Dim minValue As Integer
 Dim maxValue As Integer
@@ -928,16 +985,7 @@ ActiveChart.Axes(xlValue).MinimumScale = minValue - 50
 ActiveChart.SeriesCollection(1).Points(73).Select
     With Selection.Format.Fill
         .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent1
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0
-        .Solid
-    End With
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = -0.25
+        .ForeColor.RGB = RGB(112, 48, 160)
         .Transparency = 0
         .Solid
     End With
