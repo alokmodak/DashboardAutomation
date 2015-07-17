@@ -24,12 +24,26 @@ With Sheet1.combProductGroup
 .AddItem ("DXR-MobileDiagnost Opta-N")
 End With
 
+Sheet1.comb6NC1.Clear
+With Sheet1.comb6NC1
+.AddItem ("IXR-MOS Endura-Y")
+.AddItem ("IXR-MOS Pulsera-Y")
+.AddItem ("IXR-MOS BV Vectra-N")
+.AddItem ("IXR-MOS Veradius-Y")
+.AddItem ("IXR-CV Allura FC-Y")
+.AddItem ("IXR-MOS Libra-N")
+.AddItem ("DXR-PrimaryDiagnost Digital-N")
+.AddItem ("DXR-MicroDose Mammography-Y")
+.AddItem ("DXR-MobileDiagnost Opta-N")
+End With
+
 Sheet1.rdbLocalDrive.value = True
 Sheet1.processTime.value = 0
 Sheet1.processTime.Enabled = False
 Sheet1.minProcessTime.Enabled = False
 Sheet1.combProductGroup.value = "Select Product Group"
-Sheet1.chkCTS.Enabled = False
+Sheet1.comb6NC1.value = "Select Product Group"
+
 Sheet1.chkRevenue.Enabled = False
 Sheet1.chkAllGroups.value = False
 Sheet1.minProcessTime.value = 0
