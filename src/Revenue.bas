@@ -212,6 +212,10 @@ pvtTblName = pvtTbl.name
     ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Contract Type"). _
         Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
         False, False)
+    
+    
+'    ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "[C,S] Company Code").CurrentPage = "US90"
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] System Code Material (Material no of  R Eq)").ClearAllFilters
 
@@ -966,6 +970,65 @@ chartRange = Range(fstChartAdd, lstChartAdd).Address
     ActiveChart.Legend.LegendEntries(9).Select
     Selection.delete
     
+Dim c As Chart
+Dim s As Series
+Dim iPoint As Long
+Dim nPoint As Long
+Dim colorCounter As Integer
+colorCounter = 1
+
+Set c = ActiveChart
+For i = 3 To 8
+Set s = c.SeriesCollection(i)
+s.Select
+With Selection.Format.Fill
+.Visible = msoTrue
+If i = 8 Then
+.ForeColor.RGB = RGB(220, 100, 100)
+ElseIf i = 7 Then
+.ForeColor.RGB = RGB(200, 100, 100)
+ElseIf i = 6 Then
+.ForeColor.RGB = RGB(170, 70, 70)
+ElseIf i = 5 Then
+.ForeColor.RGB = RGB(150, 50, 50)
+ElseIf i = 4 Then
+.ForeColor.RGB = RGB(120, 30, 30)
+ElseIf i = 3 Then
+.ForeColor.RGB = RGB(100, 20, 20)
+End If
+.BackColor.ObjectThemeColor = msoThemeColorAccent2
+.BackColor.TintAndShade = 0
+.BackColor.Brightness = 0.4
+End With
+
+nPoint = s.Points.Count
+For iPoint = 1 To nPoint
+If InStr(1, s.XValues(iPoint), "Joined") Then
+s.Points(iPoint).Select
+With Selection.Format.Fill
+.Visible = msoTrue
+.ForeColor.ObjectThemeColor = msoThemeColorAccent3
+.ForeColor.TintAndShade = 0
+If colorCounter = 4 Then
+.ForeColor.Brightness = -0.25
+ElseIf colorCounter = 3 Then
+.ForeColor.Brightness = -0.4
+ElseIf colorCounter = 2 Then
+.ForeColor.Brightness = -0.6
+ElseIf colorCounter = 1 Then
+.ForeColor.Brightness = -0.8
+End If
+.Transparency = 0
+.Solid
+End With
+End If
+colorCounter = i
+If colorCounter > 4 Then
+colorCounter = colorCounter - 1
+End If
+Next iPoint
+Next i
+
 Dim rngMinValue As Range
 Dim minValue As Integer
 Dim maxValue As Integer
@@ -1029,3 +1092,4 @@ For ncNt = 1 To 20
     End If
 Next
 End Sub
+
