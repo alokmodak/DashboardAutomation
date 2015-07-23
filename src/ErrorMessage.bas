@@ -204,20 +204,20 @@ If Sheet1.rdbSharedDrive.value = True Then
     End If
 
     'checking Install Hrs file exists
-    installFileOpen = "Install SPAN P95_" & fstMonthChk & ".xlsx"
+    installFileOpen = "Install SPAN P95.xlsx"
     SharedDrive_Path installFileOpen
     
     If fileExists = False Then
-        MsgBox "Input File with name " & Chr(34) & "Install SPAN P95_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
+        MsgBox "Input File with name " & Chr(34) & "Install SPAN P95.xlsx" & Chr(34) & " doesn't exist!"
         End
     End If
 
     'Checking for FCO OP review file.xlsx
-    fcoFileOpen = "FCO OP review file_" & fstMonthChk & ".xlsx"
+    fcoFileOpen = "FCO OP review file.xlsx"
     SharedDrive_Path fcoFileOpen
     
     If fileExists = False Then
-        MsgBox "Input File with name " & Chr(34) & "FCO OP review file_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
+        MsgBox "Input File with name " & Chr(34) & "FCO OP review file.xlsx" & Chr(34) & " doesn't exist!"
         End
     End If
     
@@ -282,12 +282,3 @@ If Sheet1.rdbSharedDrive.value = True Then
 End If
 End Sub
     
-    Public Sub Revenue_Error()
-    'revenue value not selected
-    If Sheet1.chkRevenue.value = True Then
-        If Sheet1.comb6NC2.value = "" Then
-            MsgBox "Please select a System code to Generate Revenue Graph!"
-            End
-        End If
-    End If
-    End Sub

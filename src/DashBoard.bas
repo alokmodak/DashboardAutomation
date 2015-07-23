@@ -76,16 +76,38 @@ yrSelectedFirst = Sheet1.combYear.value
 'Open service scorecard file and install file
 
 inputItem = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Service Scorecard F 6.1_" & fstMonthChk & "*.xls*") 'input file path
-installFlName = ThisWorkbook.Path & "\" & "Install SPAN P95_" & fstMonthChk & ".xlsx"
-installFileOpen = "Install SPAN P95_" & fstMonthChk & ".xlsx"
+'skipping if file not present
+If Sheet1.rdbLocalDrive.value = True Then
+    If Dir(ThisWorkbook.Path & "\" & "Service Scorecard F 6.1_" & fstMonthChk & "*.xls*") = "" Then
+    Exit Sub
+    End If
+End If
+
+installFlName = ThisWorkbook.Path & "\" & "Install SPAN P95.xlsx"
+'skipping if file not present
+If Sheet1.rdbLocalDrive.value = True Then
+    If Dir(ThisWorkbook.Path & "\" & "Install SPAN P95.xlsx") = "" Then
+    Exit Sub
+    End If
+End If
+
+installFileOpen = "Install SPAN P95.xlsx"
 inputFlName = "Service Scorecard F 6.1_" & fstMonthChk & ".xlsm"
 'inputFlName = Dir(ThisWorkbook.Path & "\" & "Service Scorecard F 6.1_" & fstMonthChk & "*.xls*") 'Input file name declared
     
     'for Shared drive define path
     If Sheet1.rdbSharedDrive.value = True Then
         SharedDrive_Path inputFlName
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> inputFlName Then
+            Exit Sub
+        End If
         inputItem = sharedDrivePath
         SharedDrive_Path installFileOpen
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> installFileOpen Then
+            Exit Sub
+        End If
         installFlName = sharedDrivePath
     End If
     
@@ -852,9 +874,20 @@ fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
 outputFl = outputFileGlobal
 inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "KPI dashboard_Innovation_" & fstMonthChk & "*.xl*")
 
+'Skipping if inout file not present
+If Sheet1.rdbLocalDrive.value = True Then
+    If Dir(ThisWorkbook.Path & "\" & "KPI dashboard_Innovation_" & fstMonthChk & "*.xl*") = "" Then
+        Exit Sub
+    End If
+End If
+    
     'for Shared drive define path
     If Sheet1.rdbSharedDrive.value = True Then
         SharedDrive_Path ("KPI dashboard_Innovation_" & fstMonthChk & ".xlsx")
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "KPI dashboard_Innovation_" & fstMonthChk & ".xlsx" Then
+            Exit Sub
+        End If
         inputFl = sharedDrivePath
     End If
 
@@ -1247,6 +1280,10 @@ outputFl = outputFileGlobal
  'for Shared drive define path
     If Sheet1.rdbSharedDrive.value = True Then
         SharedDrive_Path ("Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx")
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx" Then
+            Exit Sub
+        End If
         inputFl = sharedDrivePath
         SharedDrive_Path ("Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx")
         escInputFl = sharedDrivePath
@@ -2474,15 +2511,20 @@ yrSelectedFirst = Sheet1.combYear.value
 outputFl = outputFileGlobal
 
     If Sheet1.rdbSharedDrive.value = True Then
-        SharedDrive_Path ("FCO OP review file_" & fstMonthChk & ".xlsx")
+        SharedDrive_Path ("FCO OP review file.xlsx")
         inputFl = sharedDrivePath
     Else
-    inputFl = ThisWorkbook.Path & "\" & "FCO OP review file_" & fstMonthChk & ".xlsx"
+    inputFl = ThisWorkbook.Path & "\" & "FCO OP review file.xlsx"
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "FCO OP review file.xlsx" Then
+            Exit Sub
+        End If
+
     End If
     
 Application.Workbooks.Open (inputFl)
 
-inputFl = "FCO OP review file_" & fstMonthChk & ".xlsx"
+inputFl = "FCO OP review file.xlsx"
 
 fcoProductGroup = Sheet1.combProductGroup.value
 
@@ -2918,9 +2960,19 @@ yrSelectedFirst = Sheet1.combYear.value
 
 outputFl = outputFileGlobal
 inputFlOpen = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & Sheet1.combYear.value & " " & "*Installation spend L2-report*" & "*.xls*")
+'skipping if input file not present
+If Sheet1.rdbLocalDrive.value = True Then
+    If Dir(ThisWorkbook.Path & "\" & Sheet1.combYear.value & " " & "*Installation spend L2-report*" & "*.xls*") = "" Then
+        Exit Sub
+    End If
+End If
 
     If Sheet1.rdbSharedDrive.value = True Then
         SharedDrive_Path (Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb")
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb" Then
+            Exit Sub
+        End If
         inputFlOpen = sharedDrivePath
     End If
 
@@ -3182,12 +3234,26 @@ outputFl = outputFileGlobal
 inputFlOpenIGT = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*IGT.xls*")
 inputFlOpenDI = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*DI.xls*")
 
+If Sheet1.rdbLocalDrive.value = True Then
+    If Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*IGT.xls*") = "" Or Dir(ThisWorkbook.Path & "\" & "*Warranty Spend Analysis*" & "*DI.xls*") = "" Then
+        Exit Sub
+    End If
+End If
+
     If Sheet1.rdbSharedDrive.value = True Then
         warrantyCostFile1 = "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb"
         warrantyCostFile2 = "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb"
         SharedDrive_Path warrantyCostFile1
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> warrantyCostFile1 Then
+            Exit Sub
+        End If
         inputFlOpenIGT = sharedDrivePath
         SharedDrive_Path warrantyCostFile2
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> warrantyCostFile2 Then
+            Exit Sub
+        End If
         inputFlOpenDI = sharedDrivePath
     End If
 
@@ -3758,8 +3824,18 @@ yrSelectedFirst = Sheet1.combYear.value
 outputFl = outputFileGlobal
 inputFl = ThisWorkbook.Path & "\" & "Service_Information_Quality_Completion.xlsx"
 
+If Sheet1.rdbLocalDrive.value = True Then
+    If Dir(ThisWorkbook.Path & "\" & "Service_Information_Quality_Completion.xlsx") = "" Then
+        Exit Sub
+    End If
+End If
+
 If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path "Service_Information_Quality_Completion.xlsx"
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "Service_Information_Quality_Completion.xlsx" Then
+            Exit Sub
+        End If
     inputFl = sharedDrivePath
 End If
 
@@ -3955,8 +4031,19 @@ yrSelectedFirst = Sheet1.combYear.value
 outputFl = outputFileGlobal
 inputFl = ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx"
 
+'Skipping if input file not present
+If Sheet1.rdbLocalDrive.value = True Then
+    If Dir(ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx") = "" Then
+        Exit Sub
+    End If
+End If
+
 If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path "CQ_Data_SPM.xlsx"
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "CQ_Data_SPM.xlsx" Then
+            Exit Sub
+        End If
     inputFl = sharedDrivePath
 End If
 

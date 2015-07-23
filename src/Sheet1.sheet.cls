@@ -20,7 +20,7 @@ startTime = Second(Now())
 
     If Sheet1.chkDashboard.value = True Then
     
-            Call Error_Messagebox
+            'Call Error_Messagebox
             
             Call Generate_Dashboard_Output 'Generating output file
             
@@ -39,8 +39,6 @@ startTime = Second(Now())
             Call CQ_Calculations
             
     ElseIf Sheet1.chkRevenue.value = True Then
-            
-            Call Revenue_Error
             
             Call Revenue_Graph_Creation
     
