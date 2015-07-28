@@ -10,7 +10,6 @@ On Error Resume Next
 Sheet1.rdbLocalDrive.value = 0
 Sheet1.rdbSharedDrive.value = 0
 
-
 Sheet1.combProductGroup.Clear
 With Sheet1.combProductGroup
 .AddItem ("IXR-MOS Endura-Y")
@@ -24,13 +23,53 @@ With Sheet1.combProductGroup
 .AddItem ("DXR-MobileDiagnost Opta-N")
 End With
 
+Sheet1.lstBx6NC.Visible = False
+Sheet1.cmb6NC2OK.Visible = False
+Sheet1.lstBx6NC.ColumnCount = 2
+With Sheet1.lstBx6NC
+.AddItem "718094" 'pulseraSysCode1
+.List(.ListCount - 1, 1) = "Pulsera"
+.AddItem "718095" 'pulseraSysCode2
+.List(.ListCount - 1, 1) = "Pulsera"
+.AddItem "718400" 'vectraSysCode
+.List(.ListCount - 1, 1) = "Vectra"
+.AddItem "718074" 'enduraSysCode1
+.List(.ListCount - 1, 1) = "Endura"
+.AddItem "718075" 'enduraSysCode2
+.List(.ListCount - 1, 1) = "Endura"
+.AddItem "718130" 'veradiusSysCode1
+.List(.ListCount - 1, 1) = "Veradius"
+.AddItem "718131" 'veradiusSysCode2
+.List(.ListCount - 1, 1) = "Veradius"
+.AddItem "718132" 'veradiusSysCode3
+.List(.ListCount - 1, 1) = "Veradius"
+.AddItem "712310" 'PDSysCode1
+.List(.ListCount - 1, 1) = "Primary Diagnost"
+.AddItem "704310" 'PDSysCode2
+.List(.ListCount - 1, 1) = "Primary Diagnost"
+.AddItem "714045" 'mamoSysCode1
+.List(.ListCount - 1, 1) = "MicroDose Mammography"
+.AddItem "714047" 'mamoSysCode2
+.List(.ListCount - 1, 1) = "MicroDose Mammography"
+.AddItem "714048" 'mamoSysCode3
+.List(.ListCount - 1, 1) = "MicroDose Mammography"
+.AddItem "714247" 'mamoSysCode4
+.List(.ListCount - 1, 1) = "MicroDose Mammography"
+.AddItem "714248" 'mamoSysCode5
+.List(.ListCount - 1, 1) = "MicroDose Mammography"
+.AddItem "712301" 'optaSysCode1
+.List(.ListCount - 1, 1) = "Opta"
+.AddItem "704301" 'optaSysCode2
+.List(.ListCount - 1, 1) = "Opta"
+End With
+
 Sheet1.rdbLocalDrive.value = True
 Sheet1.processTime.value = 0
 Sheet1.processTime.Enabled = False
 Sheet1.minProcessTime.Enabled = False
 Sheet1.combProductGroup.value = "Select Product Group"
 Sheet1.chkCTS.Enabled = False
-Sheet1.chkRevenue.Enabled = False
+Sheet1.chkRevenue.Enabled = True
 Sheet1.chkAllGroups.value = False
 Sheet1.minProcessTime.value = 0
 Sheet1.processTime.value = 0
@@ -122,4 +161,6 @@ End Select
 Sheet1.combYear.value = valYear
 
 End Sub
+
+
 

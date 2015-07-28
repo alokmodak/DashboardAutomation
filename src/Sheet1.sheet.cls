@@ -1,6 +1,7 @@
 Option Explicit
+Public exitLoop As Integer
 
-Private Sub chkDashboard_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+Private Sub chkDashboard_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
 Call showInfoTip(lblDashboard)
 End Sub
 
@@ -19,7 +20,7 @@ startTime = Second(Now())
 
     If Sheet1.chkDashboard.value = True Then
     
-            Call Error_Messagebox
+            'Call Error_Messagebox
             
             Call Generate_Dashboard_Output 'Generating output file
             
@@ -38,7 +39,8 @@ startTime = Second(Now())
             Call CQ_Calculations
             
     ElseIf Sheet1.chkRevenue.value = True Then
-    'Call Revenue_Product_Group_Select
+            
+            Call Revenue_Graph_Creation
     
     ElseIf Sheet1.chkCTS.value = True Then
     
@@ -72,6 +74,28 @@ Private Sub cmbDecreaseMonth_Click()
 Call Decrease_Year_And_Month_Value
 End Sub
 
+
+Private Sub cmb6NC2OK_Click()
+On Error Resume Next
+    Sheet1.lstBx6NC.Visible = False
+    Sheet1.cmb6NC2OK.Visible = False
+    Sheet1.comb6NC2.value = ""
+    Dim i As Integer
+    For i = 0 To 20
+        If Sheet1.lstBx6NC.Selected(i) = True Then
+            Sheet1.comb6NC2.value = Sheet1.comb6NC2.value & " " & Sheet1.lstBx6NC.List(i) & " "
+        End If
+    Next
+End Sub
+
+
+Private Sub comb6NC2_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    If Sheet1.lstBx6NC.Visible = False Then
+        Sheet1.lstBx6NC.Visible = True
+        Sheet1.cmb6NC2OK.Visible = True
+    End If
+End Sub
+
 Private Sub helpMenu_Click()
 On Error Resume Next
 Dim wordFl As Object
@@ -90,6 +114,10 @@ Private Sub chkAllGroups_Click()
         Sheet1.comb6NC2.Enabled = False
         Sheet1.combProductGroup.value = ""
         Sheet1.combProductGroup.Enabled = False
+        Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
+        Sheet1.lstBx6NC.value = ""
+        Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
+        Sheet1.comb6NC2.value = ""
     Else
         Sheet1.comb6NC1.Enabled = True
         Sheet1.comb6NC2.Enabled = True

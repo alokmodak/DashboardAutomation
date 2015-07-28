@@ -204,20 +204,20 @@ If Sheet1.rdbSharedDrive.value = True Then
     End If
 
     'checking Install Hrs file exists
-    installFileOpen = "Install SPAN P95_" & fstMonthChk & ".xlsx"
+    installFileOpen = "Install SPAN P95.xlsx"
     SharedDrive_Path installFileOpen
     
     If fileExists = False Then
-        MsgBox "Input File with name " & Chr(34) & "Install SPAN P95_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
+        MsgBox "Input File with name " & Chr(34) & "Install SPAN P95.xlsx" & Chr(34) & " doesn't exist!"
         End
     End If
 
     'Checking for FCO OP review file.xlsx
-    fcoFileOpen = "FCO OP review file_" & fstMonthChk & ".xlsx"
+    fcoFileOpen = "FCO OP review file.xlsx"
     SharedDrive_Path fcoFileOpen
     
     If fileExists = False Then
-        MsgBox "Input File with name " & Chr(34) & "FCO OP review file_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
+        MsgBox "Input File with name " & Chr(34) & "FCO OP review file.xlsx" & Chr(34) & " doesn't exist!"
         End
     End If
     
