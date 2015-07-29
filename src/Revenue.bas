@@ -111,13 +111,13 @@ Set rngData = wsData.Cells(1, 1).Resize(lastRow, lastColumn)
 rngDataForPivot = rngData.Address
 'for creating a Pivot Cache (version excel 2003), use the PivotCaches.Create Method. When version is not specified, default version of the PivotTable will be xlPivotTableVersion12:
 
-Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion15)
+Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion14)
 'create a PivotTable report based on a Pivot Cache, using the PivotCache.CreatePivotTable method. TableDestination is mandatory to specify in this method.
 
 'create PivotTable in a new worksheet:
 Sheets.Add
 ActiveSheet.name = "Pivot"
-Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion15)
+Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion14)
 
 'change style of the new PivotTable:
 pvtTbl.TableStyle2 = "PivotStyleMedium3"
@@ -539,9 +539,9 @@ tempB = Application.ConvertFormula(Formula:=lstPivoAdd, FromReferenceStyle:=xlA1
     Set pivoWs = ActiveSheet
     
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-        rngData2, Version:=xlPivotTableVersion15). _
+        rngData2, Version:=xlPivotTableVersion14). _
         CreatePivotTable TableDestination:="Pivot!R30C1", TableName:="PivotTable1" _
-        , DefaultVersion:=xlPivotTableVersion15
+        , DefaultVersion:=xlPivotTableVersion14
         
 ActiveSheet.Cells(30, 1).Select
 Dim pvtName As String

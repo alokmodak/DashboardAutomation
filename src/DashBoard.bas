@@ -100,6 +100,8 @@ End If
 
 installFlName = ThisWorkbook.Path & "\" & "Install SPAN P95.xlsx"
 'skipping if file not present
+Dim insFileNotPresent As Boolean
+insFileNotPresent = False
 If Sheet1.rdbLocalDrive.value = True Then
     If Dir(ThisWorkbook.Path & "\" & "Install SPAN P95.xlsx") = "" Then
     Exit Sub
@@ -385,7 +387,11 @@ End If
 Loop
 flag = flag + 1
 Next
-        
+    
+If insFileNotPresent = True Then
+    GoTo insFileNt
+End If
+    
 'Install hrs process
 inputFile = installFileOpen
 
@@ -570,6 +576,7 @@ If ActiveCell.End(xlUp).value = "YTD" Then
         ActiveCell.value = YTDinstallPasteValue
 End If
 
+insFileNt:
 'clear values fleched from input file
 ActiveSheet.Cells(200, 27).Select
 ActiveSheet.Range(ActiveCell.Address, ActiveCell.Offset(0, 1).End(xlDown).Address).Clear
@@ -2512,13 +2519,16 @@ outputFl = outputFileGlobal
     If Sheet1.rdbSharedDrive.value = True Then
         SharedDrive_Path ("FCO OP review file.xlsx")
         inputFl = sharedDrivePath
-    Else
-    inputFl = ThisWorkbook.Path & "\" & "FCO OP review file.xlsx"
         'if file is not present in shared drive then exit
         If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "FCO OP review file.xlsx" Then
             Exit Sub
         End If
-
+    Else
+    inputFl = Dir(ThisWorkbook.Path & "\" & "FCO OP review file.xlsx")
+    If inputFl = "" Then
+        Exit Sub
+    End If
+    inputFl = ThisWorkbook.Path & "\" & "FCO OP review file.xlsx"
     End If
     
 Application.Workbooks.Open (inputFl)
@@ -3414,15 +3424,15 @@ i = 0
 Do Until ActiveCell.value = ""
 
     If ActiveCell.End(xlToLeft).value = mamoSysCode1 Then
-    mcSysCode1 = ActiveCell.value * 12 * 100 / mamographyASP1
+    mcSysCode1 = ActiveCell.value * 12 / mamographyASP1
     ElseIf ActiveCell.End(xlToLeft).value = mamoSysCode2 Then
-    mcSysCode2 = ActiveCell.value * 12 * 100 / mamographyASP2
+    mcSysCode2 = ActiveCell.value * 12 / mamographyASP2
     ElseIf ActiveCell.End(xlToLeft).value = mamoSysCode3 Then
-    mcSysCode3 = ActiveCell.value * 12 * 100 / mamographyASP3
+    mcSysCode3 = ActiveCell.value * 12 / mamographyASP3
     ElseIf ActiveCell.End(xlToLeft).value = mamoSysCode4 Then
-    mcSysCode4 = ActiveCell.value * 12 * 100 / mamographyASP4
+    mcSysCode4 = ActiveCell.value * 12 / mamographyASP4
     ElseIf ActiveCell.End(xlToLeft).value = mamoSysCode5 Then
-    mcSysCode5 = ActiveCell.value * 12 * 100 / mamographyASP5
+    mcSysCode5 = ActiveCell.value * 12 / mamographyASP5
     End If
     
 ActiveCell.Offset(1, 0).Select
@@ -3482,7 +3492,7 @@ Exit Do
 End If
 Loop
 
-DIValToPaste = (mcSysCode1 + mcSysCode2) * 12 * 100 / PDASP
+DIValToPaste = (mcSysCode1 + mcSysCode2) * 12 / PDASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
@@ -3529,7 +3539,7 @@ Exit Do
 End If
 Loop
 
-ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 100 * 12 / enduraASP
+ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 12 / enduraASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
@@ -3580,7 +3590,7 @@ Exit Do
 End If
 Loop
 
-ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 12 * 100 / pulseraASP
+ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 12 / pulseraASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
@@ -3626,7 +3636,7 @@ Exit Do
 End If
 Loop
 
-ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2 + mcSysCode3) * 12 * 100 / veradiusASP
+ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2 + mcSysCode3) * 12 / veradiusASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
@@ -3705,7 +3715,7 @@ i = 0
 Do Until ActiveCell.value = ""
 
     If ActiveCell.End(xlToLeft).value = "723003" Then
-    mcSysCode1 = ActiveCell.value * 12 * 100 / alluraASP
+    mcSysCode1 = ActiveCell.value * 12 / alluraASP
     End If
     
 ActiveCell.Offset(1, 0).Select
@@ -3748,7 +3758,7 @@ i = 0
 Do Until ActiveCell.value = ""
 
     If ActiveCell.End(xlToLeft).value = optaSysCode1 Then
-    mcSysCode1 = ActiveCell.value * 12 * 100 / optaASP
+    mcSysCode1 = ActiveCell.value * 12 / optaASP
     End If
     
 ActiveCell.Offset(1, 0).Select
@@ -4033,6 +4043,7 @@ inputFl = ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx"
 'Skipping if input file not present
 If Sheet1.rdbLocalDrive.value = True Then
     If Dir(ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx") = "" Then
+        Application.Workbooks(outputFl).Windows(1).Visible = True
         Exit Sub
     End If
 End If
@@ -4041,6 +4052,8 @@ If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path "CQ_Data_SPM.xlsx"
         'if file is not present in shared drive then exit
         If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "CQ_Data_SPM.xlsx" Then
+        Application.Workbooks(outputFl).Windows(1).Visible = True
+        
             Exit Sub
         End If
     inputFl = sharedDrivePath
@@ -4228,13 +4241,13 @@ Selection.Font.Size = 18
 ActiveSheet.Cells(11, 11).Select
 Next
 
-
 Workbooks(outputFl).Save
 
 If Sheet1.chkAllGroups.value = True Then
 ActiveWorkbook.Sheets(2).Activate
 End If
 
+Application.FileDialog(msoFileDialogFolderPicker).Filters.Clear
 'loop for month not present in input
 For mnthNt = 1 To 10
     If mnthNot(mnthNt) <> "" Then
@@ -4252,6 +4265,4 @@ For i = 1 To 20
 Next
 
 End Sub
-
-
 

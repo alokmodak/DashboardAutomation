@@ -3,20 +3,22 @@ Option Explicit
 Public sharedDrivePath As String
 Public inputFileName As String
 Public fileExists As Boolean
+Public fd As FileDialog
 
 Public Function SharedDrive_Path(inputFileName As String)
     On Error Resume Next
+    
     
     Dim FSO, ofolder, osubfolder, ofile, queue As Collection
     Set FSO = CreateObject("Scripting.FileSystemObject")
     Set queue = New Collection
     
 If fileExists = False Then 'Open filedialog if file not present
-GoTo fileNotPresent
+'GoTo fileNotPresent
 End If
 
+Set fd = Application.FileDialog(msoFileDialogFolderPicker)
 fileExists = False
-
     If Application.FileDialog(msoFileDialogFolderPicker).SelectedItems.Count = 0 Then
 fileNotPresent:
         If Application.FileDialog(msoFileDialogFolderPicker).Show <> -1 Then
@@ -42,4 +44,5 @@ fileNotPresent:
             End If
         Next ofile
     Loop
+Set fd = Nothing
 End Function

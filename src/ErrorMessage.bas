@@ -5,10 +5,9 @@ Option Explicit
 '10-June-2015   Name    First file - Purpose is to to perform error handling on UI
 '16-June-2015   Name    Added validation for checkbox
 
-
 Public Sub Error_Messagebox()
 
-Dim fileNotPresent(10) As String
+Dim fileNotPresent As String
 
 'Messagebox if no drive is selected
 If Sheet1.rdbLocalDrive.value = False Then
@@ -80,7 +79,7 @@ If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
     servicefileName = Dir(ThisWorkbook.Path & "\" & "Service Scorecard F 6.1_" & fstMonthChk & "*.xls*")
     
     If servicefileName = "" Then
-    fileNotPresent(1) = "Input File name format does not correspond to Selected Month and Year!" & vbCrLf & vbCrLf & "File with Name " & Chr(34) & "Service Scorecard F 6.1_" & fstMonthChk & ".xlsm" & Chr(34) & " Not Found" & vbCrLf & vbCrLf & "Please select the appropriate date or change the input file!"
+    fileNotPresent = Chr(34) & "Service Scorecard F 6.1_" & fstMonthChk & ".xlsm" & Chr(34) & vbCrLf
     End If
     
     'for innovation file
@@ -88,14 +87,14 @@ If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
     innovationFileName = Dir(ThisWorkbook.Path & "\" & "KPI dashboard_Innovation_" & fstMonthChk & "*.xls*")
     
     If innovationFileName = "" Then
-    fileNotPresent(2) = "Input File name format does not correspond to Selected Month and Year!" & vbCrLf & vbCrLf & "File with Name " & Chr(34) & "KPI dashboard_Innovation_" & fstMonthChk & ".xlsx" & Chr(34) & " Not Found" & vbCrLf & vbCrLf & "Please select the appropriate date or change the input file!"
+    fileNotPresent = fileNotPresent & Chr(34) & "KPI dashboard_Innovation_" & fstMonthChk & ".xlsx" & Chr(34) & vbCrLf
     End If
 
     'checking Install Hrs file exists
     installFileOpen = ""
     installFileOpen = Dir(ThisWorkbook.Path & "\" & "Install SPAN P95_" & fstMonthChk & "*.xls*")
     If installFileOpen = "" Then
-        fileNotPresent(3) = "Input File with name " & Chr(34) & "Install SPAN P95_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
+        fileNotPresent = fileNotPresent & Chr(34) & "Install SPAN P95.xlsx" & Chr(34) & vbCrLf
     End If
 
     'Checking for FCO OP review file.xlsx
@@ -104,7 +103,7 @@ If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
     fcoFileOpen = ""
     fcoFileOpen = Dir(ThisWorkbook.Path & "\" & "FCO OP review file_" & fstMonthChk & "*.xls*")
     If fcoFileOpen = "" Then
-        fileNotPresent(4) = "Input File with name " & Chr(34) & "FCO OP review file_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
+        fileNotPresent = fileNotPresent & Chr(34) & "FCO OP review file.xlsx" & Chr(34) & vbCrLf
     End If
     
     'Escalations_Overview_ALL BIUs.xlsx
@@ -112,8 +111,7 @@ If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
     escOFileOpen = ""
     escOFileOpen = Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs_" & fstMonthChk & "*.xls*")
     If escOFileOpen = "" Then
-        fileNotPresent(5) = "Input File with name " & Chr(34) & "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
-        
+        fileNotPresent = fileNotPresent & Chr(34) & "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx" & Chr(34) & vbCrLf
     End If
     
     'Customer escalations (Weekly Review) Complaints.xlsx
@@ -122,8 +120,7 @@ If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
     compOFileOpen = ""
     compOFileOpen = Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & "*.xls*")
     If compOFileOpen = "" Then
-        fileNotPresent(6) = "Input File with name " & Chr(34) & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx" & Chr(34) & " doesn't exist!"
-
+        fileNotPresent = fileNotPresent & Chr(34) & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx" & Chr(34) & vbCrLf
     End If
     
     '2015-05 Installation spend L2-report.xlsb
@@ -131,8 +128,7 @@ If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
     inscostFileOpen = ""
     inscostFileOpen = Dir(ThisWorkbook.Path & "\" & Sheet1.combYear.value & " " & "Installation spend L2-report" & "*.xls*")
         If inscostFileOpen = "" Then
-        fileNotPresent(7) = "Input File with name " & Chr(34) & Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & " doesn't exist!"
-    
+        fileNotPresent = fileNotPresent & Chr(34) & Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & vbCrLf
     End If
     
     'warranty cost file
@@ -148,7 +144,7 @@ If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
     found = InStr(1, warrantyCostFile2, valFind, vbTextCompare)
     
     If found = "0" Then
-    fileNotPresent(8) = "Input File with name " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb" & Chr(34) & " or " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb" & Chr(34) & vbCrLf & " doesn't exist!"
+    fileNotPresent = fileNotPresent & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb" & Chr(34) & " or " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb" & Chr(34) & vbCrLf
     End If
     
     'For CQ Data File Validation
@@ -156,7 +152,7 @@ If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
     CQDataFile = Dir(ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx")
     
     If CQDataFile = "" Then
-    fileNotPresent(9) = "Input File name format does not correspond to Selected Month and Year!" & vbCrLf & vbCrLf & "File with Name " & Chr(34) & "CQ_Data_SPM.xlsx" & Chr(34) & " Not Found" & vbCrLf & vbCrLf & "Please select the appropriate date or change the input file!"
+    fileNotPresent = fileNotPresent & Chr(34) & "CQ_Data_SPM.xlsx" & Chr(34) & vbCrLf
     End If
     
     'For service information Data File Validation
@@ -164,29 +160,22 @@ If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
     serviceInfoDataFile = Dir(ThisWorkbook.Path & "\" & "Service_Information_Quality_Completion.xlsx")
     
     If CQDataFile = "" Then
-    fileNotPresent(10) = "Input File name format does not correspond to Selected Month and Year!" & vbCrLf & vbCrLf & "File with Name " & Chr(34) & "Service_Information_Quality_Completion.xlsx" & Chr(34) & " Not Found" & vbCrLf & vbCrLf & "Please select the appropriate date or change the input file!"
+    fileNotPresent = fileNotPresent & Chr(34) & "Service_Information_Quality_Completion.xlsx" & Chr(34) & vbCrLf
     End If
 
 Dim flNt As Integer
 Dim msg1
-For flNt = 1 To 10
-    If fileNotPresent(flNt) <> "" Then
-        msg1 = MsgBox("Following Files are not Present, Do you want to Continue?" & vbCrLf & fileNotPresent(1) & vbCrLf & fileNotPresent(2) & fileNotPresent(3) & vbCrLf & fileNotPresent(4) & vbCrLf _
-                & fileNotPresent(5) & vbCrLf & fileNotPresent(6) & vbCrLf & fileNotPresent(7) & vbCrLf & fileNotPresent(8) & vbCrLf _
-                & fileNotPresent(9) & vbCrLf & fileNotPresent(10), vbYesNo)
+        msg1 = MsgBox("Following Files are not Present over" & Chr(34) & ThisWorkbook.Path & Chr(34) & " , Do you want to Continue?" & vbCrLf & fileNotPresent, vbYesNo)
         If msg1 = vbNo Then
         End
         End If
-        Exit For
-    End If
-Next
 End If
 
     
 'validation for files present over shared drive
 If Sheet1.rdbSharedDrive.value = True Then
     
-    Dim fileNotFoundShared(10) As String
+    Dim fileNotFoundShared As String
     
     SharedDrive_Path "KPI Summary.xlsx"
     
@@ -198,9 +187,8 @@ If Sheet1.rdbSharedDrive.value = True Then
     'for service scorecard
     fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
     SharedDrive_Path ("Service Scorecard F 6.1_" & fstMonthChk & ".xlsm")
-    
     If fileExists = False Then
-    fileNotFoundShared(1) = Chr(34) & "Service Scorecard F 6.1_" & fstMonthChk & ".xlsm" & Chr(34)
+    fileNotFoundShared = Chr(34) & "Service Scorecard F 6.1_" & fstMonthChk & ".xlsm" & Chr(34) & vbCrLf
     End If
     
     'for innovation file
@@ -208,8 +196,7 @@ If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path innovationFileName
     
     If fileExists = False Then
-    fileNotFoundShared(2) = Chr(34) & "KPI dashboard_Innovation_" & fstMonthChk & ".xlsx" & Chr(34)
-    
+    fileNotFoundShared = fileNotFoundShared & Chr(34) & "KPI dashboard_Innovation_" & fstMonthChk & ".xlsx" & Chr(34) & vbCrLf
     End If
 
     'checking Install Hrs file exists
@@ -217,7 +204,7 @@ If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path installFileOpen
     
     If fileExists = False Then
-        fileNotFoundShared(3) = Chr(34) & "Install SPAN P95.xlsx" & Chr(34)
+        fileNotFoundShared = fileNotFoundShared & Chr(34) & "Install SPAN P95.xlsx" & Chr(34) & vbCrLf
         
     End If
 
@@ -226,7 +213,7 @@ If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path fcoFileOpen
     
     If fileExists = False Then
-        fileNotFoundShared(4) = Chr(34) & "FCO OP review file.xlsx" & Chr(34)
+        fileNotFoundShared = fileNotFoundShared & Chr(34) & "FCO OP review file.xlsx" & Chr(34) & vbCrLf
         
     End If
     
@@ -235,7 +222,7 @@ If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path escOFileOpen
     
     If fileExists = False Then
-        fileNotFoundShared(5) = Chr(34) & "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx" & Chr(34)
+        fileNotFoundShared = fileNotFoundShared & Chr(34) & "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx" & Chr(34) & vbCrLf
         
     End If
     
@@ -244,7 +231,7 @@ If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path compOFileOpen
     
     If fileExists = False Then
-        fileNotFoundShared(6) = Chr(34) & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx" & Chr(34)
+        fileNotFoundShared = fileNotFoundShared & Chr(34) & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx" & Chr(34) & vbCrLf
         
     End If
     
@@ -253,7 +240,7 @@ If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path inscostFileOpen
     
     If fileExists = False Then
-        fileNotFoundShared(7) = Chr(34) & Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34)
+        fileNotFoundShared = fileNotFoundShared & Chr(34) & Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & vbCrLf
         
     End If
     
@@ -266,7 +253,7 @@ If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path warrantyCostFile2
     
     If fileExists = False Then
-    fileNotFoundShared(8) = Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb" & Chr(34) & " or " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb" & Chr(34)
+    fileNotFoundShared = fileNotFoundShared & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb" & Chr(34) & " or " & vbCrLf & Chr(34) & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb" & Chr(34) & vbCrLf
     
     End If
     
@@ -275,7 +262,7 @@ If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path CQDataFile
     
     If fileExists = False Then
-    fileNotFoundShared(9) = Chr(34) & "CQ_Data_SPM.xlsx" & Chr(34)
+    fileNotFoundShared = fileNotFoundShared & Chr(34) & "CQ_Data_SPM.xlsx" & Chr(34) & vbCrLf
     
     End If
     
@@ -284,22 +271,13 @@ If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path "Service_Information_Quality_Completion.xlsx"
     
     If fileExists = False Then
-    fileNotFoundShared(10) = Chr(34) & "Service_Information_Quality_Completion.xlsx" & Chr(34)
+    fileNotFoundShared = fileNotFoundShared & Chr(34) & "Service_Information_Quality_Completion.xlsx" & Chr(34) & vbCrLf
     
     End If
-
-For flNt = 1 To 10
-    If fileNotFoundShared(flNt) <> "" Then
-        msg1 = MsgBox("Input File name format does not correspond to Selected Month and Year!, Do you want to Continue?" & vbCrLf & fileNotFoundShared(1) & vbCrLf & fileNotFoundShared(2) & fileNotFoundShared(3) & vbCrLf & fileNotFoundShared(4) & vbCrLf _
-                & fileNotFoundShared(5) & vbCrLf & fileNotFoundShared(6) & vbCrLf & fileNotFoundShared(7) & vbCrLf & fileNotFoundShared(8) & vbCrLf _
-                & fileNotFoundShared(9) & vbCrLf & fileNotFoundShared(10), vbYesNo)
+        
+        msg1 = MsgBox("Following files are not present at the selected location " & Chr(34) & Application.FileDialog(msoFileDialogFolderPicker).SelectedItems(1) & Chr(34) & " , Do you want to Continue?" & vbCrLf & fileNotFoundShared, vbYesNo)
         If msg1 = vbNo Then
         End
         End If
-        Exit For
-    End If
-Next
-    
 End If
 End Sub
-    
