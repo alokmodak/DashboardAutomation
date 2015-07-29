@@ -1,6 +1,7 @@
 Option Explicit
 Public exitLoop As Integer
 
+
 Private Sub chkDashboard_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
 Call showInfoTip(lblDashboard)
 End Sub
@@ -20,7 +21,7 @@ startTime = Second(Now())
 
     If Sheet1.chkDashboard.value = True Then
     
-            'Call Error_Messagebox
+            Call Error_Messagebox
             
             Call Generate_Dashboard_Output 'Generating output file
             

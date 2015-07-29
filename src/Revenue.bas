@@ -50,7 +50,7 @@ ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 Dim findSysCode As Integer
 For findSysCode = 0 To Sheet1.lstBx6NC.ListCount - 1
     If Sheet1.lstBx6NC.Selected(findSysCode) = True Then
-        If Not ActiveSheet.UsedRange.Find(what:=Sheet1.lstBx6NC.List(findSysCode), lookat:=xlWhole) = True Then
+        If Not ActiveSheet.UsedRange.Find(what:=Sheet1.lstBx6NC.List(findSysCode), LookAt:=xlWhole) = True Then
             If Sheet1.chkAllGroups.value = True Then
                 NCNotPresent(ncNt) = "The System Code " & Sheet1.lstBx6NC.List(findSysCode) & " Not Available in SAP data!"
                 ncNt = ncNt + 1
@@ -76,8 +76,8 @@ End If
 
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole, after:=ActiveCell).Select
 fstAddForPivot = ActiveCell.Address
 ActiveCell.End(xlDown).Select
 ActiveCell.End(xlToRight).Select
@@ -94,7 +94,7 @@ End With
 ActiveSheet.name = "Data"
 
 'Creating PivotTable
-Application.Workbooks(inputFileNameContracts).Close False
+'Application.Workbooks(inputFileNameContracts).Close False
 
 'determine the worksheet which contains the source data
 Set wsData = Worksheets("Data")
@@ -110,21 +110,14 @@ lastColumn = wsData.Cells(1, Columns.Count).End(xlToLeft).Column
 Set rngData = wsData.Cells(1, 1).Resize(lastRow, lastColumn)
 rngDataForPivot = rngData.Address
 'for creating a Pivot Cache (version excel 2003), use the PivotCaches.Create Method. When version is not specified, default version of the PivotTable will be xlPivotTableVersion12:
-If Application.Version = "14.0" Then
-Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion14)
-Else
-'Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion15)
-End If
+
+Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion15)
 'create a PivotTable report based on a Pivot Cache, using the PivotCache.CreatePivotTable method. TableDestination is mandatory to specify in this method.
 
 'create PivotTable in a new worksheet:
 Sheets.Add
 ActiveSheet.name = "Pivot"
-If Application.Version = "14.0" Then
-Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion14)
-Else
-'Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion15)
-End If
+Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion15)
 
 'change style of the new PivotTable:
 pvtTbl.TableStyle2 = "PivotStyleMedium3"
@@ -231,27 +224,27 @@ Dim filterSelectedValues As Integer
     secondLoop = 1
     
     ActiveWorkbook.Sheets("Pivot").Activate
-        For filterSelectedValues = 0 To Sheet1.lstBx6NC.ListCount - 1
-            If Sheet1.lstBx6NC.Selected(filterSelectedValues) Then
-                For Each pvtItem In ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-                    "[C,S] System Code Material (Material no of  R Eq)").PivotItems
-                    If Sheet1.lstBx6NC.List(filterSelectedValues) <> pvtItem Then
-                        If secondLoop < 2 Then
-                            pvtItem.Visible = False
-                        End If
-                    Else
-                        pvtItem.Visible = True
-                    End If
-                Next
-                secondLoop = secondLoop + 1 'secondloop value is added to avoid visible = false for all selected values
-            End If
-        Next
+'        For filterSelectedValues = 0 To Sheet1.lstBx6NC.ListCount - 1
+'            If Sheet1.lstBx6NC.Selected(filterSelectedValues) Then
+'                For Each pvtItem In ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+'                    "[C,S] System Code Material (Material no of  R Eq)").PivotItems
+'                    If Sheet1.lstBx6NC.List(filterSelectedValues) <> pvtItem Then
+'                        If secondLoop < 2 Then
+'                            pvtItem.Visible = False
+'                        End If
+'                    Else
+'                        pvtItem.Visible = True
+'                    End If
+'                Next
+'                secondLoop = secondLoop + 1 'secondloop value is added to avoid visible = false for all selected values
+'            End If
+'        Next
 'turn on automatic update / calculation in the Pivot Table
 pvtTbl.ManualUpdate = False
 
 'Copy Pivot table values to new sheet
 ActiveWorkbook.Sheets("Pivot").Activate
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole).Select
 fstAddForPivot = ActiveCell.Address
 ActiveCell.End(xlToRight).Select
 ActiveCell.End(xlDown).Select
@@ -273,10 +266,10 @@ Dim fstTableAdd As String
 fstTableAdd = ActiveCell.Address
 ActiveCell.End(xlToRight).Select
 
-monthsForTable = DateAdd("m", -12, Date)
+monthsForTable = DateAdd("m", -24, Date)
 
 ActiveCell.Offset(0, 1).Select
-For monthCellForTable = 2 To 24
+For monthCellForTable = 2 To 37
     ActiveCell.value = monthsForTable
     ActiveCell.NumberFormat = "[$-409]mmm-yy;@"
         If monthCellForTable > 1 Then
@@ -332,7 +325,7 @@ If ActiveCell.value <> "" Then
             Loop
         
             monthCellForTable = 4
-            For i = 1 To 24
+            For i = 1 To 36
             
         Dim k As Integer
         k = 0
@@ -495,7 +488,7 @@ ActiveCell.Offset(1, 0).Select
 Next
 
 'Filling country code in the table
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", LookAt:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 Dim rowCount As Integer
 Dim lstRowCnt As Long
@@ -511,23 +504,46 @@ For rowCount = 0 To lstRowCnt - 4
         ActiveCell.Offset(1, 0).Select
     End If
 Next
+ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", LookAt:=xlWhole).Select
+ActiveCell.Offset(1, 0).Select
+For rowCount = 0 To lstRowCnt - 4
+    If ActiveCell.Offset(1, -1).value = "" Then
+        ActiveCell.Offset(1, 0).Select
+        ActiveCell.Offset(0, -1).value = ActiveCell.Offset(-1, -1).value
+    Else
+        ActiveCell.Offset(1, 0).Select
+    End If
+Next
 
 Dim fstPivoAdd As String
 Dim lstPivoAdd As String
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+Dim rngData2 As String
+Dim rngDataDest As String
+Dim pivoWs As Worksheet
+Dim tempA As String
+Dim tempB As String
+
+
+rngDataDest = "Pivot!" & "R40:C1"
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole).Select
 fstPivoAdd = ActiveCell.Address
+tempA = Application.ConvertFormula(Formula:=fstPivoAdd, FromReferenceStyle:=xlA1, ToReferenceStyle:=xlR1C1)
     ActiveCell.End(xlToRight).Select
     ActiveCell.Offset(lstRowCnt, 0).Select
 lstPivoAdd = ActiveCell.Address
+tempB = Application.ConvertFormula(Formula:=lstPivoAdd, FromReferenceStyle:=xlA1, ToReferenceStyle:=xlR1C1)
     ActiveSheet.Range(fstPivoAdd, lstPivoAdd).Select
+    rngData2 = "Contracts-Chart!" & tempA & ":" & tempB
     Sheets.Add
     ActiveSheet.name = "Pivot"
+    Set pivoWs = ActiveSheet
+    
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-        "Contracts-Chart!R2C36:R10335C104", Version:=xlPivotTableVersion14). _
-        CreatePivotTable TableDestination:="Pivot!R3C1", TableName:="PivotTable1" _
-        , DefaultVersion:=xlPivotTableVersion14
-
-ActiveSheet.Cells(3, 1).Select
+        rngData2, Version:=xlPivotTableVersion15). _
+        CreatePivotTable TableDestination:="Pivot!R30C1", TableName:="PivotTable1" _
+        , DefaultVersion:=xlPivotTableVersion15
+        
+ActiveSheet.Cells(30, 1).Select
 Dim pvtName As String
 Dim posVal As Integer
 pvtName = ActiveCell.PivotTable.name
@@ -598,8 +614,8 @@ Dim filterValueJoined As String
 Dim filterValueDropped As String
 Dim filterPos As Integer
 filterPos = 7
-monthsForTable = DateAdd("m", -12, Date)
-For monthCellForTable = 7 To 27
+monthsForTable = DateAdd("m", -24, Date)
+For monthCellForTable = 7 To 42
     filterValue = Format(monthsForTable, "mmm-yy")
     filterValueJoined = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Joined"
     filterValueDropped = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Dropped"
@@ -625,7 +641,7 @@ For monthCellForTable = 7 To 27
     filterPos = filterPos + 3
 Next
 
-ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", LookAt:=xlWhole).Select
 ActiveSheet.Cells(Rows.Count, 6).End(xlUp).Select
 'Calculating total numbers for dropped and up
 Dim lstCelNum As String
@@ -644,7 +660,7 @@ ActiveCell.Offset(8, 0).value = "ZCSP"
 ActiveCell.Offset(9, 0).value = "ZCSW"
 ActiveCell.Offset(1, 0).value = "Blanks"
 
-ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", LookAt:=xlWhole).Select
 Dim fstCelCount As String
 fstCelCount = ActiveCell.Offset(1, 0).Address
 Dim celNumber As Integer
@@ -683,24 +699,27 @@ Dim fstAddB2 As String
 Dim lstaddB2 As String
 Dim fstAddB3 As String
 Dim lstAddB3 As String
+Dim fstAddB4 As String
+Dim lstAddB4 As String
 
-ActiveSheet.UsedRange.Find(what:="Blanks", lookat:=xlWhole).Select
+ActiveSheet.Range(lstCelNum).Select
+ActiveSheet.UsedRange.Find(what:="Blanks", LookAt:=xlWhole).Select
 ActiveCell.Offset(0, 2).Select
 fstAddB = ActiveCell.Offset(1, 0).Address(False, False)
 lstAddB = ActiveCell.Offset(6, 0).Address(False, False)
-fstAddB2 = ActiveCell.Offset(-1, 1).Address(False, False)
-lstaddB2 = ActiveCell.Offset(8, 1).Address(False, False)
-fstAddB3 = ActiveCell.Offset(1, 4).Address(False, False)
-lstAddB3 = ActiveCell.Offset(6, 4).Address(False, False)
-
-formulaZCSS = "=COUNTIFS(" & fstcntF & ":" & lstcntF & "," & Chr(34) & "ZCSS" & Chr(34) & "," & fstcntG & ":" & lstcntG & "," & Chr(34) & "Yes" & Chr(34) & ")"
+fstAddB2 = ActiveCell.Offset(-1, -1).Address(False, False)
+lstaddB2 = ActiveCell.Offset(8, -1).Address(False, False)
+fstAddB3 = ActiveCell.Offset(1, 1).Address(False, False)
+lstAddB3 = ActiveCell.Offset(6, 1).Address(False, False)
+fstAddB4 = ActiveCell.Offset(-1, 2).Address(False, False)
+lstAddB4 = ActiveCell.Offset(8, 2).Address(False, False)
 
 ActiveSheet.Range(lstCelNum).Select
 ActiveCell.Offset(0, 1).Formula = "=COUNTIFS(" & fstcntF & ":" & lstcntF & "," & Chr(34) & "ZCSS" & Chr(34) & "," & fstcntG & ":" & lstcntG & "," & Chr(34) & "Yes" & Chr(34) & ")"
 ActiveCell.Offset(8, 1).Formula = "=COUNTIFS(" & fstcntF & ":" & lstcntF & "," & Chr(34) & "ZCSP" & Chr(34) & "," & fstcntG & ":" & lstcntG & "," & Chr(34) & "Yes" & Chr(34) & ")"
 ActiveCell.Offset(9, 1).Formula = "=COUNTIFS(" & fstcntF & ":" & lstcntF & "," & Chr(34) & "ZCSW" & Chr(34) & "," & fstcntG & ":" & lstcntG & "," & Chr(34) & "Yes" & Chr(34) & ")"
 ActiveCell.Offset(1, 2).Formula = "=SUM(" & fstAddB2 & ":" & lstaddB2 & ")-SUM(" & fstAddB & ":" & lstAddB & ")"
-ActiveCell.Offset(1, 3).Formula = "=SUM(" & fstAddB2 & ":" & lstaddB2 & ")-SUM(" & fstAddB3 & ":" & lstAddB3 & ")"
+ActiveCell.Offset(1, 3).Formula = "=SUM(" & fstAddB4 & ":" & lstAddB4 & ")-SUM(" & fstAddB3 & ":" & lstAddB3 & ")"
 ActiveCell.Offset(2, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "0To1Year" & Chr(34) & ")"
 ActiveCell.Offset(2, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "0To1Year" & Chr(34) & ")"
 ActiveCell.Offset(3, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "1To3Years" & Chr(34) & ")"
@@ -719,7 +738,7 @@ ActiveSheet.Range(Selection, ActiveCell.Offset(9, 2).Address).Select
 Selection.Copy
 
 Dim formulaCopy As Integer
-For formulaCopy = 1 To 20
+For formulaCopy = 1 To 36
 ActiveCell.Offset(0, 3).Select
 ActiveCell.PasteSpecial xlPasteFormulas
 Next
@@ -757,36 +776,13 @@ lstChartAdd = ActiveCell.Address
     
     ActiveChart.SetElement (msoElementDataLabelCenter)
     ActiveChart.SetElement (msoElementChartTitleCenteredOverlay)
-    ActiveChart.ChartTitle.Select
-    ActiveChart.ChartTitle.Text = Sheet1.comb6NC2.value
-    Selection.Format.TextFrame2.TextRange.Characters.Text = Sheet1.comb6NC2.value
-    With Selection.Format.TextFrame2.TextRange.Characters(1, 6).ParagraphFormat
-        .TextDirection = msoTextDirectionLeftToRight
-        .Alignment = msoAlignCenter
-    End With
-    With Selection.Format.TextFrame2.TextRange.Characters(1, 6).Font
-        .BaselineOffset = 0
-        .Bold = msoTrue
-        .NameComplexScript = "+mn-cs"
-        .NameFarEast = "+mn-ea"
-        .Fill.Visible = msoTrue
-        .Fill.ForeColor.RGB = RGB(0, 0, 0)
-        .Fill.Transparency = 0
-        .Fill.Solid
-        .Size = 18
-        .Italic = msoFalse
-        .Kerning = 12
-        .name = "+mn-lt"
-        .UnderlineStyle = msoNoUnderline
-        .Strike = msoNoStrike
-    End With
     ActiveChart.ChartArea.Select
     ActiveChart.SetElement (msoElementLegendLeft)
     With ActiveChart.Parent
          .Height = 325 ' resize
-         .Width = 1500  ' resize
+         .Width = 900  ' resize
          .Top = 10    ' reposition
-         .Left = 10   ' reposition
+         .Left = 160   ' reposition
      End With
     ActiveChart.SeriesCollection(9).Select
     With Selection.Format.Fill
@@ -882,72 +878,86 @@ End If
 Next iPoint
 Next i
 
-Dim rngMinValue As Range
-Dim minValue As Integer
-Dim maxValue As Integer
-Dim fstblanks As String
-Dim lstMinValueRange As String
+ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveChart.SeriesCollection(9).Select
+    ActiveChart.SeriesCollection(9).ApplyDataLabels
+    ActiveChart.SeriesCollection(10).Select
+    ActiveChart.SeriesCollection(10).ApplyDataLabels
 
-'Set rngMinValue = ActiveSheet.Range(fstblanks, lstMinValueRange)
-'minValue = Application.WorksheetFunction.Max(rngMinValue)
-'maxValue = Application.WorksheetFunction.Max(rngMinValue)
-'For Each cell In rngMinValue
-'    If cell > 0 And cell < minValue Then
-'        minValue = cell
-'    End If
-'Next
-
-'ActiveChart.Axes(xlValue).Select
-'ActiveChart.Axes(xlValue).MinimumScale = minValue - 50
-
-'hilighting current month in chart
-'ActiveChart.SeriesCollection(1).Points(73).Select
-'    With Selection.Format.Fill
-'        .Visible = msoTrue
-'        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
-'        .ForeColor.TintAndShade = 0
-'        .ForeColor.Brightness = 0
-'        .Transparency = 0
-'        .Solid
-'    End With
-'    ActiveChart.SeriesCollection(9).Points(73).Select
-'    With Selection.Format.Fill
-'        .Visible = msoTrue
-'        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
-'        .ForeColor.TintAndShade = 0
-'        .ForeColor.Brightness = 0.400000006
-'        .Transparency = 0
-'        .Solid
-'    End With
-'    ActiveChart.SeriesCollection(10).Points(73).Select
-'    With Selection.Format.Fill
-'        .Visible = msoTrue
-'        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
-'        .ForeColor.TintAndShade = 0
-'        .ForeColor.Brightness = 0.6000000238
-'        .Transparency = 0
-'        .Solid
-'    End With
-
-
+ActiveChart.SeriesCollection(9).Points(37).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.400000006
+        .Transparency = 0
+        .Solid
+    End With
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.SeriesCollection(10).Select
+    ActiveChart.SeriesCollection(10).Points(37).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.400000006
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.SeriesCollection(1).Points(37).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.400000006
+        .Solid
+    End With
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.25
+        .Transparency = 0
+        .Solid
+    End With
+    
 Application.CutCopyMode = False
     ActiveWorkbook.SlicerCaches.Add(ActiveSheet.PivotTables("PivotTable1"), _
+        "[C,S] System Code Material (Material no of  R Eq)").Slicers.Add ActiveSheet, _
+        , "[C,S] System Code Material (Material no of  R Eq)", _
+        "[C,S] System Code Material (Material no of  R Eq)", 120, 153.75, 144, 198.75
+    ActiveWorkbook.SlicerCaches.Add(ActiveSheet.PivotTables("PivotTable1"), _
         "[C,S] Company Code").Slicers.Add ActiveSheet, , "[C,S] Company Code", _
-        "[C,S] Company Code", 138.75, 432.75, 144, 198.75
+        "[C,S] Company Code", 157.5, 191.25, 144, 198.75
     ActiveSheet.Shapes.Range(Array("[C,S] Company Code")).Select
-    
+    ActiveSheet.Shapes.Range(Array("[C,S] Company Code")).Top = 10
+    ActiveSheet.Shapes.Range(Array("[C,S] Company Code")).Left = 10
+    ActiveSheet.Shapes.Range(Array( _
+        "[C,S] System Code Material (Material no of  R Eq)")).Select
+    ActiveSheet.Shapes.Range(Array( _
+        "[C,S] System Code Material (Material no of  R Eq)")).Top = 10
+    ActiveSheet.Shapes.Range(Array( _
+        "[C,S] System Code Material (Material no of  R Eq)")).Left = 30
+            
 'deleting old chart
 Dim ws As Worksheet
 For Each ws In ActiveWorkbook.Sheets
-    If ws.name = "ABC" Then
+    If ws.name = "Contracts-Data" Or ws.name = "ContractDynamics-WaterFall" Then
         ws.delete
     End If
 Next
 ActiveWorkbook.Sheets("Contracts-Chart").Activate
-ActiveSheet.name = "ABC"
+ActiveSheet.name = "Contracts-Data"
+ActiveWorkbook.Sheets("Pivot").Activate
+ActiveSheet.name = "ContractDynamics-WaterFall"
 ActiveSheet.Cells(1, 1).Select
-NCNotPresent:
-
 
 Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
 Sheet1.lstBx6NC.value = ""
@@ -955,6 +965,7 @@ Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
 Sheet1.comb6NC2.value = ""
 ActiveWorkbook.Sheets("Data").delete
 Application.Workbooks(outputFile).Save
+Application.Calculation = xlCalculationAutomatic
 
 End Sub
 

@@ -39,8 +39,8 @@ warrantyVal = Replace(Sheet1.combYear.value, "-", "")
  
  lblText = "Input files Required Are -" & vbCrLf & _
 "1) Service Scorecard F 6.1_" & lblMonthCheck & ".xlsm" & vbCrLf & _
-"2) Install SPAN P95_" & lblMonthCheck & ".xlsx" & vbCrLf & _
-"3) FCO OP review file_" & lblMonthCheck & ".xlsx" & vbCrLf & _
+"2) Install SPAN P95.xlsx" & vbCrLf & _
+"3) FCO OP review file.xlsx" & vbCrLf & _
 "4) Escalations_Overview_ALL BIUs_" & lblMonthCheck & ".xlsx" & vbCrLf & _
 "5) Customer escalations (Weekly Review) Complaints_" & lblMonthCheck & ".xlsx" & vbCrLf & _
 "6) " & Sheet1.combYear.value & " Installation spend L2-report" & lblMonthCheck & ".xlsb" & vbCrLf & _

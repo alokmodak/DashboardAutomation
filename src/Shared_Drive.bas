@@ -12,13 +12,13 @@ Public Function SharedDrive_Path(inputFileName As String)
     Set queue = New Collection
     
 If fileExists = False Then 'Open filedialog if file not present
-GoTo FileNotPresent
+GoTo fileNotPresent
 End If
 
 fileExists = False
 
     If Application.FileDialog(msoFileDialogFolderPicker).SelectedItems.Count = 0 Then
-FileNotPresent:
+fileNotPresent:
         If Application.FileDialog(msoFileDialogFolderPicker).Show <> -1 Then
         MsgBox "No Folder Selected"
         End

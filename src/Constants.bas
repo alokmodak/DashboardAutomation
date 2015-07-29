@@ -5,7 +5,7 @@ Public Const mamographyASP3 = 110957
 Public Const mamographyASP4 = 144790
 Public Const mamographyASP5 = 112608
 
-Public Const PDASP = 65000
+Public Const PDASP = 66955
 Public Const enduraASP = 63000
 Public Const pulseraASP = 85000
 Public Const veradiusASP = 132000
