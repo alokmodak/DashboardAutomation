@@ -50,8 +50,8 @@ ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 Dim findSysCode As Integer
 For findSysCode = 0 To Sheet1.lstBx6NC.ListCount - 1
     If Sheet1.lstBx6NC.Selected(findSysCode) = True Then
-        If Not ActiveSheet.UsedRange.Find(what:=Sheet1.lstBx6NC.List(findSysCode), LookAt:=xlWhole) = True Then
-            If Sheet1.chkAllGroups.value = True Then
+        If Not ActiveSheet.UsedRange.Find(what:=Sheet1.lstBx6NC.List(findSysCode), lookat:=xlWhole) = True Then
+            If Sheet1.chkAllGroups.Value = True Then
                 NCNotPresent(ncNt) = "The System Code " & Sheet1.lstBx6NC.List(findSysCode) & " Not Available in SAP data!"
                 ncNt = ncNt + 1
             Else
@@ -76,8 +76,8 @@ End If
 
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole, after:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 fstAddForPivot = ActiveCell.Address
 ActiveCell.End(xlDown).Select
 ActiveCell.End(xlToRight).Select
@@ -244,7 +244,7 @@ pvtTbl.ManualUpdate = False
 
 'Copy Pivot table values to new sheet
 ActiveWorkbook.Sheets("Pivot").Activate
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
 fstAddForPivot = ActiveCell.Address
 ActiveCell.End(xlToRight).Select
 ActiveCell.End(xlDown).Select
@@ -270,12 +270,12 @@ monthsForTable = DateAdd("m", -24, Date)
 
 ActiveCell.Offset(0, 1).Select
 For monthCellForTable = 2 To 37
-    ActiveCell.value = monthsForTable
+    ActiveCell.Value = monthsForTable
     ActiveCell.NumberFormat = "[$-409]mmm-yy;@"
         If monthCellForTable > 1 Then
             ActiveCell.Offset(0, 3).Select
-            ActiveCell.Offset(0, -1).value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Joined"
-            ActiveCell.Offset(0, -2).value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Dropped"
+            ActiveCell.Offset(0, -1).Value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Joined"
+            ActiveCell.Offset(0, -2).Value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Dropped"
         End If
     monthsForTable = DateAdd("m", 1, monthsForTable)
 Next
@@ -299,28 +299,28 @@ topCelVal = 1
 
 'Loop for each row individually to calculate values
 For Each cell In Range(fstAddForPivot, lstAddForPivot)
-If ActiveCell.value <> "" Then
+If ActiveCell.Value <> "" Then
             'leave row values blank if start or end date is not available
-            If ActiveCell.Offset(0, 1).value = "" Then
-                ActiveCell.Offset(0, 1).value = ActiveCell.Offset(-1, 1).value
+            If ActiveCell.Offset(0, 1).Value = "" Then
+                ActiveCell.Offset(0, 1).Value = ActiveCell.Offset(-1, 1).Value
             End If
-            If ActiveCell.Offset(0, 2).value = "" Then
-                ActiveCell.Offset(0, 2).value = ActiveCell.Offset(-2, 2).value
+            If ActiveCell.Offset(0, 2).Value = "" Then
+                ActiveCell.Offset(0, 2).Value = ActiveCell.Offset(-2, 2).Value
             End If
-            duration = DateDiff("m", Replace(ActiveCell.Offset(0, 1).value, ".", "/"), Replace(ActiveCell.Offset(0, 2).value, ".", "/"))
+            duration = DateDiff("m", Replace(ActiveCell.Offset(0, 1).Value, ".", "/"), Replace(ActiveCell.Offset(0, 2).Value, ".", "/"))
             i = 1
-            Do Until ActiveCell.Offset(i, 0).value <> "" Or i > 20
+            Do Until ActiveCell.Offset(i, 0).Value <> "" Or i > 20
             'exit loop for last cell
-                If ActiveCell.Offset(i, 3).value = "" Then
+                If ActiveCell.Offset(i, 3).Value = "" Then
                 Exit Do
                 End If
-            If ActiveCell.Offset(i, 1).value = "" Then
-                ActiveCell.Offset(i, 1).value = ActiveCell.Offset(-1, 1).value
+            If ActiveCell.Offset(i, 1).Value = "" Then
+                ActiveCell.Offset(i, 1).Value = ActiveCell.Offset(-1, 1).Value
             End If
-            If ActiveCell.Offset(i, 2).value = "" Then
-                ActiveCell.Offset(i, 2).value = ActiveCell.Offset(-2, 2).value
+            If ActiveCell.Offset(i, 2).Value = "" Then
+                ActiveCell.Offset(i, 2).Value = ActiveCell.Offset(-2, 2).Value
             End If
-            duration = duration + DateDiff("m", Replace(ActiveCell.Offset(i, 1).value, ".", "/"), Replace(ActiveCell.Offset(i, 2).value, ".", "/"))
+            duration = duration + DateDiff("m", Replace(ActiveCell.Offset(i, 1).Value, ".", "/"), Replace(ActiveCell.Offset(i, 2).Value, ".", "/"))
             i = i + 1
             Loop
         
@@ -331,43 +331,43 @@ If ActiveCell.value <> "" Then
         k = 0
         Do
         'exit for last cell
-        If ActiveCell.Offset(k, 3).value = "" Then
+        If ActiveCell.Offset(k, 3).Value = "" Then
             Exit Do
         End If
-                fstVal = DateSerial(Year(Replace(ActiveCell.Offset(k, 1).value, ".", "/", 4)), Month(Replace(ActiveCell.Offset(k, 1).value, ".", "/", 4)), 1)
-                lstVal = DateSerial(Year(Replace(ActiveCell.Offset(k, 2).value, ".", "/", 4)), Month(Replace(ActiveCell.Offset(k, 2).value, ".", "/", 4)) + 1, 0)
+                fstVal = DateSerial(Year(Replace(ActiveCell.Offset(k, 1).Value, ".", "/", 4)), Month(Replace(ActiveCell.Offset(k, 1).Value, ".", "/", 4)), 1)
+                lstVal = DateSerial(Year(Replace(ActiveCell.Offset(k, 2).Value, ".", "/", 4)), Month(Replace(ActiveCell.Offset(k, 2).Value, ".", "/", 4)) + 1, 0)
                 
-                If fstVal <= CDate(ActiveCell.Offset(-topCelVal, monthCellForTable).value) And CDate(ActiveCell.Offset(-topCelVal, monthCellForTable).value) <= lstVal Then
-                    ActiveCell.Offset(0, monthCellForTable).value = "Yes"
+                If fstVal <= CDate(ActiveCell.Offset(-topCelVal, monthCellForTable).Value) And CDate(ActiveCell.Offset(-topCelVal, monthCellForTable).Value) <= lstVal Then
+                    ActiveCell.Offset(0, monthCellForTable).Value = "Yes"
                 Else
                     'condition not to overwrite Yes values
-                    If ActiveCell.Offset(0, monthCellForTable).value = "" Then
-                        ActiveCell.Offset(0, monthCellForTable).value = "No"
+                    If ActiveCell.Offset(0, monthCellForTable).Value = "" Then
+                        ActiveCell.Offset(0, monthCellForTable).Value = "No"
                     End If
                 End If
         k = k + 1
-        Loop Until ActiveCell.Offset(k, 0).value <> "" Or k > 20
+        Loop Until ActiveCell.Offset(k, 0).Value <> "" Or k > 20
 
-    If i = 2 And ActiveCell.Offset(0, monthCellForTable).value = "No" Then
-        If ActiveCell.Offset(0, monthCellForTable - 3).value = "Yes" Then
+    If i = 2 And ActiveCell.Offset(0, monthCellForTable).Value = "No" Then
+        If ActiveCell.Offset(0, monthCellForTable - 3).Value = "Yes" Then
             If duration <= 12 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "0To1Year"
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "0To1Year"
             ElseIf 13 >= duration <= 36 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "1To3Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "1To3Years"
             ElseIf 37 >= duration <= 60 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "3To5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "3To5Years"
             ElseIf duration >= 61 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "MoreThan5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "MoreThan5Years"
             End If
     
         'condition for After warranty
-        If ActiveCell.Offset(0, 3).value = "ZCSW" Then
+        If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
         j = 1
         zcswVal = True
         Do Until ActiveCell.Offset(j, 0) <> "" Or j > 20
         'condition for last row exit loop
-            If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
-                If ActiveCell.Offset(1, 3).value = "" Then
+            If ActiveCell.Offset(j, 3).Value <> "ZCSW" Then
+                If ActiveCell.Offset(1, 3).Value = "" Then
                     Exit Do
             End If
             zcswVal = False
@@ -375,32 +375,32 @@ If ActiveCell.value <> "" Then
         j = j + 1
         Loop
         If zcswVal = True Then
-            ActiveCell.Offset(0, monthCellForTable - 2).value = "Warranty"
+            ActiveCell.Offset(0, monthCellForTable - 2).Value = "Warranty"
         End If
     End If
 
 End If
 End If
 
-    If i > 2 And ActiveCell.Offset(0, monthCellForTable).value = "No" Then
-        If ActiveCell.Offset(0, monthCellForTable - 3).value = "Yes" Then
+    If i > 2 And ActiveCell.Offset(0, monthCellForTable).Value = "No" Then
+        If ActiveCell.Offset(0, monthCellForTable - 3).Value = "Yes" Then
             If duration <= 12 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "0To1Year"
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "0To1Year"
             ElseIf 13 >= duration <= 36 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "1To3Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "1To3Years"
             ElseIf 37 >= duration <= 60 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "3To5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "3To5Years"
             ElseIf duration >= 61 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "MoreThan5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "MoreThan5Years"
             End If
     
-            If ActiveCell.Offset(0, 3).value = "ZCSW" Then
+            If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
             j = 1
             zcswVal = True
             Do Until ActiveCell.Offset(j, 0) <> "" Or j > 20
             'condition for last row exit loop
-                If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
-                    If ActiveCell.Offset(1, 3).value = "" Then
+                If ActiveCell.Offset(j, 3).Value <> "ZCSW" Then
+                    If ActiveCell.Offset(1, 3).Value = "" Then
                         Exit Do
                     End If
                 zcswVal = False
@@ -408,31 +408,31 @@ End If
                 j = j + 1
             Loop
             If zcswVal = True Then
-                ActiveCell.Offset(0, monthCellForTable - 2).value = "Warranty"
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "Warranty"
             End If
             End If
     End If
 End If
 
-If i = 2 And ActiveCell.Offset(0, monthCellForTable).value = "Yes" Then
-  If ActiveCell.Offset(0, monthCellForTable - 3).value = "No" Then
+If i = 2 And ActiveCell.Offset(0, monthCellForTable).Value = "Yes" Then
+  If ActiveCell.Offset(0, monthCellForTable - 3).Value = "No" Then
    If duration <= 12 Then
-     ActiveCell.Offset(0, monthCellForTable - 1).value = "0To1Year"
+     ActiveCell.Offset(0, monthCellForTable - 1).Value = "0To1Year"
    ElseIf 13 >= duration <= 36 Then
-     ActiveCell.Offset(0, monthCellForTable - 1).value = "1To3Years"
+     ActiveCell.Offset(0, monthCellForTable - 1).Value = "1To3Years"
    ElseIf 37 >= duration <= 60 Then
-     ActiveCell.Offset(0, monthCellForTable - 1).value = "3To5Years"
+     ActiveCell.Offset(0, monthCellForTable - 1).Value = "3To5Years"
    ElseIf duration >= 61 Then
-     ActiveCell.Offset(0, monthCellForTable - 1).value = "MoreThan5Years"
+     ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
    End If
 'condition for After warranty
-If ActiveCell.Offset(0, 3).value = "ZCSW" Then
+If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
    j = 1
 zcswVal = True
             Do Until ActiveCell.Offset(j, 0) <> "" Or j > 20
                     'condition for last row exit loop
-                    If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
-                        If ActiveCell.Offset(1, 3).value = "" Then
+                    If ActiveCell.Offset(j, 3).Value <> "ZCSW" Then
+                        If ActiveCell.Offset(1, 3).Value = "" Then
                             Exit Do
                         End If
                         zcswVal = False
@@ -440,33 +440,33 @@ zcswVal = True
                 j = j + 1
                 Loop
                 If zcswVal = True Then
-                    ActiveCell.Offset(0, monthCellForTable - 1).value = "Warranty"
+                    ActiveCell.Offset(0, monthCellForTable - 1).Value = "Warranty"
                 End If
         End If
 
     End If
 End If
-            If i > 2 And ActiveCell.Offset(0, monthCellForTable).value = "Yes" Then
+            If i > 2 And ActiveCell.Offset(0, monthCellForTable).Value = "Yes" Then
                 
-                If ActiveCell.Offset(0, monthCellForTable - 3).value = "No" Then
+                If ActiveCell.Offset(0, monthCellForTable - 3).Value = "No" Then
                     If duration <= 12 Then
-                        ActiveCell.Offset(0, monthCellForTable - 1).value = "0To1Year"
+                        ActiveCell.Offset(0, monthCellForTable - 1).Value = "0To1Year"
                     ElseIf 13 >= duration <= 36 Then
-                        ActiveCell.Offset(0, monthCellForTable - 1).value = "1To3Years"
+                        ActiveCell.Offset(0, monthCellForTable - 1).Value = "1To3Years"
                     ElseIf 37 >= duration <= 60 Then
-                        ActiveCell.Offset(0, monthCellForTable - 1).value = "3To5Years"
+                        ActiveCell.Offset(0, monthCellForTable - 1).Value = "3To5Years"
                     ElseIf duration >= 61 Then
-                        ActiveCell.Offset(0, monthCellForTable - 1).value = "MoreThan5Years"
+                        ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
                     End If
                     
                     'condition for After warranty
-                    If ActiveCell.Offset(0, 3).value = "ZCSW" Then
+                    If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
                         j = 1
                         zcswVal = True
                             Do Until ActiveCell.Offset(j, 0) <> "" Or j > 20
                                 'condition for last row exit loop
-                                If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
-                                    If ActiveCell.Offset(1, 3).value = "" Then
+                                If ActiveCell.Offset(j, 3).Value <> "ZCSW" Then
+                                    If ActiveCell.Offset(1, 3).Value = "" Then
                                         Exit Do
                                     End If
                                     zcswVal = False
@@ -474,7 +474,7 @@ End If
                             j = j + 1
                             Loop
                             If zcswVal = True Then
-                                ActiveCell.Offset(0, monthCellForTable - 1).value = "Warranty"
+                                ActiveCell.Offset(0, monthCellForTable - 1).Value = "Warranty"
                             End If
                     End If
                 End If
@@ -488,7 +488,7 @@ ActiveCell.Offset(1, 0).Select
 Next
 
 'Filling country code in the table
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", LookAt:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 Dim rowCount As Integer
 Dim lstRowCnt As Long
@@ -497,19 +497,19 @@ celAdd = Mid(ActiveCell.Address, 2, 2)
 rowCount = 0
 lstRowCnt = ActiveSheet.Range(celAdd & Rows.Count).End(xlUp).Row
 For rowCount = 0 To lstRowCnt - 4
-    If ActiveCell.Offset(1, 0).value = "" Then
+    If ActiveCell.Offset(1, 0).Value = "" Then
         ActiveCell.Offset(1, 0).Select
-        ActiveCell.value = ActiveCell.Offset(-1, 0).value
+        ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
     Else
         ActiveCell.Offset(1, 0).Select
     End If
 Next
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", LookAt:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 For rowCount = 0 To lstRowCnt - 4
-    If ActiveCell.Offset(1, -1).value = "" Then
+    If ActiveCell.Offset(1, -1).Value = "" Then
         ActiveCell.Offset(1, 0).Select
-        ActiveCell.Offset(0, -1).value = ActiveCell.Offset(-1, -1).value
+        ActiveCell.Offset(0, -1).Value = ActiveCell.Offset(-1, -1).Value
     Else
         ActiveCell.Offset(1, 0).Select
     End If
@@ -525,7 +525,7 @@ Dim tempB As String
 
 
 rngDataDest = "Pivot!" & "R40:C1"
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", LookAt:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
 fstPivoAdd = ActiveCell.Address
 tempA = Application.ConvertFormula(Formula:=fstPivoAdd, FromReferenceStyle:=xlA1, ToReferenceStyle:=xlR1C1)
     ActiveCell.End(xlToRight).Select
@@ -641,7 +641,7 @@ For monthCellForTable = 7 To 42
     filterPos = filterPos + 3
 Next
 
-ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", LookAt:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
 ActiveSheet.Cells(Rows.Count, 6).End(xlUp).Select
 'Calculating total numbers for dropped and up
 Dim lstCelNum As String
@@ -649,18 +649,18 @@ Dim lstCelNumForChart As String
 lstCelNumForChart = ActiveCell.Address
 ActiveCell.Offset(10, 0).Select
 lstCelNum = ActiveCell.Address
-ActiveCell.value = "ZCSS"
-ActiveCell.Offset(2, 0).value = "0To1Year"
-ActiveCell.Offset(3, 0).value = "1To3Years"
-ActiveCell.Offset(4, 0).value = "3To5Years"
-ActiveCell.Offset(5, 0).value = "MoreThan5Years"
-ActiveCell.Offset(6, 0).value = "Warranty"
-ActiveCell.Offset(7, 0).value = "EOL"
-ActiveCell.Offset(8, 0).value = "ZCSP"
-ActiveCell.Offset(9, 0).value = "ZCSW"
-ActiveCell.Offset(1, 0).value = "Blanks"
+ActiveCell.Value = "ZCSS"
+ActiveCell.Offset(2, 0).Value = "0To1Year"
+ActiveCell.Offset(3, 0).Value = "1To3Years"
+ActiveCell.Offset(4, 0).Value = "3To5Years"
+ActiveCell.Offset(5, 0).Value = "MoreThan5Years"
+ActiveCell.Offset(6, 0).Value = "Warranty"
+ActiveCell.Offset(7, 0).Value = "EOL"
+ActiveCell.Offset(8, 0).Value = "ZCSP"
+ActiveCell.Offset(9, 0).Value = "ZCSW"
+ActiveCell.Offset(1, 0).Value = "Blanks"
 
-ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", LookAt:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
 Dim fstCelCount As String
 fstCelCount = ActiveCell.Offset(1, 0).Address
 Dim celNumber As Integer
@@ -703,7 +703,7 @@ Dim fstAddB4 As String
 Dim lstAddB4 As String
 
 ActiveSheet.Range(lstCelNum).Select
-ActiveSheet.UsedRange.Find(what:="Blanks", LookAt:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Blanks", lookat:=xlWhole).Select
 ActiveCell.Offset(0, 2).Select
 fstAddB = ActiveCell.Offset(1, 0).Address(False, False)
 lstAddB = ActiveCell.Offset(6, 0).Address(False, False)
@@ -960,9 +960,9 @@ ActiveSheet.name = "ContractDynamics-WaterFall"
 ActiveSheet.Cells(1, 1).Select
 
 Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
-Sheet1.lstBx6NC.value = ""
+Sheet1.lstBx6NC.Value = ""
 Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
-Sheet1.comb6NC2.value = ""
+Sheet1.comb6NC2.Value = ""
 ActiveWorkbook.Sheets("Data").delete
 Application.Workbooks(outputFile).Save
 Application.Calculation = xlCalculationAutomatic

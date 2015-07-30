@@ -19,7 +19,7 @@ Public Sub ImportCode()
 Dim objUserEnvVars As Object
 Dim strVar As String
 Set objUserEnvVars = CreateObject("WScript.Shell").Environment("User")
-strVar = objUserEnvVars.item("Dashboard_Automation")
+strVar = objUserEnvVars.Item("Dashboard_Automation")
 If Not InStr(strVar, "\") > 0 Then
         'In this case it is a new workbook, we skip it
         Exit Sub
@@ -35,7 +35,7 @@ Public Function getSourceDir(fullWorkbookPath As String, createIfNotExists As Bo
 Dim objUserEnvVars As Object
 Dim strVar As String
 Set objUserEnvVars = CreateObject("WScript.Shell").Environment("User")
-strVar = objUserEnvVars.item("Dashboard_Automation")
+strVar = objUserEnvVars.Item("Dashboard_Automation")
 
     ' First check if the fullWorkbookPath contains a \.
     If Not InStr(strVar, "\") > 0 Then

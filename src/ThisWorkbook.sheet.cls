@@ -28,6 +28,6 @@ Public Sub SetEnvironmentVariable()
 Dim objUserEnvVars As Object
 Dim strVar As String
 Set objUserEnvVars = CreateObject("WScript.Shell").Environment("User")
-strVar = objUserEnvVars.item("Dashboard_Automation")
+strVar = objUserEnvVars.Item("Dashboard_Automation")
 MsgBox strVar
 End Sub
