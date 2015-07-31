@@ -1,13 +1,13 @@
 Attribute VB_Name = "Revenue"
 Option Explicit
 Public revenueSelCountry As String
+Dim revenueOutputGlobal As String
 
 Public Sub Revenue_Graph_Creation()
 
 Dim NCNotPresent(20) As String
 Dim ncNt As Integer
 Dim inputFileNameContracts As String
-Dim outputFile As String
 Dim inputRevenue As String
 Dim fstAddForPivot As String
 Dim lstAddForPivot As String
@@ -34,15 +34,19 @@ Dim lastColumn
 Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 Dim strtMonth As String
+Dim marketInputFile As String
 
 'On Error Resume Next
 ncNt = 1
 'Copy Data from SAP file
 strtMonth = Format(Now() - 31, "mmmyyyy")
-inputRevenue = "EPV_SAPBW_" & strtMonth & ".xlsx"
+inputRevenue = "Revenue_MoS_Jan14_May15.xlsx"
+marketInputFile = "Market_Groups_Markets_Country.xlsx"
 SharedDrive_Path inputRevenue
 Application.Workbooks.Open (sharedDrivePath)
 inputFileNameContracts = inputRevenue
+SharedDrive_Path marketInputFile
+Application.Workbooks.Open (sharedDrivePath)
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 
@@ -62,16 +66,16 @@ For findSysCode = 0 To Sheet1.lstBx6NC.ListCount - 1
     End If
 Next
 
-outputFile = Left(sharedDrivePath, InStrRev(sharedDrivePath, "\") - 1) & "\" & "ContractDynamics_Waterfall_" & Format(Now, "mmmyy") & ".xlsx"
+revenueOutputGlobal = Left(sharedDrivePath, InStrRev(sharedDrivePath, "\") - 1) & "\" & "ContractDynamics_Waterfall_" & Format(Now, "mmmyy") & ".xlsx"
 Application.AlertBeforeOverwriting = False
 Application.DisplayAlerts = False
-If Dir(outputFile) = "" Then
+If Dir(revenueOutputGlobal) = "" Then
     Application.Workbooks.Add
-    ActiveWorkbook.SaveAs fileName:=outputFile, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
-    outputFile = ActiveWorkbook.name
+    ActiveWorkbook.SaveAs fileName:=revenueOutputGlobal, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
+    revenueOutputGlobal = ActiveWorkbook.name
 Else
-    Application.Workbooks.Open (outputFile)
-    outputFile = ActiveWorkbook.name
+    Application.Workbooks.Open (revenueOutputGlobal)
+    revenueOutputGlobal = ActiveWorkbook.name
 End If
 
 Workbooks(inputFileNameContracts).Activate
@@ -79,19 +83,49 @@ ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 fstAddForPivot = ActiveCell.Address
-ActiveCell.End(xlDown).Select
-ActiveCell.End(xlToRight).Select
+Selection.SpecialCells(xlCellTypeLastCell).Select
 lstAddForPivot = ActiveCell.Address
 ActiveSheet.Range(fstAddForPivot, lstAddForPivot).Select
 Selection.Copy
 
 'Paste Copied data in new workbook
-Workbooks(outputFile).Activate
+Workbooks(revenueOutputGlobal).Activate
 Sheets.Add
 With ActiveSheet.Range("A:A")
     .PasteSpecial xlPasteValues
 End With
 ActiveSheet.name = "Data"
+
+Application.Workbooks(marketInputFile).Activate
+ActiveWorkbook.Sheets("Sheet1").Activate
+ActiveSheet.UsedRange.Find(what:="Country Code", lookat:=xlWhole).Select
+Dim marketFSTAdd As String
+Dim marketLSTAdd As String
+
+marketFSTAdd = ActiveCell.Address
+Selection.SpecialCells(xlCellTypeLastCell).Select
+marketLSTAdd = ActiveCell.Address
+ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
+Selection.Copy
+
+Workbooks(revenueOutputGlobal).Activate
+ActiveWorkbook.Sheets("Data").Activate
+ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
+ActiveCell.End(xlToRight).Select
+ActiveCell.PasteSpecial xlPasteAll
+Dim marketRNG As Range
+Set marketRNG = Range(Selection.Address)
+
+ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
+ActiveCell.EntireColumn.Insert xlToRight
+ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
+ActiveCell.Offset(0, -1).Select
+ActiveCell.Value = "Market"
+
+Do Until ActiveCell.Offset(1, 1).Value = ""
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.Value = Application.WorksheetFunction.VLookup(ActiveCell.Offset(0, 1).Value, marketRNG, 2, False)
+Loop
 
 'Creating PivotTable
 'Application.Workbooks(inputFileNameContracts).Close False
@@ -884,41 +918,9 @@ ActiveSheet.ChartObjects("Chart 1").Activate
     ActiveChart.SeriesCollection(10).Select
     ActiveChart.SeriesCollection(10).ApplyDataLabels
 
-ActiveChart.SeriesCollection(9).Points(37).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.400000006
-        .Transparency = 0
-        .Solid
-    End With
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.SeriesCollection(10).Select
-    ActiveChart.SeriesCollection(10).Points(37).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.400000006
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.SeriesCollection(1).Points(37).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.400000006
-        .Solid
-    End With
+    ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveChart.SeriesCollection(1).Select
+    ActiveChart.SeriesCollection(1).Points(73).Select
     With Selection.Format.Fill
         .Visible = msoTrue
         .ForeColor.ObjectThemeColor = msoThemeColorAccent6
@@ -927,7 +929,41 @@ ActiveChart.SeriesCollection(9).Points(37).Select
         .Transparency = 0
         .Solid
     End With
-    
+    ActiveChart.SeriesCollection(10).Select
+    ActiveChart.SeriesCollection(9).Select
+    ActiveChart.SeriesCollection(9).Points(73).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.400000006
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.SeriesCollection(10).Select
+    ActiveChart.SeriesCollection(10).Points(73).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.8000000119
+        .Transparency = 0
+        .Solid
+    End With
+                
+'deleting old chart
+Dim ws As Worksheet
+For Each ws In ActiveWorkbook.Sheets
+    If ws.name = "Contracts-Data" Or ws.name = "ContractDynamics-WaterFall" Then
+        ws.delete
+    End If
+Next
+ActiveWorkbook.Sheets("Contracts-Chart").Activate
+ActiveSheet.name = "Contracts-Data"
+ActiveWorkbook.Sheets("Pivot").Activate
+ActiveSheet.name = "ContractDynamics-WaterFall"
+ActiveSheet.Cells(1, 1).Select
+
 Application.CutCopyMode = False
     ActiveWorkbook.SlicerCaches.Add(ActiveSheet.PivotTables("PivotTable1"), _
         "[C,S] System Code Material (Material no of  R Eq)").Slicers.Add ActiveSheet, _
@@ -945,27 +981,188 @@ Application.CutCopyMode = False
         "[C,S] System Code Material (Material no of  R Eq)")).Top = 10
     ActiveSheet.Shapes.Range(Array( _
         "[C,S] System Code Material (Material no of  R Eq)")).Left = 30
-            
-'deleting old chart
-Dim ws As Worksheet
-For Each ws In ActiveWorkbook.Sheets
-    If ws.name = "Contracts-Data" Or ws.name = "ContractDynamics-WaterFall" Then
-        ws.delete
-    End If
-Next
-ActiveWorkbook.Sheets("Contracts-Chart").Activate
-ActiveSheet.name = "Contracts-Data"
-ActiveWorkbook.Sheets("Pivot").Activate
-ActiveSheet.name = "ContractDynamics-WaterFall"
-ActiveSheet.Cells(1, 1).Select
 
 Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
 Sheet1.lstBx6NC.Value = ""
 Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
 Sheet1.comb6NC2.Value = ""
-ActiveWorkbook.Sheets("Data").delete
-Application.Workbooks(outputFile).Save
+Application.Workbooks(revenueOutputGlobal).Save
 Application.Calculation = xlCalculationAutomatic
 
 End Sub
 
+Public Sub Market_Revenue_Chart_Generation()
+
+Dim pvtTbl As PivotTable
+Dim wsData As Worksheet
+Dim rngData As Range
+Dim PvtTblCache As PivotCache
+Dim pvtFld As PivotField
+Dim lastRow
+Dim lastColumn
+Dim rngDataForPivot As String
+Dim pvtItem As PivotItem
+
+revenueOutputGlobal = "ContractDynamics_Waterfall_Jul15.xlsx"
+Application.Workbooks(revenueOutputGlobal).Activate
+ActiveWorkbook.Sheets("Data").Activate
+ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
+ActiveCell.EntireColumn.Insert xlToRight
+ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
+ActiveCell.Offset(0, -1).Select
+ActiveCell.Value = "Fiscal Year/Period"
+Do Until ActiveCell.Offset(1, 1).Value = ""
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.Value = Mid(ActiveCell.Offset(0, 1).Value, 5, 4) & "-" & Mid(ActiveCell.Offset(0, 1).Value, 2, 2)
+Loop
+
+ActiveSheet.UsedRange.Select
+
+Set wsData = Worksheets("Data")
+
+'A Pivot Cache represents the memory cache for a PivotTable report. Each Pivot Table report has one cache only. Create a new PivotTable cache, and then create a new PivotTable report based on the cache.
+
+'determine source data range (dynamic):
+'last row in column no. 1:
+lastRow = wsData.Cells(Rows.Count, 1).End(xlUp).Row
+'last column in row no. 1:
+lastColumn = wsData.Cells(1, Columns.Count).End(xlToLeft).Column
+
+Set rngData = wsData.Cells(1, 1).Resize(lastRow, lastColumn)
+rngDataForPivot = rngData.Address
+'for creating a Pivot Cache (version excel 2003), use the PivotCaches.Create Method. When version is not specified, default version of the PivotTable will be xlPivotTableVersion12:
+
+Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion14)
+'create a PivotTable report based on a Pivot Cache, using the PivotCache.CreatePivotTable method. TableDestination is mandatory to specify in this method.
+
+'create PivotTable in a new worksheet:
+Sheets.Add
+ActiveSheet.name = "Pivot"
+Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R40C1", TableName:="marketPivotTable", DefaultVersion:=xlPivotTableVersion14)
+
+'change style of the new PivotTable:
+pvtTbl.TableStyle2 = "PivotStyleMedium3"
+
+'to view the PivotTable in Classic Pivot Table Layout, set InGridDropZones property to True, else set to False:
+pvtTbl.InGridDropZones = True
+
+'Default value of ManualUpdate property is False wherein a PivotTable report is recalculated automatically on each change. Turn off automatic updation of Pivot Table during the process of its creation to speed up code.
+pvtTbl.ManualUpdate = True
+
+Dim pvtTblName As String
+pvtTblName = pvtTbl.name
+'Add row, column and page fields in a Pivot Table using the AddFields method:
+    ActiveWorkbook.Sheets("Pivot").Select
+    Cells(40, 1).Select
+    With ActiveSheet.PivotTables("marketPivotTable").PivotFields("Market")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("marketPivotTable").PivotFields("Market")
+        .Orientation = xlColumnField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("marketPivotTable").PivotFields( _
+        "Fiscal Year/Period")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
+    ActiveSheet.PivotTables("marketPivotTable").AddDataField ActiveSheet. _
+        PivotTables("marketPivotTable").PivotFields("    Total Contract Revenue"), _
+        "Count of     Total Contract Revenue", xlCount
+    With ActiveSheet.PivotTables("marketPivotTable").PivotFields( _
+        "Count of     Total Contract Revenue")
+        .Caption = "Sum of     Total Contract Revenue"
+        .Function = xlSum
+    End With
+    With ActiveSheet.PivotTables("marketPivotTable").PivotFields( _
+        "[C,S] Company Code")
+        .Orientation = xlPageField
+        .Position = 1
+    End With
+
+pvtTbl.ManualUpdate = False
+
+ActiveSheet.Shapes.AddChart.Select
+    ActiveChart.ChartType = xlAreaStacked
+    ActiveChart.SetSourceData Source:=Range("Pivot!$A$40:$Q$59")
+    ActiveSheet.Shapes("Chart 1").IncrementLeft -217.5
+    ActiveSheet.Shapes("Chart 1").IncrementTop -488.25
+    ActiveSheet.Shapes("Chart 1").ScaleWidth 2.1406251094, msoFalse, _
+        msoScaleFromTopLeft
+    ActiveSheet.Shapes("Chart 1").ScaleHeight 2.0642362934, msoFalse, _
+        msoScaleFromTopLeft
+        ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveChart.SeriesCollection(1).Select
+    ActiveChart.SeriesCollection(1).ApplyDataLabels
+    ActiveChart.SeriesCollection(1).DataLabels.Select
+    Selection.NumberFormat = "#,##0.00"
+    Selection.NumberFormat = "#,##0"
+    ActiveChart.SeriesCollection(1).Select
+    ActiveChart.SeriesCollection(1).DataLabels.Select
+    ActiveChart.Axes(xlValue).MajorGridlines.Select
+    ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveChart.SeriesCollection(1).Select
+    ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveChart.SeriesCollection(2).Select
+    ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveChart.SeriesCollection(2).ApplyDataLabels
+    ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveChart.SeriesCollection(2).DataLabels.Select
+    Selection.NumberFormat = "#,##0.00"
+    Selection.NumberFormat = "#,##0"
+    Selection.NumberFormat = "0"
+    ActiveChart.SeriesCollection(3).Select
+    ActiveChart.SeriesCollection(3).ApplyDataLabels
+    ActiveChart.SeriesCollection(3).DataLabels.Select
+    Selection.NumberFormat = "#,##0.00"
+    Selection.NumberFormat = "#,##0"
+    Selection.NumberFormat = "0"
+    ActiveChart.SeriesCollection(4).Select
+    ActiveChart.SeriesCollection(4).ApplyDataLabels
+    ActiveChart.SeriesCollection(4).DataLabels.Select
+    Selection.NumberFormat = "#,##0.00"
+    Selection.NumberFormat = "0.00"
+    Selection.NumberFormat = "0"
+    ActiveChart.SeriesCollection(6).Select
+    ActiveChart.SeriesCollection(5).Select
+    ActiveChart.SeriesCollection(5).ApplyDataLabels
+    ActiveChart.SeriesCollection(5).DataLabels.Select
+    Selection.NumberFormat = "#,##0.00"
+    Selection.NumberFormat = "#,##0"
+    Selection.NumberFormat = "0"
+    ActiveChart.SeriesCollection(6).Select
+    ActiveChart.SeriesCollection(6).ApplyDataLabels
+    ActiveChart.SeriesCollection(6).DataLabels.Select
+    Selection.NumberFormat = "#,##0.00"
+    Selection.NumberFormat = "#,##0"
+    Selection.NumberFormat = "0"
+    ActiveChart.SeriesCollection(7).Select
+    ActiveChart.SeriesCollection(7).ApplyDataLabels
+    ActiveChart.SeriesCollection(7).DataLabels.Select
+    Selection.NumberFormat = "#,##0.00"
+    Selection.NumberFormat = "0.00"
+    Selection.NumberFormat = "0"
+    ActiveChart.SeriesCollection(8).Select
+    ActiveChart.SeriesCollection(8).ApplyDataLabels
+    ActiveChart.SeriesCollection(8).DataLabels.Select
+    Selection.NumberFormat = "#,##0.00"
+    Selection.NumberFormat = "0.00"
+    Selection.NumberFormat = "0"
+    ActiveChart.SeriesCollection(9).Select
+    ActiveChart.SeriesCollection(9).ApplyDataLabels
+    ActiveChart.SeriesCollection(9).DataLabels.Select
+    Selection.NumberFormat = "#,##0.00"
+    Selection.NumberFormat = "0.00"
+    Selection.NumberFormat = "0"
+    ActiveChart.SeriesCollection(10).Select
+    ActiveChart.SeriesCollection(10).ApplyDataLabels
+    ActiveChart.SeriesCollection(10).DataLabels.Select
+    Selection.NumberFormat = "#,##0.00"
+    Selection.NumberFormat = "0.00"
+    Selection.NumberFormat = "0"
+ActiveSheet.Cells(1, 1).Select
+ActiveSheet.name = "Market_Dynamics"
+
+End Sub
