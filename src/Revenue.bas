@@ -1,7 +1,8 @@
 Attribute VB_Name = "Revenue"
 Option Explicit
 Public revenueSelCountry As String
-Dim revenueOutputGlobal As String
+Public revenueOutputGlobal As String
+Public marketInputFile As String
 
 Public Sub Revenue_Graph_Creation()
 
@@ -34,7 +35,6 @@ Dim lastColumn
 Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 Dim strtMonth As String
-Dim marketInputFile As String
 
 'On Error Resume Next
 ncNt = 1
@@ -43,10 +43,10 @@ strtMonth = Format(Now() - 31, "mmmyyyy")
 inputRevenue = "Revenue_MoS_Jan14_May15.xlsx"
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
 SharedDrive_Path inputRevenue
-Application.Workbooks.Open (sharedDrivePath)
+Application.Workbooks.Open (sharedDrivePath), False
 inputFileNameContracts = inputRevenue
 SharedDrive_Path marketInputFile
-Application.Workbooks.Open (sharedDrivePath)
+Application.Workbooks.Open (sharedDrivePath), False
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 
@@ -74,7 +74,7 @@ If Dir(revenueOutputGlobal) = "" Then
     ActiveWorkbook.SaveAs fileName:=revenueOutputGlobal, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
     revenueOutputGlobal = ActiveWorkbook.name
 Else
-    Application.Workbooks.Open (revenueOutputGlobal)
+    Application.Workbooks.Open (revenueOutputGlobal), False
     revenueOutputGlobal = ActiveWorkbook.name
 End If
 
@@ -96,37 +96,6 @@ With ActiveSheet.Range("A:A")
 End With
 ActiveSheet.name = "Data"
 
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet1").Activate
-ActiveSheet.UsedRange.Find(what:="Country Code", lookat:=xlWhole).Select
-Dim marketFSTAdd As String
-Dim marketLSTAdd As String
-
-marketFSTAdd = ActiveCell.Address
-Selection.SpecialCells(xlCellTypeLastCell).Select
-marketLSTAdd = ActiveCell.Address
-ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
-Selection.Copy
-
-Workbooks(revenueOutputGlobal).Activate
-ActiveWorkbook.Sheets("Data").Activate
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
-ActiveCell.End(xlToRight).Select
-ActiveCell.PasteSpecial xlPasteAll
-Dim marketRNG As Range
-Set marketRNG = Range(Selection.Address)
-
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
-ActiveCell.EntireColumn.Insert xlToRight
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Select
-ActiveCell.Value = "Market"
-
-Do Until ActiveCell.Offset(1, 1).Value = ""
-    ActiveCell.Offset(1, 0).Select
-    ActiveCell.Value = Application.WorksheetFunction.VLookup(ActiveCell.Offset(0, 1).Value, marketRNG, 2, False)
-Loop
-
 'Creating PivotTable
 'Application.Workbooks(inputFileNameContracts).Close False
 
@@ -145,13 +114,13 @@ Set rngData = wsData.Cells(1, 1).Resize(lastRow, lastColumn)
 rngDataForPivot = rngData.Address
 'for creating a Pivot Cache (version excel 2003), use the PivotCaches.Create Method. When version is not specified, default version of the PivotTable will be xlPivotTableVersion12:
 
-Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion14)
+Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion15)
 'create a PivotTable report based on a Pivot Cache, using the PivotCache.CreatePivotTable method. TableDestination is mandatory to specify in this method.
 
 'create PivotTable in a new worksheet:
 Sheets.Add
 ActiveSheet.name = "Pivot"
-Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion14)
+Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R1C1", TableName:="PivotTable1", DefaultVersion:=xlPivotTableVersion15)
 
 'change style of the new PivotTable:
 pvtTbl.TableStyle2 = "PivotStyleMedium3"
@@ -175,12 +144,12 @@ pvtTblName = pvtTbl.name
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] System Code Material (Material no of  R Eq)").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
-    With ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Company Code")
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields("Country")
         .Orientation = xlRowField
         .Position = 2
     End With
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "[C,S] Company Code").Subtotals = Array(False, False, False, False _
+        "Country").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Reference Equipment")
@@ -522,7 +491,7 @@ ActiveCell.Offset(1, 0).Select
 Next
 
 'Filling country code in the table
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 Dim rowCount As Integer
 Dim lstRowCnt As Long
@@ -538,7 +507,7 @@ For rowCount = 0 To lstRowCnt - 4
         ActiveCell.Offset(1, 0).Select
     End If
 Next
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 For rowCount = 0 To lstRowCnt - 4
     If ActiveCell.Offset(1, -1).Value = "" Then
@@ -573,9 +542,9 @@ tempB = Application.ConvertFormula(Formula:=lstPivoAdd, FromReferenceStyle:=xlA1
     Set pivoWs = ActiveSheet
     
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-        rngData2, Version:=xlPivotTableVersion14). _
+        rngData2, Version:=xlPivotTableVersion15). _
         CreatePivotTable TableDestination:="Pivot!R30C1", TableName:="PivotTable1" _
-        , DefaultVersion:=xlPivotTableVersion14
+        , DefaultVersion:=xlPivotTableVersion15
         
 ActiveSheet.Cells(30, 1).Select
 Dim pvtName As String
@@ -602,12 +571,12 @@ pvtName = ActiveCell.PivotTable.name
         .DisplayContextTooltips = False
         .ShowDrillIndicators = False
     End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields("[C,S] Company Code")
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields("Country")
         .Orientation = xlRowField
         .Position = 2
     End With
     ActiveSheet.PivotTables("PivotTable1").PivotFields( _
-        "[C,S] Company Code").Subtotals = Array(False, _
+        "Country").Subtotals = Array(False, _
         False, False, False, False, False, False, False, False, False, False, False)
     Range("B5").Select
     With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
@@ -821,7 +790,7 @@ lstChartAdd = ActiveCell.Address
     ActiveChart.SeriesCollection(9).Select
     With Selection.Format.Fill
         .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent3
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent1
         .ForeColor.TintAndShade = 0
         .ForeColor.Brightness = -0.5
         .Solid
@@ -881,7 +850,7 @@ ElseIf i = 3 Then
 End If
 .BackColor.ObjectThemeColor = msoThemeColorAccent2
 .BackColor.TintAndShade = 0
-.BackColor.Brightness = 0.4
+.BackColor.Brightness = 0.4000006
 End With
 
 nPoint = s.Points.Count
@@ -890,7 +859,7 @@ If InStr(1, s.XValues(iPoint), "Joined") Then
 s.Points(iPoint).Select
 With Selection.Format.Fill
 .Visible = msoTrue
-.ForeColor.ObjectThemeColor = msoThemeColorAccent3
+.ForeColor.ObjectThemeColor = msoThemeColorAccent6
 .ForeColor.TintAndShade = 0
 If colorCounter = 4 Then
 .ForeColor.Brightness = -0.25
@@ -923,7 +892,7 @@ ActiveSheet.ChartObjects("Chart 1").Activate
     ActiveChart.SeriesCollection(1).Points(73).Select
     With Selection.Format.Fill
         .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
         .ForeColor.TintAndShade = 0
         .ForeColor.Brightness = -0.25
         .Transparency = 0
@@ -934,7 +903,7 @@ ActiveSheet.ChartObjects("Chart 1").Activate
     ActiveChart.SeriesCollection(9).Points(73).Select
     With Selection.Format.Fill
         .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
         .ForeColor.TintAndShade = 0
         .ForeColor.Brightness = 0.400000006
         .Transparency = 0
@@ -944,7 +913,7 @@ ActiveSheet.ChartObjects("Chart 1").Activate
     ActiveChart.SeriesCollection(10).Points(73).Select
     With Selection.Format.Fill
         .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
         .ForeColor.TintAndShade = 0
         .ForeColor.Brightness = 0.8000000119
         .Transparency = 0
@@ -962,25 +931,44 @@ ActiveWorkbook.Sheets("Contracts-Chart").Activate
 ActiveSheet.name = "Contracts-Data"
 ActiveWorkbook.Sheets("Pivot").Activate
 ActiveSheet.name = "ContractDynamics-WaterFall"
+Range("A1:J29").Select
+    With Selection.Interior
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorLight2
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
 ActiveSheet.Cells(1, 1).Select
+
 
 Application.CutCopyMode = False
     ActiveWorkbook.SlicerCaches.Add(ActiveSheet.PivotTables("PivotTable1"), _
         "[C,S] System Code Material (Material no of  R Eq)").Slicers.Add ActiveSheet, _
         , "[C,S] System Code Material (Material no of  R Eq)", _
-        "[C,S] System Code Material (Material no of  R Eq)", 120, 153.75, 144, 198.75
+        "[C,S] System Code Material (Material no of  R Eq)", 120, 153, 144, 198
     ActiveWorkbook.SlicerCaches.Add(ActiveSheet.PivotTables("PivotTable1"), _
-        "[C,S] Company Code").Slicers.Add ActiveSheet, , "[C,S] Company Code", _
-        "[C,S] Company Code", 157.5, 191.25, 144, 198.75
-    ActiveSheet.Shapes.Range(Array("[C,S] Company Code")).Select
-    ActiveSheet.Shapes.Range(Array("[C,S] Company Code")).Top = 10
-    ActiveSheet.Shapes.Range(Array("[C,S] Company Code")).Left = 10
+        "Country").Slicers.Add ActiveSheet, , "Country", _
+        "Country", 220.5, 153, 144, 198
+    ActiveSheet.Shapes.Range(Array("Country")).Select
+    ActiveSheet.Shapes.Range(Array("Country")).Top = 10
+    ActiveSheet.Shapes.Range(Array("Country")).Left = 10
     ActiveSheet.Shapes.Range(Array( _
         "[C,S] System Code Material (Material no of  R Eq)")).Select
     ActiveSheet.Shapes.Range(Array( _
         "[C,S] System Code Material (Material no of  R Eq)")).Top = 10
     ActiveSheet.Shapes.Range(Array( _
         "[C,S] System Code Material (Material no of  R Eq)")).Left = 30
+    ActiveSheet.Shapes("Country").IncrementLeft -0.75
+    ActiveSheet.Shapes("Country").IncrementTop 210.75
+    ActiveSheet.Shapes.Range(Array( _
+        "[C,S] System Code Material (Material no of  R Eq)")).Select
+    ActiveSheet.Shapes("[C,S] System Code Material (Material no of  R Eq)"). _
+        IncrementLeft -21
+    ActiveSheet.Shapes("Chart 1").ScaleWidth 1.1013888889, msoFalse, _
+        msoScaleFromTopLeft
+    ActiveSheet.Shapes("Chart 1").ScaleHeight 1.2615384615, msoFalse, _
+        msoScaleFromTopLeft
+
 
 Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
 Sheet1.lstBx6NC.Value = ""
@@ -1003,7 +991,47 @@ Dim lastColumn
 Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 
-revenueOutputGlobal = "ContractDynamics_Waterfall_Jul15.xlsx"
+marketInputFile = "Market_Groups_Markets_Country.xlsx"
+Application.Workbooks(marketInputFile).Activate
+ActiveWorkbook.Sheets("Sheet1").Activate
+ActiveSheet.UsedRange.AutoFilter
+ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
+ActiveSheet.UsedRange.Find(what:="Country Code", lookat:=xlWhole).Select
+Dim marketFSTAdd As String
+Dim marketLSTAdd As String
+
+marketFSTAdd = ActiveCell.Address
+Selection.SpecialCells(xlCellTypeLastCell).Select
+marketLSTAdd = ActiveCell.Address
+ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
+Selection.Copy
+
+Workbooks(revenueOutputGlobal).Activate
+ActiveWorkbook.Sheets("Data").Activate
+ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
+ActiveCell.End(xlToRight).Select
+ActiveCell.Offset(0, 1).Select
+ActiveCell.PasteSpecial xlPasteAll
+Dim marketRNG As Range
+Set marketRNG = Range(Selection.Address)
+
+ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
+ActiveCell.EntireColumn.Insert xlToRight
+ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
+ActiveCell.Offset(0, -1).Value = "Market"
+
+Do Until ActiveCell.Offset(1, 0).Value = ""
+    On Error Resume Next
+    ActiveCell.Offset(1, 0).Select
+    If ActiveCell.Value = ActiveCell.Offset(-1, 0).Value Then
+        ActiveCell.Offset(0, -1).Value = ActiveCell.Offset(-1, -1).Value
+    Else
+        ActiveCell.Offset(0, -1).Value = Application.WorksheetFunction.VLookup(ActiveCell.Value, marketRNG, 2, False)
+    End If
+Loop
+
+
+revenueOutputGlobal = "ContractDynamics_Waterfall_Aug15.xlsx"
 Application.Workbooks(revenueOutputGlobal).Activate
 ActiveWorkbook.Sheets("Data").Activate
 ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
@@ -1032,13 +1060,13 @@ Set rngData = wsData.Cells(1, 1).Resize(lastRow, lastColumn)
 rngDataForPivot = rngData.Address
 'for creating a Pivot Cache (version excel 2003), use the PivotCaches.Create Method. When version is not specified, default version of the PivotTable will be xlPivotTableVersion12:
 
-Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion14)
+Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion15)
 'create a PivotTable report based on a Pivot Cache, using the PivotCache.CreatePivotTable method. TableDestination is mandatory to specify in this method.
 
 'create PivotTable in a new worksheet:
 Sheets.Add
 ActiveSheet.name = "Pivot"
-Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R40C1", TableName:="marketPivotTable", DefaultVersion:=xlPivotTableVersion14)
+Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R40C1", TableName:="marketPivotTable", DefaultVersion:=xlPivotTableVersion15)
 
 'change style of the new PivotTable:
 pvtTbl.TableStyle2 = "PivotStyleMedium3"
@@ -1076,7 +1104,7 @@ pvtTblName = pvtTbl.name
         .Function = xlSum
     End With
     With ActiveSheet.PivotTables("marketPivotTable").PivotFields( _
-        "[C,S] Company Code")
+        "Country")
         .Orientation = xlPageField
         .Position = 1
     End With

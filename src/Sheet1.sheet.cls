@@ -1,9 +1,20 @@
 Option Explicit
 Public exitLoop As Integer
 
+Private Sub chkDashboard_Click()
+    Sheet1.combYear.Enabled = True
+    Sheet1.cmbIncreaseMonth.Enabled = True
+    Sheet1.cmbDecreaseMonth.Enabled = True
+End Sub
 
 Private Sub chkDashboard_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
 Call showInfoTip(lblDashboard)
+End Sub
+
+Private Sub chkRevenue_Click()
+    Sheet1.combYear.Enabled = False
+    Sheet1.cmbIncreaseMonth.Enabled = False
+    Sheet1.cmbDecreaseMonth.Enabled = False
 End Sub
 
 'output file generation
