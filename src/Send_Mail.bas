@@ -50,7 +50,7 @@ NewMail.Configuration.Fields.Update
 With NewMail
   .Subject = ""
   .From = ""
-  .to = ""
+  .To = ""
   .CC = ""
   .BCC = ""
   .textbody = ""
