@@ -53,6 +53,8 @@ startTime = Second(Now())
     ElseIf Sheet1.chkRevenue.Value = True Then
             
             Call Revenue_Graph_Creation
+            
+            Call Market_Revenue_Chart_Generation
     
     ElseIf Sheet1.chkCTS.Value = True Then
     

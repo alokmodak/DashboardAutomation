@@ -36,7 +36,7 @@ Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 Dim strtMonth As String
 
-'On Error Resume Next
+On Error Resume Next
 ncNt = 1
 'Copy Data from SAP file
 strtMonth = Format(Now() - 31, "mmmyyyy")
@@ -763,19 +763,19 @@ lstChartAdd = ActiveCell.Address
     ActiveSheet.Shapes.AddChart.Select
     ActiveChart.ChartType = xlColumnStacked
     ActiveChart.SetSourceData Source:=Range("Pivot!" & chartRange)
-    ActiveChart.SeriesCollection(2).Select
+    ActiveChart.seriesCollection(2).Select
     ActiveChart.ClearToMatchStyle
     ActiveChart.ChartStyle = 18
     ActiveChart.ClearToMatchStyle
     Selection.Format.Fill.Visible = msoFalse
-    ActiveChart.SeriesCollection(1).Select
+    ActiveChart.seriesCollection(1).Select
     ActiveChart.ChartGroups(1).GapWidth = 0
     
     ActiveChart.PlotArea.Select
     ActiveChart.ChartArea.Select
     ActiveChart.Axes(xlCategory).Select
-    ActiveChart.SeriesCollection(1).Select
-    ActiveChart.SeriesCollection(1).ApplyDataLabels
+    ActiveChart.seriesCollection(1).Select
+    ActiveChart.seriesCollection(1).ApplyDataLabels
     
     ActiveChart.SetElement (msoElementDataLabelCenter)
     ActiveChart.SetElement (msoElementChartTitleCenteredOverlay)
@@ -787,7 +787,7 @@ lstChartAdd = ActiveCell.Address
          .Top = 10    ' reposition
          .Left = 160   ' reposition
      End With
-    ActiveChart.SeriesCollection(9).Select
+    ActiveChart.seriesCollection(9).Select
     With Selection.Format.Fill
         .Visible = msoTrue
         .ForeColor.ObjectThemeColor = msoThemeColorAccent1
@@ -803,7 +803,7 @@ lstChartAdd = ActiveCell.Address
         .Transparency = 0
         .Solid
     End With
-    ActiveChart.SeriesCollection(10).Select
+    ActiveChart.seriesCollection(10).Select
     With Selection.Format.Fill
         .Visible = msoTrue
         .ForeColor.ObjectThemeColor = msoThemeColorText2
@@ -831,7 +831,7 @@ colorCounter = 1
 
 Set c = ActiveChart
 For i = 3 To 8
-Set s = c.SeriesCollection(i)
+Set s = c.seriesCollection(i)
 s.Select
 With Selection.Format.Fill
 .Visible = msoTrue
@@ -859,7 +859,7 @@ If InStr(1, s.XValues(iPoint), "Joined") Then
 s.Points(iPoint).Select
 With Selection.Format.Fill
 .Visible = msoTrue
-.ForeColor.ObjectThemeColor = msoThemeColorAccent6
+.ForeColor.ObjectThemeColor = msoThemeColorAccent3
 .ForeColor.TintAndShade = 0
 If colorCounter = 4 Then
 .ForeColor.Brightness = -0.25
@@ -882,14 +882,14 @@ Next iPoint
 Next i
 
 ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveChart.SeriesCollection(9).Select
-    ActiveChart.SeriesCollection(9).ApplyDataLabels
-    ActiveChart.SeriesCollection(10).Select
-    ActiveChart.SeriesCollection(10).ApplyDataLabels
+    ActiveChart.seriesCollection(9).Select
+    ActiveChart.seriesCollection(9).ApplyDataLabels
+    ActiveChart.seriesCollection(10).Select
+    ActiveChart.seriesCollection(10).ApplyDataLabels
 
     ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveChart.SeriesCollection(1).Select
-    ActiveChart.SeriesCollection(1).Points(73).Select
+    ActiveChart.seriesCollection(1).Select
+    ActiveChart.seriesCollection(1).Points(73).Select
     With Selection.Format.Fill
         .Visible = msoTrue
         .ForeColor.ObjectThemeColor = msoThemeColorAccent2
@@ -898,9 +898,9 @@ ActiveSheet.ChartObjects("Chart 1").Activate
         .Transparency = 0
         .Solid
     End With
-    ActiveChart.SeriesCollection(10).Select
-    ActiveChart.SeriesCollection(9).Select
-    ActiveChart.SeriesCollection(9).Points(73).Select
+    ActiveChart.seriesCollection(10).Select
+    ActiveChart.seriesCollection(9).Select
+    ActiveChart.seriesCollection(9).Points(73).Select
     With Selection.Format.Fill
         .Visible = msoTrue
         .ForeColor.ObjectThemeColor = msoThemeColorAccent2
@@ -909,8 +909,8 @@ ActiveSheet.ChartObjects("Chart 1").Activate
         .Transparency = 0
         .Solid
     End With
-    ActiveChart.SeriesCollection(10).Select
-    ActiveChart.SeriesCollection(10).Points(73).Select
+    ActiveChart.seriesCollection(10).Select
+    ActiveChart.seriesCollection(10).Points(73).Select
     With Selection.Format.Fill
         .Visible = msoTrue
         .ForeColor.ObjectThemeColor = msoThemeColorAccent2
@@ -991,7 +991,9 @@ Dim lastColumn
 Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 
+revenueOutputGlobal = "ContractDynamics_Waterfall_Aug15.xlsx"
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
+
 Application.Workbooks(marketInputFile).Activate
 ActiveWorkbook.Sheets("Sheet1").Activate
 ActiveSheet.UsedRange.AutoFilter
@@ -1006,6 +1008,7 @@ marketLSTAdd = ActiveCell.Address
 ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
 Selection.Copy
 
+'Adding Market column
 Workbooks(revenueOutputGlobal).Activate
 ActiveWorkbook.Sheets("Data").Activate
 ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
@@ -1020,18 +1023,29 @@ ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
 ActiveCell.Offset(0, -1).Value = "Market"
 
-Do Until ActiveCell.Offset(1, 0).Value = ""
-    On Error Resume Next
-    ActiveCell.Offset(1, 0).Select
-    If ActiveCell.Value = ActiveCell.Offset(-1, 0).Value Then
-        ActiveCell.Offset(0, -1).Value = ActiveCell.Offset(-1, -1).Value
-    Else
-        ActiveCell.Offset(0, -1).Value = Application.WorksheetFunction.VLookup(ActiveCell.Value, marketRNG, 2, False)
-    End If
-Loop
+Dim lstPasteRNG As String
+Dim fstPasteRNG As String
+Dim lookForVal As String
+Dim rngStringMarket As String
 
+rngStringMarket = marketRNG.Address
+ActiveCell.Offset(1, 0).Select
+fstPasteRNG = ActiveCell.Offset(0, -1).Address
+ActiveCell.End(xlDown).Select
+lstPasteRNG = ActiveCell.Offset(0, -1).Address
+ActiveCell.End(xlUp).Select
+ActiveCell.Offset(1, 0).Select
+lookForVal = ActiveCell.Address(False, False)
 
-revenueOutputGlobal = "ContractDynamics_Waterfall_Aug15.xlsx"
+ActiveCell.Offset(0, -1).Select
+ActiveCell.Formula = "=VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)"
+ActiveCell.Copy
+ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
+ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
+Selection.Copy
+Selection.PasteSpecial (xlValues)
+
+'adding Fiscal Year/Period Column
 Application.Workbooks(revenueOutputGlobal).Activate
 ActiveWorkbook.Sheets("Data").Activate
 ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
@@ -1039,10 +1053,23 @@ ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
 ActiveCell.Offset(0, -1).Select
 ActiveCell.Value = "Fiscal Year/Period"
-Do Until ActiveCell.Offset(1, 1).Value = ""
-    ActiveCell.Offset(1, 0).Select
-    ActiveCell.Value = Mid(ActiveCell.Offset(0, 1).Value, 5, 4) & "-" & Mid(ActiveCell.Offset(0, 1).Value, 2, 2)
-Loop
+
+ActiveCell.Offset(1, 1).Select
+fstPasteRNG = ActiveCell.Offset(0, -1).Address
+ActiveCell.Offset(0, 1).Select
+ActiveCell.End(xlDown).Select
+ActiveCell.Offset(0, -1).Select
+lstPasteRNG = ActiveCell.Offset(0, -1).Address
+ActiveCell.End(xlUp).Select
+ActiveCell.Offset(1, -1).Select
+lookForVal = ActiveCell.Offset(0, 1).Address(False, False)
+
+ActiveCell.Formula = "=MID(" & lookForVal & ", 5, 4)" & "&" & Chr(34) & "-" & Chr(34) & "&" & "MID(" & lookForVal & ", 2, 2)"
+ActiveCell.Copy
+ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
+ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
+Selection.Copy
+Selection.PasteSpecial (xlValues)
 
 ActiveSheet.UsedRange.Select
 
@@ -1108,89 +1135,623 @@ pvtTblName = pvtTbl.name
         .Orientation = xlPageField
         .Position = 1
     End With
+    With ActiveSheet.PivotTables("marketPivotTable")
+        .RowGrand = False
+    End With
+    
+    ActiveSheet.PivotTables("marketPivotTable").PivotFields("Market").AutoSort _
+        xlDescending, "Sum of     Total Contract Revenue"
 
 pvtTbl.ManualUpdate = False
+    
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    Dim fstPercentAdd As String
+    Dim lstPercentAdd As String
+    Dim marketCelAdd As String
+    Dim lstMarketAdd As String
+    
+    fstPercentAdd = ActiveCell.Offset(2, 0).Address(False, True)
+    marketCelAdd = ActiveCell.Offset(1, 2).Address
+    ActiveCell.End(xlDown).Select
+    lstPercentAdd = ActiveCell.Address
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.Formula = "=" & fstPercentAdd
+    Selection.Copy
+    Dim periodRowCount As Integer
+    For periodRowCount = 1 To Range(fstPercentAdd, lstPercentAdd).Count - 1
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+    Next
+    
+    Dim numCounter As Integer
+    numCounter = 1
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.EntireColumn.Insert xlToRight
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    Do Until ActiveCell.Value = ""
+        ActiveCell.Offset(0, -1).Value = numCounter
+        ActiveCell.Offset(1, 0).Select
+        numCounter = numCounter + 1
+    Loop
+    
+    lstPercentAdd = ActiveCell.Address
+    ActiveSheet.Range(fstPercentAdd).Select
+    ActiveCell.End(xlToRight).Select
+    lstMarketAdd = ActiveCell.Address(False, False)
+    
+    Dim constAddMarketCelAdd As String
+    constAddMarketCelAdd = ActiveSheet.Range(marketCelAdd).Address(False, False)
+    ActiveSheet.Range(lstPercentAdd).Select
+    ActiveCell.Offset(1, 1).Select
+    ActiveCell.Formula = "=" & constAddMarketCelAdd
+    ActiveCell.Copy
+    Dim marketColCount As Integer
+    For marketColCount = 1 To ActiveSheet.Range(marketCelAdd, lstMarketAdd).Count - 1
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+    Next
 
-ActiveSheet.Shapes.AddChart.Select
-    ActiveChart.ChartType = xlAreaStacked
-    ActiveChart.SetSourceData Source:=Range("Pivot!$A$40:$Q$59")
-    ActiveSheet.Shapes("Chart 1").IncrementLeft -217.5
-    ActiveSheet.Shapes("Chart 1").IncrementTop -488.25
-    ActiveSheet.Shapes("Chart 1").ScaleWidth 2.1406251094, msoFalse, _
-        msoScaleFromTopLeft
-    ActiveSheet.Shapes("Chart 1").ScaleHeight 2.0642362934, msoFalse, _
-        msoScaleFromTopLeft
+    Dim fstForPercentCal As String
+    Dim lstForPercentCal As String
+    
+    Dim percentCal As Integer
+    Dim perCounter As Integer
+    Dim perCounterAdd As String
+    Dim lstperCounterAdd As String
+    Dim lstCelAdd As String
+    Dim lstCelForCal As String
+    
+    ActiveSheet.Range(lstPercentAdd).Select
+    ActiveCell.Offset(2, 1).Select
+    fstForPercentCal = ActiveCell.Offset(-1, 0).Address(True, False)
+    ActiveSheet.Range(marketCelAdd).Select
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.End(xlDown).Select
+    lstForPercentCal = ActiveCell.Address
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 1).Select
+    lstperCounterAdd = ActiveCell.Address(True, False)
+    ActiveCell.End(xlDown).Select
+    perCounterAdd = ActiveCell.Address(True, False)
+    
+    ActiveSheet.Range(lstPercentAdd).Select
+    ActiveCell.Offset(2, 1).Select
+    lstCelAdd = ActiveCell.Address
+    ActiveCell.Formula = "=HLOOKUP(" & fstForPercentCal & "," & marketCelAdd & ":" & lstForPercentCal & "," & fstPercentAdd & ",FALSE)/SUM(" & lstperCounterAdd & ":" & "C$59)"
+    ActiveCell.Copy
+    ActiveCell.SpecialCells(xlCellTypeLastCell).Select
+    lstperCounterAdd = ActiveCell.Address
+    ActiveSheet.Range(lstCelAdd, lstperCounterAdd).PasteSpecial xlPasteAll
+    
+    Application.CutCopyMode = False
+    Selection.NumberFormat = "0%"
+    Application.CutCopyMode = True
+    
+    ActiveSheet.PivotTables("marketPivotTable").PivotSelect "", xlDataAndLabel, _
+        True
+        
+    Range("B40").Select
+    ActiveSheet.Shapes.AddChart2(276, xlAreaStacked).Select
+    ActiveChart.SetSourceData Source:=Range("Pivot!$B$40:$Q$59")
+     With ActiveChart.Parent
+         .Height = 420 ' resize
+         .Width = 900  ' resize
+         .Top = 10    ' reposition
+         .Left = 150   ' reposition
+     End With
+    ActiveChart.Axes(xlValue).Select
+    ActiveChart.Axes(xlValue).DisplayUnit = xlThousands
+     
+     Dim fstRNGData As String
+     Dim seriesCollection As Integer
+     seriesCollection = 1
+     Dim fstSeriesDataAdd As String
+     Dim lstSeriesDataAdd As String
+     
+     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+     ActiveCell.End(xlDown).Select
+     ActiveCell.End(xlDown).Select
+     ActiveCell.Offset(0, 1).Select
+     
+     For seriesCollection = 1 To 5
+        fstSeriesDataAdd = ActiveCell.Address(False, False)
+        ActiveCell.End(xlToRight).Select
+        lstSeriesDataAdd = ActiveCell.Address(False, False)
+        ActiveCell.End(xlToLeft).Select
+        ActiveCell.Offset(0, 1).Select
+        fstRNGData = "=Pivot!" & fstSeriesDataAdd & ":" & lstSeriesDataAdd
+        
         ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveChart.SeriesCollection(1).Select
-    ActiveChart.SeriesCollection(1).ApplyDataLabels
-    ActiveChart.SeriesCollection(1).DataLabels.Select
-    Selection.NumberFormat = "#,##0.00"
-    Selection.NumberFormat = "#,##0"
-    ActiveChart.SeriesCollection(1).Select
-    ActiveChart.SeriesCollection(1).DataLabels.Select
-    ActiveChart.Axes(xlValue).MajorGridlines.Select
-    ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveChart.SeriesCollection(1).Select
-    ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveChart.SeriesCollection(2).Select
-    ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveChart.SeriesCollection(2).ApplyDataLabels
-    ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveChart.SeriesCollection(2).DataLabels.Select
-    Selection.NumberFormat = "#,##0.00"
-    Selection.NumberFormat = "#,##0"
-    Selection.NumberFormat = "0"
-    ActiveChart.SeriesCollection(3).Select
-    ActiveChart.SeriesCollection(3).ApplyDataLabels
-    ActiveChart.SeriesCollection(3).DataLabels.Select
-    Selection.NumberFormat = "#,##0.00"
-    Selection.NumberFormat = "#,##0"
-    Selection.NumberFormat = "0"
-    ActiveChart.SeriesCollection(4).Select
-    ActiveChart.SeriesCollection(4).ApplyDataLabels
-    ActiveChart.SeriesCollection(4).DataLabels.Select
-    Selection.NumberFormat = "#,##0.00"
-    Selection.NumberFormat = "0.00"
-    Selection.NumberFormat = "0"
-    ActiveChart.SeriesCollection(6).Select
-    ActiveChart.SeriesCollection(5).Select
-    ActiveChart.SeriesCollection(5).ApplyDataLabels
-    ActiveChart.SeriesCollection(5).DataLabels.Select
-    Selection.NumberFormat = "#,##0.00"
-    Selection.NumberFormat = "#,##0"
-    Selection.NumberFormat = "0"
-    ActiveChart.SeriesCollection(6).Select
-    ActiveChart.SeriesCollection(6).ApplyDataLabels
-    ActiveChart.SeriesCollection(6).DataLabels.Select
-    Selection.NumberFormat = "#,##0.00"
-    Selection.NumberFormat = "#,##0"
-    Selection.NumberFormat = "0"
-    ActiveChart.SeriesCollection(7).Select
-    ActiveChart.SeriesCollection(7).ApplyDataLabels
-    ActiveChart.SeriesCollection(7).DataLabels.Select
-    Selection.NumberFormat = "#,##0.00"
-    Selection.NumberFormat = "0.00"
-    Selection.NumberFormat = "0"
-    ActiveChart.SeriesCollection(8).Select
-    ActiveChart.SeriesCollection(8).ApplyDataLabels
-    ActiveChart.SeriesCollection(8).DataLabels.Select
-    Selection.NumberFormat = "#,##0.00"
-    Selection.NumberFormat = "0.00"
-    Selection.NumberFormat = "0"
-    ActiveChart.SeriesCollection(9).Select
-    ActiveChart.SeriesCollection(9).ApplyDataLabels
-    ActiveChart.SeriesCollection(9).DataLabels.Select
-    Selection.NumberFormat = "#,##0.00"
-    Selection.NumberFormat = "0.00"
-    Selection.NumberFormat = "0"
-    ActiveChart.SeriesCollection(10).Select
-    ActiveChart.SeriesCollection(10).ApplyDataLabels
-    ActiveChart.SeriesCollection(10).DataLabels.Select
-    Selection.NumberFormat = "#,##0.00"
-    Selection.NumberFormat = "0.00"
-    Selection.NumberFormat = "0"
+        ActiveChart.FullSeriesCollection(seriesCollection).Select
+        ActiveChart.SetElement (msoElementDataLabelCallout)
+        ActiveChart.FullSeriesCollection(seriesCollection).DataLabels.Select
+        Selection.ShowCategoryName = False
+        ActiveChart.FullSeriesCollection(seriesCollection).DataLabels.Select
+        ActiveChart.seriesCollection(seriesCollection).DataLabels.Format.TextFrame2.TextRange. _
+            InsertChartField msoChartFieldRange, fstRNGData, 0
+        Selection.ShowRange = True
+        ActiveChart.FullSeriesCollection(seriesCollection).DataLabels.Select
+        Selection.Format.Fill.Visible = msoFalse
+        Selection.Format.Line.Visible = msoFalse
+        Selection.NumberFormat = "#,##0.00"
+        Selection.NumberFormat = "#,##0"
+        Selection.NumberFormat = "0"
+        ActiveCell.Offset(1, 0).Select
+     Next
+     
+     
+    Range("B40").Select
+    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("marketPivotTable") _
+        , "Market").Slicers.Add ActiveSheet, , "Market 1", "Market", 477, 297, 144, _
+        198.75
+    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("marketPivotTable") _
+        , "Country").Slicers.Add ActiveSheet, , "Country 1", "Country", 514.5, 334.5, _
+        144, 198.75
+    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("marketPivotTable") _
+        , "Fiscal Year/Period").Slicers.Add ActiveSheet, , "Fiscal Year/Period 1", _
+        "Fiscal Year/Period", 552, 372, 144, 198.75
+    ActiveSheet.Shapes.Range(Array("Fiscal Year/Period 1")).Select
+    
+    ActiveSheet.Shapes.Range(Array("Market 1")).Select
+    With ActiveSheet.Shapes.Range(Array("Market 1"))
+        .Top = 10
+        .Left = 5
+    End With
+    With ActiveSheet.Shapes.Range(Array("Country 1"))
+        .Top = 210
+        .Left = 5
+    End With
+    With ActiveSheet.Shapes.Range(Array("Fiscal Year/Period 1"))
+        .Top = 420
+        .Left = 5
+    End With
+
+Range("A1:W30").Select
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorLight2
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.name = "Market_Dynamics"
 
+
+Set PvtTblCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:="Data!" & rngDataForPivot, Version:=xlPivotTableVersion15)
+'create a PivotTable report based on a Pivot Cache, using the PivotCache.CreatePivotTable method. TableDestination is mandatory to specify in this method.
+
+'create PivotTable in a new worksheet:
+Sheets.Add
+ActiveSheet.name = "Pivot"
+
+pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R40C50", TableName:="contractsPivotTable", DefaultVersion:=xlPivotTableVersion15)
+
+'change style of the new PivotTable:
+pvtTbl.TableStyle2 = "PivotStyleMedium3"
+
+'to view the PivotTable in Classic Pivot Table Layout, set InGridDropZones property to True, else set to False:
+pvtTbl.InGridDropZones = True
+
+'Default value of ManualUpdate property is False wherein a PivotTable report is recalculated automatically on each change. Turn off automatic updation of Pivot Table during the process of its creation to speed up code.
+pvtTbl.ManualUpdate = True
+
+pvtTblName = pvtTbl.name
+'Add row, column and page fields in a Pivot Table using the AddFields method:
+    ActiveWorkbook.Sheets("Pivot").Select
+    Cells(40, 50).Select
+    With ActiveSheet.PivotTables("contractsPivotTable").PivotFields("[C] Contract Material Line Item")
+        .Orientation = xlColumnField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
+        "Fiscal Year/Period")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
+    ActiveSheet.PivotTables("contractsPivotTable").AddDataField ActiveSheet. _
+        PivotTables("contractsPivotTable").PivotFields("    Total Contract Revenue"), _
+        "Count of     Total Contract Revenue", xlCount
+    With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
+        "Count of     Total Contract Revenue")
+        .Caption = "Sum of     Total Contract Revenue"
+        .Function = xlSum
+    End With
+    With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
+        "Country")
+        .Orientation = xlPageField
+        .Position = 1
+    End With
+
+pvtTbl.ManualUpdate = False
+
+With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
+        "Fiscal Year/Period")
+        .Orientation = xlColumnField
+        .Position = 2
+    End With
+    With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
+        "[C] Contract Material Line Item")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
+        "[C] Contract Material Line Item")
+        .PivotItems("#").Visible = False
+    End With
+    ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
+        "[C] Contract Material Line Item").AutoSort xlDescending, _
+        "Sum of     Total Contract Revenue"
+    
+    ActiveSheet.PivotTables("contractsPivotTable").RowGrand = False 'row grand total not visible
+    
+    ActiveWorkbook.Sheets("Pivot").Activate
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    Dim fstContractAdd As String
+    Dim lstContractAdd As String
+    
+    fstContractAdd = ActiveCell.Offset(1, 0).Address(False, False)
+    
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.Formula = "=" & fstContractAdd
+    Selection.NumberFormat = "0"
+    ActiveCell.Copy
+    
+    fstContractAdd = ActiveCell.Address
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.Offset(13, 0).Select
+    lstContractAdd = ActiveCell.Address
+
+    Range(fstContractAdd, lstContractAdd).PasteSpecial (xlPasteAll)
+     
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.Value = "Others"
+    Dim OthersAdd As String
+    OthersAdd = ActiveCell.Address
+    Dim fstOthersAdd As String
+    Dim lstOthersAdd As String
+    
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    fstOthersAdd = ActiveCell.Offset(11, 1).Address(True, False)
+    ActiveCell.End(xlDown).Select
+    lstOthersAdd = ActiveCell.Offset(-1, 1).Address(True, False)
+    Range(OthersAdd).Select
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.Formula = "=SUM(" & fstOthersAdd & ":" & lstOthersAdd & ")"
+    ActiveCell.NumberFormat = "0"
+    ActiveCell.Copy
+    Do Until ActiveCell.Offset(-1, 1).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteAll
+    Loop
+    
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.End(xlDown).Select
+    ActiveSheet.Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).Copy
+    ActiveSheet.Range(fstContractAdd).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.PasteSpecial xlPasteAll
+        
+    ActiveCell.End(xlUp).Select
+    Dim fstAddForPercentContracts As String
+    Dim lstAddForPercentContracts As String
+    
+    fstAddForPercentContracts = ActiveCell.Address(False, False)
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.End(xlDown).Select
+    lstAddForPercentContracts = ActiveCell.Offset(0, 1).Address(False, False)
+    
+    ActiveSheet.Range(fstAddForPercentContracts, lstAddForPercentContracts).Select
+    Selection.Copy
+    
+    Range(fstAddForPercentContracts).Select
+    Dim fstAddForLoc As String
+    Dim lstAddForLoc As String
+    
+    fstAddForLoc = ActiveCell.Offset(1, 1).Address(False, False)
+    ActiveCell.End(xlDown).Select
+    lstAddForLoc = ActiveCell.Offset(0, 1).Address(True, False)
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.PasteSpecial xlPasteAll
+    Dim rngAddForPercentContracts As String
+    rngAddForPercentContracts = Selection.Address
+    ActiveCell.Formula = "=" & fstAddForPercentContracts
+    ActiveCell.Copy
+    Do Until ActiveCell.Offset(1, 0).Value = ""
+        ActiveCell.Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    ActiveCell.End(xlUp).Select
+    Do Until ActiveCell.Offset(0, 1).Value = ""
+     ActiveCell.Offset(0, 1).Select
+     ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    ActiveCell.End(xlToLeft).Select
+    ActiveCell.Offset(1, 1).Select
+    ActiveCell.Formula = "=" & fstAddForLoc & "/" & lstAddForLoc
+    ActiveCell.Copy
+    Dim fstAddForPercentCal As String
+    fstAddForPercentCal = ActiveCell.Address
+    Dim lstAddForPercentCal As String
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.End(xlDown).Select
+    lstAddForPercentCal = ActiveCell.Address
+    Range(fstAddForPercentCal, lstAddForPercentCal).PasteSpecial xlPasteFormulas
+    
+    Selection.PasteSpecial xlPasteAll
+    Selection.NumberFormat = "0%"
+    
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.PivotTables("contractsPivotTable").PivotSelect "", xlDataAndLabel, True
+    Selection.Copy
+
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.End(xlToRight).Select
+    
+    ActiveCell.Offset(-2, 3).Select
+    ActiveCell.PasteSpecial xlPasteAll
+    
+    ActiveCell.PivotTable.name = "countContractsPivotTable"
+    With ActiveSheet.PivotTables("countContractsPivotTable").PivotFields( _
+        "Sum of     Total Contract Revenue")
+        .Caption = "Count of     Total Contract Revenue"
+        .Function = xlCount
+    End With
+    
+    ActiveSheet.UsedRange.Find(what:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
+        fstContractAdd = ActiveCell.Offset(1, 0).Address(False, False)
+    
+    ActiveSheet.UsedRange.Find(what:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.Formula = "=" & fstContractAdd
+    Selection.NumberFormat = "0"
+    ActiveCell.Copy
+    
+    fstContractAdd = ActiveCell.Address
+    ActiveSheet.UsedRange.Find(what:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.Offset(13, 0).Select
+    lstContractAdd = ActiveCell.Address
+
+    Range(fstContractAdd, lstContractAdd).PasteSpecial (xlPasteAll)
+     
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.Value = "Others"
+    OthersAdd = ActiveCell.Address
+    
+    ActiveSheet.UsedRange.Find(what:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
+    fstOthersAdd = ActiveCell.Offset(11, 1).Address(True, False)
+    ActiveCell.End(xlDown).Select
+    lstOthersAdd = ActiveCell.Offset(-1, 1).Address(True, False)
+    Range(OthersAdd).Select
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.Formula = "=SUM(" & fstOthersAdd & ":" & lstOthersAdd & ")"
+    ActiveCell.NumberFormat = "0"
+    ActiveCell.Copy
+    Do Until ActiveCell.Offset(-1, 1).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteAll
+    Loop
+        
+    ActiveSheet.UsedRange.Find(what:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.End(xlDown).Select
+    ActiveSheet.Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).Copy
+    ActiveSheet.Range(fstContractAdd).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.PasteSpecial xlPasteAll
+        
+    ActiveCell.End(xlUp).Select
+    
+    fstAddForPercentContracts = ActiveCell.Address(False, False)
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.End(xlDown).Select
+    lstAddForPercentContracts = ActiveCell.Offset(0, 1).Address(False, False)
+    
+    ActiveSheet.Range(fstAddForPercentContracts, lstAddForPercentContracts).Select
+    Selection.Copy
+    
+    Range(fstAddForPercentContracts).Select
+    
+    lstAddForLoc = ActiveCell.Offset(1, 1).Address(True, False)
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.PasteSpecial xlPasteAll
+    rngAddForPercentContracts = Selection.Address
+    ActiveCell.Formula = "=" & fstAddForPercentContracts
+    ActiveCell.Copy
+    Do Until ActiveCell.Offset(1, 0).Value = ""
+        ActiveCell.Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    ActiveCell.End(xlUp).Select
+    Dim fstRowAdd As String
+    fstRowAdd = ActiveCell.Address
+    Do Until ActiveCell.Offset(0, 1).Value = ""
+     ActiveCell.Offset(0, 1).Select
+     ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    ActiveSheet.Range(fstRowAdd).Select
+    ActiveCell.Offset(1, 1).Select
+    ActiveCell.Formula = "=" & fstAddForLoc & "/" & lstAddForLoc
+    ActiveCell.Copy
+    fstAddForPercentCal = ActiveCell.Address
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(-1, 0).Select
+    lstAddForPercentCal = ActiveCell.Address
+    Range(fstAddForPercentCal, lstAddForPercentCal).PasteSpecial xlPasteFormulas
+    
+    Selection.PasteSpecial xlPasteAll
+    Selection.NumberFormat = "0"
+    
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(3, 0).Select
+    Dim fstChartAdd As String
+    Dim lstChartAdd As String
+    
+    fstChartAdd = ActiveCell.Address
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.Offset(0, -1).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(-1, 0).Select
+    lstChartAdd = ActiveCell.Address
+    Range(fstChartAdd, lstChartAdd).Select
+    
+    ActiveSheet.Shapes.AddChart.Select
+    ActiveChart.ChartType = xlAreaStacked
+    ActiveChart.SetSourceData Source:=Range("Pivot!$AX$1298:$BO$1309")
+    ActiveChart.Axes(xlValue).Select
+    ActiveChart.Axes(xlValue).DisplayUnit = xlThousands
+     With ActiveChart.Parent
+         .Height = 420 ' resize
+         .Width = 900  ' resize
+         .Top = 10    ' reposition
+         .Left = 150   ' reposition
+     End With
+     
+     'Adding Labels
+     
+     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+     ActiveCell.End(xlDown).Select
+     ActiveCell.Offset(19, 1).Select
+     
+     For seriesCollection = 1 To 5
+        fstSeriesDataAdd = ActiveCell.Address(False, False)
+        ActiveCell.End(xlToRight).Select
+        lstSeriesDataAdd = ActiveCell.Address(False, False)
+        ActiveCell.End(xlToLeft).Select
+        ActiveCell.Offset(0, 1).Select
+        fstRNGData = "=Pivot!" & fstSeriesDataAdd & ":" & lstSeriesDataAdd
+        
+        ActiveSheet.ChartObjects("Chart 1").Activate
+        ActiveChart.FullSeriesCollection(seriesCollection).Select
+        ActiveChart.SetElement (msoElementDataLabelCallout)
+        ActiveChart.FullSeriesCollection(seriesCollection).DataLabels.Select
+        Selection.ShowCategoryName = False
+        ActiveChart.FullSeriesCollection(seriesCollection).DataLabels.Select
+        ActiveChart.seriesCollection(seriesCollection).DataLabels.Format.TextFrame2.TextRange. _
+            InsertChartField msoChartFieldRange, fstRNGData, 0
+        Selection.ShowRange = True
+        ActiveChart.FullSeriesCollection(seriesCollection).DataLabels.Select
+        Selection.Format.Fill.Visible = msoFalse
+        Selection.Format.Line.Visible = msoFalse
+        ActiveCell.Offset(1, 0).Select
+     Next
+     
+     'Adding Slicers
+    Range("BS26").Select
+    Selection.End(xlDown).Select
+    Range("AY41").Select
+    ActiveWorkbook.SlicerCaches.Add(ActiveSheet.PivotTables("contractsPivotTable") _
+        , "Market").Slicers.Add ActiveSheet, , "Market", "Market", 365.25, 2597.25, 144 _
+        , 198.75
+    ActiveWorkbook.SlicerCaches.Add(ActiveSheet.PivotTables("contractsPivotTable") _
+        , "Fiscal Year/Period").Slicers.Add ActiveSheet, , "Fiscal Year/Period", _
+        "Fiscal Year/Period", 402.75, 2634.75, 144, 198.75
+    
+    With ActiveSheet.Shapes.Range(Array("Fiscal Year/Period"))
+        .Top = 210
+        .Left = 5
+    End With
+    
+    With ActiveSheet.Shapes.Range(Array("Market"))
+        .Top = 10
+        .Left = 5
+    End With
+    
+    Range("A1:W30").Select
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorLight2
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    ActiveWorkbook.Sheets("Pivot").Activate
+    ActiveSheet.name = "Contract_Dynamics"
+    
+    'Adding Combo Chart for Lines above
+        ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveChart.seriesCollection.NewSeries
+    ActiveChart.FullSeriesCollection(12).name = "=Contract_Dynamics!$BR$1315"
+    ActiveChart.FullSeriesCollection(12).Values = _
+        "=Contract_Dynamics!$BS$1315:$CI$1315"
+    ActiveChart.seriesCollection.NewSeries
+    ActiveChart.FullSeriesCollection(13).name = "=Contract_Dynamics!$BR$1316"
+    ActiveChart.FullSeriesCollection(13).Values = _
+        "=Contract_Dynamics!$BS$1316:$CI$1316"
+    ActiveChart.seriesCollection.NewSeries
+    ActiveChart.FullSeriesCollection(14).name = "=Contract_Dynamics!$BR$1317"
+    ActiveChart.FullSeriesCollection(14).Values = _
+        "=Contract_Dynamics!$BS$1317:$CI$1317"
+    ActiveChart.seriesCollection.NewSeries
+    ActiveChart.FullSeriesCollection(15).name = "=Contract_Dynamics!$BR$1318"
+    ActiveChart.FullSeriesCollection(15).Values = _
+        "=Contract_Dynamics!$BS$1318:$CI$1318"
+    ActiveChart.ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(1).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(1).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(2).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(2).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(3).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(3).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(4).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(4).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(5).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(5).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(6).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(6).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(7).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(7).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(8).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(8).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(9).ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(9).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(10).ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(10).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(11).ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(11).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(12).ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(12).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(13).ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(13).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(14).ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(14).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(15).ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(15).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(9).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(10).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(11).ChartType = xlAreaStacked
+    ActiveChart.FullSeriesCollection(12).AxisGroup = 2
+    ActiveChart.FullSeriesCollection(13).AxisGroup = 2
+    ActiveChart.FullSeriesCollection(14).AxisGroup = 2
+    ActiveChart.FullSeriesCollection(15).AxisGroup = 2
+    ActiveChart.FullSeriesCollection(12).ChartType = xlLineMarkersStacked
+    ActiveChart.FullSeriesCollection(13).ChartType = xlLineMarkersStacked
+    ActiveChart.FullSeriesCollection(14).ChartType = xlLineMarkersStacked
+    ActiveChart.FullSeriesCollection(15).ChartType = xlLineMarkersStacked
+    
+    Dim maxAxisVal As Integer
+    ActiveSheet.ChartObjects("Chart 1").Activate
+    With ActiveChart.Axes(xlValue, xlPrimary)
+        maxAxisVal = .MaximumScale / 1000
+    End With
+    
+    'Putting negative value for secondary axis
+    ActiveChart.Axes(xlValue, xlSecondary).MinimumScale = -maxAxisVal
+    ActiveWindow.Zoom = 80
+    
 End Sub
