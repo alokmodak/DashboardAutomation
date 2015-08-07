@@ -37,7 +37,6 @@ Dim pvtItem As PivotItem
 Dim strtMonth As String
 
 On Error Resume Next
-ncNt = 1
 'Copy Data from SAP file
 strtMonth = Format(Now() - 31, "mmmyyyy")
 inputRevenue = "Revenue_MoS_Jan14_May15.xlsx"
@@ -49,22 +48,6 @@ SharedDrive_Path marketInputFile
 Application.Workbooks.Open (sharedDrivePath), False
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
-
-'verify selected system code values are present in SAP data
-Dim findSysCode As Integer
-For findSysCode = 0 To Sheet1.lstBx6NC.ListCount - 1
-    If Sheet1.lstBx6NC.Selected(findSysCode) = True Then
-        If Not ActiveSheet.UsedRange.Find(what:=Sheet1.lstBx6NC.List(findSysCode), lookat:=xlWhole) = True Then
-            If Sheet1.chkAllGroups.Value = True Then
-                NCNotPresent(ncNt) = "The System Code " & Sheet1.lstBx6NC.List(findSysCode) & " Not Available in SAP data!"
-                ncNt = ncNt + 1
-            Else
-                MsgBox "The System Code " & Sheet1.lstBx6NC.List(findSysCode) & " Not Available in SAP data!"
-                End
-            End If
-        End If
-    End If
-Next
 
 revenueOutputGlobal = Left(sharedDrivePath, InStrRev(sharedDrivePath, "\") - 1) & "\" & "ContractDynamics_Waterfall_" & Format(Now, "mmmyy") & ".xlsx"
 Application.AlertBeforeOverwriting = False
@@ -80,8 +63,8 @@ End If
 
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(What:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
 fstAddForPivot = ActiveCell.Address
 Selection.SpecialCells(xlCellTypeLastCell).Select
 lstAddForPivot = ActiveCell.Address
@@ -96,10 +79,6 @@ With ActiveSheet.Range("A:A")
 End With
 ActiveSheet.name = "Data"
 
-'Creating PivotTable
-'Application.Workbooks(inputFileNameContracts).Close False
-
-'determine the worksheet which contains the source data
 Set wsData = Worksheets("Data")
 
 'A Pivot Cache represents the memory cache for a PivotTable report. Each Pivot Table report has one cache only. Create a new PivotTable cache, and then create a new PivotTable report based on the cache.
@@ -247,7 +226,7 @@ pvtTbl.ManualUpdate = False
 
 'Copy Pivot table values to new sheet
 ActiveWorkbook.Sheets("Pivot").Activate
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
 fstAddForPivot = ActiveCell.Address
 ActiveCell.End(xlToRight).Select
 ActiveCell.End(xlDown).Select
@@ -491,7 +470,7 @@ ActiveCell.Offset(1, 0).Select
 Next
 
 'Filling country code in the table
-ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="Country", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 Dim rowCount As Integer
 Dim lstRowCnt As Long
@@ -507,7 +486,7 @@ For rowCount = 0 To lstRowCnt - 4
         ActiveCell.Offset(1, 0).Select
     End If
 Next
-ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="Country", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 For rowCount = 0 To lstRowCnt - 4
     If ActiveCell.Offset(1, -1).Value = "" Then
@@ -528,7 +507,7 @@ Dim tempB As String
 
 
 rngDataDest = "Pivot!" & "R40:C1"
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
 fstPivoAdd = ActiveCell.Address
 tempA = Application.ConvertFormula(Formula:=fstPivoAdd, FromReferenceStyle:=xlA1, ToReferenceStyle:=xlR1C1)
     ActiveCell.End(xlToRight).Select
@@ -644,7 +623,7 @@ For monthCellForTable = 7 To 42
     filterPos = filterPos + 3
 Next
 
-ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="[C,S] Contract Type", lookat:=xlWhole).Select
 ActiveSheet.Cells(Rows.Count, 6).End(xlUp).Select
 'Calculating total numbers for dropped and up
 Dim lstCelNum As String
@@ -663,7 +642,7 @@ ActiveCell.Offset(8, 0).Value = "ZCSP"
 ActiveCell.Offset(9, 0).Value = "ZCSW"
 ActiveCell.Offset(1, 0).Value = "Blanks"
 
-ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="[C,S] Contract Type", lookat:=xlWhole).Select
 Dim fstCelCount As String
 fstCelCount = ActiveCell.Offset(1, 0).Address
 Dim celNumber As Integer
@@ -706,7 +685,7 @@ Dim fstAddB4 As String
 Dim lstAddB4 As String
 
 ActiveSheet.Range(lstCelNum).Select
-ActiveSheet.UsedRange.Find(what:="Blanks", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="Blanks", lookat:=xlWhole).Select
 ActiveCell.Offset(0, 2).Select
 fstAddB = ActiveCell.Offset(1, 0).Address(False, False)
 lstAddB = ActiveCell.Offset(6, 0).Address(False, False)
@@ -923,7 +902,7 @@ ActiveSheet.ChartObjects("Chart 1").Activate
 'deleting old chart
 Dim ws As Worksheet
 For Each ws In ActiveWorkbook.Sheets
-    If ws.name = "Contracts-Data" Or ws.name = "ContractDynamics-WaterFall" Then
+    If ws.name = "Contracts-Data" Or ws.name = "ContractDynamics-WaterFall" Or ws.name = "Data" Then
         ws.delete
     End If
 Next
@@ -981,6 +960,82 @@ End Sub
 
 Public Sub Market_Revenue_Chart_Generation()
 
+Dim NCNotPresent(20) As String
+Dim ncNt As Integer
+Dim inputFileNameContracts As String
+Dim inputRevenue As String
+Dim fstAddForPivot As String
+Dim lstAddForPivot As String
+Dim duration As String
+Dim monthsForTable As String
+Dim monthCellForTable As Integer
+Dim topCelVal As Integer
+Dim fstVal As String
+Dim lstVal As String
+Dim cell As Variant
+Dim i As Integer
+Dim j As Integer
+Dim zcswVal As Boolean
+Dim countFstAddress As String
+Dim countLstAddress As String
+Dim strtMonth As String
+
+'On Error Resume Next
+'Copy Data from SAP file
+strtMonth = Format(Now() - 31, "mmmyyyy")
+inputRevenue = "Revenue_MoS_Jan14_May15.xlsx"
+marketInputFile = "Market_Groups_Markets_Country.xlsx"
+SharedDrive_Path inputRevenue
+Application.Workbooks.Open (sharedDrivePath), False
+inputFileNameContracts = inputRevenue
+SharedDrive_Path marketInputFile
+Application.Workbooks.Open (sharedDrivePath), False
+Workbooks(inputFileNameContracts).Activate
+ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
+
+revenueOutputGlobal = Left(sharedDrivePath, InStrRev(sharedDrivePath, "\") - 1) & "\" & "MarketDynamics_Waterfall_" & Format(Now, "mmmyy") & ".xlsx"
+Application.AlertBeforeOverwriting = False
+Application.DisplayAlerts = False
+If Dir(revenueOutputGlobal) = "" Then
+    Application.Workbooks.Add
+    ActiveWorkbook.SaveAs fileName:=revenueOutputGlobal, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
+    revenueOutputGlobal = ActiveWorkbook.name
+Else
+    Application.Workbooks.Open (revenueOutputGlobal), False
+    revenueOutputGlobal = ActiveWorkbook.name
+End If
+
+'Paste Copied data in new workbook
+Workbooks(revenueOutputGlobal).Activate
+
+'delete Data Sheet if present
+Dim ws As Worksheet
+For Each ws In ActiveWorkbook.Sheets
+    If ws.name = "Market_Dynamics" Or ws.name = "Contract_Dynamics" Or ws.name = "Data" Then
+        ws.delete
+    End If
+Next
+
+Workbooks(inputFileNameContracts).Activate
+ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
+ActiveSheet.UsedRange.Find(What:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+fstAddForPivot = ActiveCell.Address
+Selection.SpecialCells(xlCellTypeLastCell).Select
+lstAddForPivot = ActiveCell.Address
+ActiveSheet.Range(fstAddForPivot, lstAddForPivot).Select
+Selection.Copy
+
+'Paste Copied data in new workbook
+Workbooks(revenueOutputGlobal).Activate
+
+Sheets.Add
+With ActiveSheet.Range("A:A")
+    .PasteSpecial xlPasteValues
+End With
+
+ActiveSheet.name = "Data"
+
 Dim pvtTbl As PivotTable
 Dim wsData As Worksheet
 Dim rngData As Range
@@ -991,14 +1046,13 @@ Dim lastColumn
 Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 
-revenueOutputGlobal = "ContractDynamics_Waterfall_Aug15.xlsx"
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
 
 Application.Workbooks(marketInputFile).Activate
 ActiveWorkbook.Sheets("Sheet1").Activate
 ActiveSheet.UsedRange.AutoFilter
 ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
-ActiveSheet.UsedRange.Find(what:="Country Code", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="Country Code", lookat:=xlWhole).Select
 Dim marketFSTAdd As String
 Dim marketLSTAdd As String
 
@@ -1011,16 +1065,16 @@ Selection.Copy
 'Adding Market column
 Workbooks(revenueOutputGlobal).Activate
 ActiveWorkbook.Sheets("Data").Activate
-ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="Country", lookat:=xlWhole).Select
 ActiveCell.End(xlToRight).Select
 ActiveCell.Offset(0, 1).Select
 ActiveCell.PasteSpecial xlPasteAll
 Dim marketRNG As Range
 Set marketRNG = Range(Selection.Address)
 
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="[C,S] Company Code", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="[C,S] Company Code", lookat:=xlWhole).Select
 ActiveCell.Offset(0, -1).Value = "Market"
 
 Dim lstPasteRNG As String
@@ -1048,9 +1102,9 @@ Selection.PasteSpecial (xlValues)
 'adding Fiscal Year/Period Column
 Application.Workbooks(revenueOutputGlobal).Activate
 ActiveWorkbook.Sheets("Data").Activate
-ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
-ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(What:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
 ActiveCell.Offset(0, -1).Select
 ActiveCell.Value = "Fiscal Year/Period"
 
@@ -1144,7 +1198,7 @@ pvtTblName = pvtTbl.name
 
 pvtTbl.ManualUpdate = False
     
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     Dim fstPercentAdd As String
     Dim lstPercentAdd As String
     Dim marketCelAdd As String
@@ -1165,9 +1219,9 @@ pvtTbl.ManualUpdate = False
     
     Dim numCounter As Integer
     numCounter = 1
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.EntireColumn.Insert xlToRight
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.Offset(1, 0).Select
     Do Until ActiveCell.Value = ""
         ActiveCell.Offset(0, -1).Value = numCounter
@@ -1209,7 +1263,7 @@ pvtTbl.ManualUpdate = False
     ActiveCell.End(xlToRight).Select
     ActiveCell.End(xlDown).Select
     lstForPercentCal = ActiveCell.Address
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.Offset(2, 1).Select
     lstperCounterAdd = ActiveCell.Address(True, False)
     ActiveCell.End(xlDown).Select
@@ -1249,7 +1303,7 @@ pvtTbl.ManualUpdate = False
      Dim fstSeriesDataAdd As String
      Dim lstSeriesDataAdd As String
      
-     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+     ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
      ActiveCell.End(xlDown).Select
      ActiveCell.End(xlDown).Select
      ActiveCell.Offset(0, 1).Select
@@ -1388,13 +1442,13 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     ActiveSheet.PivotTables("contractsPivotTable").RowGrand = False 'row grand total not visible
     
     ActiveWorkbook.Sheets("Pivot").Activate
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     Dim fstContractAdd As String
     Dim lstContractAdd As String
     
     fstContractAdd = ActiveCell.Offset(1, 0).Address(False, False)
     
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.End(xlDown).Select
     ActiveCell.Offset(3, 0).Select
     ActiveCell.Formula = "=" & fstContractAdd
@@ -1402,7 +1456,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     ActiveCell.Copy
     
     fstContractAdd = ActiveCell.Address
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.End(xlDown).Select
     ActiveCell.End(xlToRight).Select
     ActiveCell.Offset(13, 0).Select
@@ -1418,7 +1472,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     Dim fstOthersAdd As String
     Dim lstOthersAdd As String
     
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     fstOthersAdd = ActiveCell.Offset(11, 1).Address(True, False)
     ActiveCell.End(xlDown).Select
     lstOthersAdd = ActiveCell.Offset(-1, 1).Address(True, False)
@@ -1432,7 +1486,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
         ActiveCell.PasteSpecial xlPasteAll
     Loop
     
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.End(xlDown).Select
     ActiveSheet.Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).Copy
     ActiveSheet.Range(fstContractAdd).Select
@@ -1489,7 +1543,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     Selection.PasteSpecial xlPasteAll
     Selection.NumberFormat = "0%"
     
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveSheet.PivotTables("contractsPivotTable").PivotSelect "", xlDataAndLabel, True
     Selection.Copy
 
@@ -1506,10 +1560,10 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
         .Function = xlCount
     End With
     
-    ActiveSheet.UsedRange.Find(what:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
         fstContractAdd = ActiveCell.Offset(1, 0).Address(False, False)
     
-    ActiveSheet.UsedRange.Find(what:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.End(xlDown).Select
     ActiveCell.Offset(3, 0).Select
     ActiveCell.Formula = "=" & fstContractAdd
@@ -1517,7 +1571,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     ActiveCell.Copy
     
     fstContractAdd = ActiveCell.Address
-    ActiveSheet.UsedRange.Find(what:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.End(xlDown).Select
     ActiveCell.End(xlToRight).Select
     ActiveCell.Offset(13, 0).Select
@@ -1530,7 +1584,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     ActiveCell.Value = "Others"
     OthersAdd = ActiveCell.Address
     
-    ActiveSheet.UsedRange.Find(what:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
     fstOthersAdd = ActiveCell.Offset(11, 1).Address(True, False)
     ActiveCell.End(xlDown).Select
     lstOthersAdd = ActiveCell.Offset(-1, 1).Address(True, False)
@@ -1544,7 +1598,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
         ActiveCell.PasteSpecial xlPasteAll
     Loop
         
-    ActiveSheet.UsedRange.Find(what:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Count of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.End(xlDown).Select
     ActiveSheet.Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).Copy
     ActiveSheet.Range(fstContractAdd).Select
@@ -1596,7 +1650,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     Selection.PasteSpecial xlPasteAll
     Selection.NumberFormat = "0"
     
-    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.End(xlDown).Select
     ActiveCell.Offset(3, 0).Select
     Dim fstChartAdd As String
@@ -1624,7 +1678,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
      
      'Adding Labels
      
-     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+     ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
      ActiveCell.End(xlDown).Select
      ActiveCell.Offset(19, 1).Select
      
@@ -1754,4 +1808,162 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     ActiveChart.Axes(xlValue, xlSecondary).MinimumScale = -maxAxisVal
     ActiveWindow.Zoom = 80
     
+    
+'Creating Chart For Forcast Revenue
+
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveSheet.PivotTables("contractsPivotTable").PivotSelect "", xlDataAndLabel, True
+    Selection.Copy
+    Sheets.Add After:=ActiveSheet
+    ActiveSheet.name = "Revenue_Forcast"
+    Range("B31").Select
+    ActiveSheet.Paste
+    ActiveCell.PivotTable.name = "forcastPivotTable"
+    ActiveSheet.PivotTables("forcastPivotTable").PivotFields("Market").Orientation = _
+        xlHidden
+    ActiveSheet.PivotTables("forcastPivotTable").PivotFields( _
+        "Sum of     Total Contract Revenue").Orientation = xlHidden
+    With ActiveSheet.PivotTables("forcastPivotTable").PivotFields("Fiscal Year/Period")
+        .Orientation = xlColumnField
+        .Position = 1
+    End With
+    ActiveSheet.PivotTables("forcastPivotTable").PivotFields( _
+        "[C] Contract Material Line Item").Orientation = xlHidden
+    ActiveSheet.PivotTables("forcastPivotTable").AddDataField ActiveSheet. _
+        PivotTables("forcastPivotTable").PivotFields("    Total Contract Revenue"), _
+        "Count of     Total Contract Revenue", xlCount
+    With ActiveSheet.PivotTables("forcastPivotTable").PivotFields( _
+        "Count of     Total Contract Revenue")
+        .Caption = "Sum of     Total Contract Revenue"
+        .Function = xlSum
+    End With
+    ActiveSheet.PivotTables("forcastPivotTable").AddDataField ActiveSheet. _
+        PivotTables("forcastPivotTable").PivotFields("   swo cost" & Chr(10) & "settled to" & Chr(10) & "contract") _
+        , "Count of    swo cost" & Chr(10) & "settled to" & Chr(10) & "contract", xlCount
+    With ActiveSheet.PivotTables("forcastPivotTable").PivotFields( _
+        "Count of    swo cost" & Chr(10) & "settled to" & Chr(10) & "contract")
+        .Caption = "Sum of    swo cost"
+        .Function = xlSum
+    End With
+    With ActiveSheet.PivotTables("forcastPivotTable").DataPivotField
+        .Orientation = xlRowField
+        .Position = 1
+    End With
+    
+    ActiveSheet.Cells(1, 1).Select
+    ActiveSheet.UsedRange.Find(What:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    ActiveCell.Offset(-1, 0).Select
+    Dim fstAdd As String
+    Dim lstAdd As String
+    Dim fstAddForTable As String
+    Dim lstAddForTable As String
+    
+    fstAdd = ActiveCell.Address(False, False)
+    
+    ActiveCell.End(xlDown).Select
+    ActiveCell.End(xlToRight).Select
+    lstAdd = ActiveCell.Address
+    lstAddForTable = ActiveCell.Offset(5, 0).Address
+    ActiveCell.End(xlToLeft).Select
+    
+    ActiveCell.Offset(3, 0).Select
+    fstAddForTable = ActiveCell.Address
+    
+    ActiveCell.Formula = "=" & fstAdd
+    ActiveCell.Copy
+    Range(fstAddForTable, lstAddForTable).Select
+    Selection.PasteSpecial xlPasteFormulas
+    Range(fstAddForTable).Select
+    
+    ActiveCell.Offset(3, 0).Select
+    fstAddForTable = ActiveCell.Address
+    
+    ActiveCell.Value = "Cumm. Revenue"
+    ActiveCell.Offset(1, 0).Value = "Cumm. Cost"
+    ActiveCell.Offset(2, 0).Value = "iGM%"
+    
+    ActiveCell.Offset(0, 1).Formula = "=" & ActiveCell.Offset(-2, 1).Address(False, False)
+    ActiveCell.Offset(1, 1).Formula = "=" & ActiveCell.Offset(-1, 1).Address(False, False)
+    ActiveCell.Offset(2, 1).Formula = "=" & "(" & ActiveCell.Offset(0, 1).Address(False, False) & "-" & ActiveCell.Offset(1, 1).Address(False, False) & ")" & "/" & ActiveCell.Offset(0, 1).Address(False, False)
+    ActiveCell.Offset(2, 2).Formula = "=" & "(" & ActiveCell.Offset(0, 1).Address(False, False) & "-" & ActiveCell.Offset(1, 1).Address(False, False) & ")" & "/" & ActiveCell.Offset(0, 1).Address(False, False)
+    ActiveCell.Offset(2, 1).NumberFormat = "0%"
+    ActiveCell.Offset(2, 2).NumberFormat = "0%"
+    
+    ActiveCell.Offset(0, 2).Select
+    ActiveCell.Formula = "=" & ActiveCell.Offset(0, -1).Address(False, False) & "+" & ActiveCell.Offset(-2, 0).Address(False, False)
+    ActiveCell.Offset(1, 0).Formula = "=" & ActiveCell.Offset(1, -1).Address(False, False) & "+" & ActiveCell.Offset(-1, 0).Address(False, False)
+    
+    Range(ActiveCell.Address, ActiveCell.Offset(2, 0).Address).Copy
+    Do Until ActiveCell.Offset(-1, 1).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteAll
+    Loop
+    
+    ActiveCell.Offset(2, 0).Select
+    Dim lstAddForChart As String
+    Dim fstAddForChart As String
+    ActiveCell.End(xlUp).Select
+    ActiveCell.Offset(0, 1).Select
+    Dim addCompare As String
+    addCompare = ActiveCell.Offset(0, -1).Address(False, False)
+    Dim formulaString As String
+    ActiveCell.Formula = "=MID(" & addCompare & ",1,4)" & "&" & Chr(34) & "-" & Chr(34) & "&" & "MID(" & addCompare & ",6,2)+1"
+    ActiveCell.Copy
+    Do Until Mid(ActiveCell.Offset(0, -1).Value, 6, 2) >= 11
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    ActiveCell.End(xlToLeft).Select
+    
+    'converting value to date for forecast
+    Do Until Not ActiveCell.Offset(1, 0).Value <> ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.Offset(-1, 0).Value = CDate(ActiveCell.Value & "-" & 1)
+    Loop
+    
+    
+    Dim forecastFstAdd As String
+    Dim forecastLstAdd As String
+    Dim currentFstAdd As String
+    Dim currentLstAdd As String
+    Dim forecastAdd As String
+    Dim forecastRNGX As String
+    Dim forecastRNGY As String
+    
+    forecastAdd = ActiveCell.Offset(-1, 0).Address
+    currentLstAdd = ActiveCell.Offset(1, -1).Address(False, False)
+    forecastLstAdd = ActiveCell.Offset(-1, -1).Address
+    ActiveCell.End(xlToLeft).Select
+    forecastFstAdd = ActiveCell.Offset(-1, 1).Address
+    currentFstAdd = ActiveCell.Offset(1, 1).Address(False, False)
+    
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.Offset(1, 0).Select
+    
+    ActiveCell.Formula = "=FORECAST(" & forecastAdd & "," & currentFstAdd & ":" & currentLstAdd & "," & forecastFstAdd & ":" & forecastLstAdd & ")"
+    
+    ActiveCell.Copy
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+    ActiveCell.NumberFormat = "0%"
+    
+    lstAddForChart = ActiveCell.Address
+    ActiveCell.End(xlUp).Select
+    ActiveCell.End(xlToLeft).Select
+    
+    fstAddForChart = ActiveCell.Offset(0, -1).Address
+    
+    Range(fstAddForChart, lstAddForChart).Select
+    Dim rngChart As String
+    rngChart = Selection.Address
+    
+    
+
 End Sub
