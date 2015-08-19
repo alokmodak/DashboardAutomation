@@ -15,6 +15,7 @@ Sub hideInfoTips(Optional Dummy As Boolean)
 
     With Sheet1
         .lblDashboard.Visible = False
+        .revenueLbl.Visible = False
     End With
     
     Application.Cursor = xlDefault
@@ -33,6 +34,7 @@ Public Sub showInfoTip(currentTip As Object)
 Dim lblMonthCheck As String
 Dim lblText As String
 Dim warrantyVal As String
+Dim revenueLblText As String
 
 warrantyVal = Replace(Sheet1.combYear.Value, "-", "")
  lblMonthCheck = Format(Sheet1.combYear.Value, "mmmyy")
@@ -49,6 +51,12 @@ warrantyVal = Replace(Sheet1.combYear.Value, "-", "")
 "9) KPI dashboard_Innovation_" & lblMonthCheck & ".xlsx" & vbCrLf & _
 "10) CQ_Data_SPM.xlsx"
 
+revenueLblText = "Input files required are -" & vbCrLf & _
+"1) Market_Groups_Markets_Country.xlsx" & vbCrLf & _
+"2) Revenue_MoS.xlsx" & vbCrLf & _
+"3) Contract_Penetration_SAPBW_Download.xlsx"
+
+Sheet1.revenueLbl.Caption = revenueLblText
 Sheet1.lblDashboard.Caption = lblText
 
 
@@ -83,6 +91,7 @@ Public Sub hideTipsForWorkbookEvent()
 
         With Sheet1
             .lblDashboard.Visible = False
+            .revenueLbl.Visible = False
         End With
     
     End If
