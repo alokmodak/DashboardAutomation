@@ -11,6 +11,10 @@ Private Sub chkDashboard_MouseMove(ByVal Button As Integer, ByVal Shift As Integ
 Call showInfoTip(lblDashboard)
 End Sub
 
+Private Sub chkRevenue_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+Call showInfoTip(revenueLbl)
+End Sub
+
 Private Sub chkRevenue_Click()
     Sheet1.combYear.Enabled = False
     Sheet1.cmbIncreaseMonth.Enabled = False
@@ -54,7 +58,7 @@ startTime = Second(Now())
             
             Call Revenue_Graph_Creation
             
-            Call Market_Revenue_Chart_Generation
+            'Call Market_Revenue_Chart_Generation
     
     ElseIf Sheet1.chkCTS.Value = True Then
     

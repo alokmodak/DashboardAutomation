@@ -28,6 +28,7 @@ Sheet1.cmb6NC2OK.Visible = False
 With Sheet1.lstBx6NC
 .AddItem "ContractsDynamics_Waterfall"
 .AddItem "MarketDynamics_Waterfall"
+.AddItem "Contract_Penetration"
 End With
 
 Sheet1.rdbLocalDrive.Value = True

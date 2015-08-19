@@ -581,7 +581,7 @@ Dim YTDinstallPasteValue As String
 YTDinstallPasteValue = Application.Average(Range(fstAdd, lstAdd))
 
 Workbooks(outputFlName).Activate
-ActiveSheet.UsedRange.Find(What:="Install Hours", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Install Hours", lookat:=xlWhole).Select
 
 Do Until ActiveCell.End(xlUp).Value = "YTD"
 
@@ -642,7 +642,7 @@ For Each celItem In Range(firstCell, lastCell)
     
     Case "Contract Revenue"
         ActiveSheet.UsedRange.Find("Customer").Select
-        ActiveSheet.UsedRange.Find(What:=YTDFindValue, After:=ActiveCell, LookIn:=xlValues).Select
+        ActiveSheet.UsedRange.Find(what:=YTDFindValue, After:=ActiveCell, LookIn:=xlValues).Select
          i = 0
             Do Until ActiveCell.End(xlUp).Value = "YTD"
             i = i + 1
@@ -660,7 +660,7 @@ For Each celItem In Range(firstCell, lastCell)
     
     Case "iGM%"
         ActiveSheet.UsedRange.Find("Customer").Select
-        ActiveSheet.UsedRange.Find(What:="Contract Profitability - Gross Margin %", After:=ActiveCell, LookIn:=xlValues).Select
+        ActiveSheet.UsedRange.Find(what:="Contract Profitability - Gross Margin %", After:=ActiveCell, LookIn:=xlValues).Select
          i = 0
             Do Until ActiveCell.End(xlUp).Value = "YTD"
             i = i + 1
@@ -1139,7 +1139,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("# of Patterns").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(What:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = patternValToPaste
 
@@ -1149,7 +1149,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("DAP capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(What:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = dapValToPaste
 
@@ -1159,7 +1159,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("Remote Capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(What:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = remoteValToPaste
 
@@ -1235,7 +1235,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("# of Patterns").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(What:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = patternValToPaste
 
@@ -1245,7 +1245,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("DAP capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(What:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = dapValToPaste
 
@@ -1255,7 +1255,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("Remote Capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(What:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = remoteValToPaste
 
@@ -1503,13 +1503,13 @@ p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -1557,15 +1557,15 @@ p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = p95ValToPaste
 
@@ -1585,13 +1585,13 @@ escp95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = escValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -1600,15 +1600,15 @@ ActiveCell.Value = escp95ValToPaste
 'for Escalations YTD values
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
@@ -1660,13 +1660,13 @@ p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -1712,15 +1712,15 @@ p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = p95ValToPaste
 
@@ -1739,13 +1739,13 @@ escp95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = escValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -1754,15 +1754,15 @@ ActiveCell.Value = escp95ValToPaste
 'for Escalations YTD values
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
@@ -1814,13 +1814,13 @@ p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -1866,15 +1866,15 @@ p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = p95ValToPaste
 
@@ -1893,13 +1893,13 @@ escp95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = escValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -1908,15 +1908,15 @@ ActiveCell.Value = escp95ValToPaste
 'for Escalations YTD values
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
@@ -1968,13 +1968,13 @@ p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2020,15 +2020,15 @@ p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = p95ValToPaste
 
@@ -2047,13 +2047,13 @@ escp95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = escValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2062,15 +2062,15 @@ ActiveCell.Value = escp95ValToPaste
 'for Escalations YTD values
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
@@ -2081,7 +2081,7 @@ cProductGroup = "BV Vectra"
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("CHU synop").Activate
 ActiveSheet.Cells(5, 5).Select
-ActiveSheet.UsedRange.Find(What:=cProductGroup, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=cProductGroup, After:=ActiveCell).Select
 Dim chuYearToFind As Integer
 chuYearToFind = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.Value, 1, 4) & "-" & selMonth).Select
@@ -2092,13 +2092,13 @@ p95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2118,13 +2118,13 @@ escp95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = escValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2133,29 +2133,29 @@ ActiveCell.Value = escp95ValToPaste
 'for Escalations YTD values
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
@@ -2168,7 +2168,7 @@ cProductGroup = "Allura FC"
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("CHU synop").Activate
 ActiveSheet.Cells(5, 5).Select
-ActiveSheet.UsedRange.Find(What:=cProductGroup, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=cProductGroup, After:=ActiveCell).Select
 chuYearToFind = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.Value, 1, 4) & "-" & selMonth).Select
 toMinusVal = CInt(Mid(ActiveCell.Address, 4, 2))
@@ -2178,13 +2178,13 @@ p95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2204,13 +2204,13 @@ escp95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = escValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2219,29 +2219,29 @@ ActiveCell.Value = escp95ValToPaste
 'for Escalations YTD values
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
@@ -2263,13 +2263,13 @@ p95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2289,13 +2289,13 @@ escp95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = escValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2304,29 +2304,29 @@ ActiveCell.Value = escp95ValToPaste
 'for Escalations YTD values
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
@@ -2348,13 +2348,13 @@ p95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2374,13 +2374,13 @@ escp95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = escValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2389,29 +2389,29 @@ ActiveCell.Value = escp95ValToPaste
 'for Escalations YTD values
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
@@ -2436,13 +2436,13 @@ p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = complaintsValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2462,13 +2462,13 @@ escp95ValToPaste = ActiveCell.Offset(2, 0).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = escValToPaste
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(complaintsDate).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
@@ -2477,29 +2477,29 @@ ActiveCell.Value = escp95ValToPaste
 'for Escalations YTD values
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS #", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS #", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open viper/ one EMS p95 days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Compliants", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
-ActiveSheet.UsedRange.Find(What:="Open Compliants P95 Days", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Compliants P95 Days", lookat:=xlWhole).Select
 complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = ActiveCell.End(xlToRight).Value
 
@@ -2708,9 +2708,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="# Released FCO", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="# Released FCO", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveSheet.Paste
 Selection.Font.Size = 18
@@ -2738,9 +2738,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="# Released FCO", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="# Released FCO", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveSheet.Paste
 Selection.Font.Size = 18
@@ -2768,9 +2768,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="# Released FCO", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="# Released FCO", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveSheet.Paste
 Selection.Font.Size = 18
@@ -2798,9 +2798,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="# Released FCO", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="# Released FCO", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveSheet.Paste
 Selection.Font.Size = 18
@@ -2811,7 +2811,7 @@ Case "IXR-MOS BV Vectra-N"
 
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("FCO").Activate
-ActiveSheet.UsedRange.Find(What:="BV Vectra", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="BV Vectra", lookat:=xlWhole).Select
 
 Do Until ActiveCell.Value = "YTD"
 ActiveCell.Offset(0, 1).Select
@@ -2828,9 +2828,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="# Released FCO", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="# Released FCO", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveSheet.Paste
 Selection.Font.Size = 18
@@ -2841,7 +2841,7 @@ Case "IXR-CV Allura FC-Y"
 
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("FCO").Activate
-ActiveSheet.UsedRange.Find(What:="Allura FC", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Allura FC", lookat:=xlWhole).Select
 
 Do Until ActiveCell.Value = "YTD"
 ActiveCell.Offset(0, 1).Select
@@ -2858,9 +2858,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="# Released FCO", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="# Released FCO", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveSheet.Paste
 Selection.Font.Size = 18
@@ -2871,7 +2871,7 @@ Case "DXR-MobileDiagnost Opta-N"
 
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("FCO").Activate
-ActiveSheet.UsedRange.Find(What:="Opta DR/AR", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Opta DR/AR", lookat:=xlWhole).Select
 
 Do Until ActiveCell.Value = "YTD"
 ActiveCell.Offset(0, 1).Select
@@ -2888,9 +2888,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="# Released FCO", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="# Released FCO", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveSheet.Paste
 Selection.Font.Size = 18
@@ -2901,7 +2901,7 @@ Case "DXR-PrimaryDiagnost Digital-N"
 
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("FCO").Activate
-ActiveSheet.UsedRange.Find(What:="Primary Diagnost  DR/AR", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Primary Diagnost  DR/AR", lookat:=xlWhole).Select
 
 Do Until ActiveCell.Value = "YTD"
 ActiveCell.Offset(0, 1).Select
@@ -2918,9 +2918,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="# Released FCO", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="# Released FCO", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveSheet.Paste
 Selection.Font.Size = 18
@@ -2930,7 +2930,7 @@ Case "DXR-MicroDose Mammography-Y"
 
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("FCO").Activate
-ActiveSheet.UsedRange.Find(What:="Mammography", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Mammography", lookat:=xlWhole).Select
 
 Do Until ActiveCell.Value = "YTD"
 ActiveCell.Offset(0, 1).Select
@@ -2947,9 +2947,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="# Released FCO", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="# Released FCO", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveSheet.Paste
 Selection.Font.Size = 18
@@ -3164,7 +3164,7 @@ If pf = "Fiscal year/period" Then
 End If
 Next pf
 
-ActiveSheet.Range("B:B").Find(What:=magNameFlt, lookat:=xlWhole).Select
+ActiveSheet.Range("B:B").Find(what:=magNameFlt, lookat:=xlWhole).Select
 ActiveCell.Offset(0, -1).Select
 ActiveCell.End(xlDown).Select
 Do Until ActiveCell.End(xlUp).Value = "Tot Installation %"
@@ -3180,9 +3180,9 @@ insCValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Installation Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Installation Cost / ASP", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:=insCDate, lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=insCDate, lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveCell.Value = insCValToPaste
 
@@ -3206,7 +3206,7 @@ If pf = "Fiscal year/period" Then
 End If
 Next pf
 
-ActiveSheet.Range("B:B").Find(What:=magNameFlt, lookat:=xlWhole).Select
+ActiveSheet.Range("B:B").Find(what:=magNameFlt, lookat:=xlWhole).Select
 ActiveCell.Offset(0, -1).Select
 ActiveCell.End(xlDown).Select
 Do Until ActiveCell.End(xlUp).Value = "Tot Installation %"
@@ -3221,9 +3221,9 @@ insCValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Installation Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Installation Cost / ASP", lookat:=xlWhole).Select
 i = Mid(ActiveCell.Address, 4, 2)
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveCell.Value = insCValToPaste
 
@@ -3445,8 +3445,8 @@ Dim mcSysCode1 As Double, mcSysCode2 As Double, mcSysCode3 As Double, mcSysCode4
 
 Workbooks(inputFlDI).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
-ActiveSheet.UsedRange.Find(What:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(What:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3475,7 +3475,7 @@ DIValToPaste = Application.WorksheetFunction.Average(mcSysCode1, mcSysCode2, mcS
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(warrantyCDate).Select
 ActiveCell.Offset(i - 2, 0).Select
@@ -3488,9 +3488,9 @@ Dim ytdDIvalToPaste1 As Double
 If j = 1 Then
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 Dim YTDRangeDI As Range
 Set YTDRangeDI = ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address)
@@ -3501,8 +3501,8 @@ Case "DXR-PrimaryDiagnost Digital-N"
 
 Workbooks(inputFlDI).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
-ActiveSheet.UsedRange.Find(What:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(What:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3524,7 +3524,7 @@ DIValToPaste = (mcSysCode1 + mcSysCode2) * 12 / PDASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(warrantyCDate).Select
 ActiveCell.Offset(i - 2, 0).Select
@@ -3535,9 +3535,9 @@ ActiveCell.Value = DIValToPaste
 If j = 1 Then
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 ActiveCell.Value = Application.WorksheetFunction.Average(ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address))
 End If
@@ -3548,8 +3548,8 @@ Dim ytdIGTvalToPaste As Double
 
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
-ActiveSheet.UsedRange.Find(What:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(What:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3571,7 +3571,7 @@ ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 12 / enduraASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(warrantyCDate).Select
 ActiveCell.Offset(i - 2, 0).Select
@@ -3587,9 +3587,9 @@ If j = 1 Then
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 Dim myrange As Range
 Set myrange = ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address)
@@ -3599,8 +3599,8 @@ End If
 Case "IXR-MOS Pulsera-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
-ActiveSheet.UsedRange.Find(What:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(What:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3622,7 +3622,7 @@ ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 12 / pulseraASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(warrantyCDate).Select
 ActiveCell.Offset(i - 2, 0).Select
@@ -3632,9 +3632,9 @@ ActiveCell.Value = ytdIGTvalToPaste
 If j = 1 Then
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 Set myrange = ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address)
 ActiveCell.Value = Application.WorksheetFunction.Average(myrange)
@@ -3643,8 +3643,8 @@ End If
 Case "IXR-MOS Veradius-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
-ActiveSheet.UsedRange.Find(What:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(What:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3668,7 +3668,7 @@ ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2 + mcSysCode3) * 12 / veradiusASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(warrantyCDate).Select
 ActiveCell.Offset(i - 2, 0).Select
@@ -3678,9 +3678,9 @@ ActiveCell.Value = ytdIGTvalToPaste
 If j = 1 Then
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 Set myrange = ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address)
 ActiveCell.Value = Application.WorksheetFunction.Average(myrange)
@@ -3689,8 +3689,8 @@ End If
 Case "IXR-MOS BV Vectra-N"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
-ActiveSheet.UsedRange.Find(What:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(What:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3709,7 +3709,7 @@ Loop
 ytdIGTvalToPaste = mcSysCode1
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(warrantyCDate).Select
 ActiveCell.Offset(i - 2, 0).Select
@@ -3725,9 +3725,9 @@ YTDnum = YTDnum + 1
 If j = 1 Then
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 Set myrange = ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address)
 ActiveCell.Value = Application.WorksheetFunction.Average(myrange)
@@ -3736,8 +3736,8 @@ End If
 Case "IXR-CV Allura FC-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
-ActiveSheet.UsedRange.Find(What:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(What:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3757,7 +3757,7 @@ ytdIGTvalToPaste = mcSysCode1
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(warrantyCDate).Select
 ActiveCell.Offset(i - 2, 0).Select
@@ -3767,9 +3767,9 @@ ActiveCell.Value = ytdIGTvalToPaste
 If j = 1 Then
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 Set myrange = ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address)
 ActiveCell.Value = Application.WorksheetFunction.Average(myrange)
@@ -3779,8 +3779,8 @@ End If
 Case "DXR-MobileDiagnost Opta-N"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
-ActiveSheet.UsedRange.Find(What:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(What:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
 
 i = 0
 Do Until ActiveCell.Value = ""
@@ -3800,7 +3800,7 @@ ytdIGTvalToPaste = mcSysCode1
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(warrantyCDate).Select
 ActiveCell.Offset(i - 2, 0).Select
@@ -3810,9 +3810,9 @@ ActiveCell.Value = ytdIGTvalToPaste
 If j = 1 Then
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="1st Year Warranty Cost / ASP", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 Set myrange = ActiveSheet.Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address)
 ActiveCell.Value = Application.WorksheetFunction.Average(myrange)
@@ -3999,7 +3999,7 @@ End Select
 
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets(1).Activate
-ActiveSheet.UsedRange.Find(What:=InfoProductGroup, lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=InfoProductGroup, lookat:=xlWhole).Select
 
 Do Until ActiveCell.Value = "YTD"
 ActiveCell.Offset(0, 1).Select
@@ -4018,9 +4018,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Service Information Quality", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Service Information Quality", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 Application.ActiveCell.PasteSpecial xlPasteAll
 
@@ -4210,7 +4210,7 @@ End Select
 
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets(1).Activate
-ActiveSheet.UsedRange.Find(What:=cqProductGroup, lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:=cqProductGroup, lookat:=xlWhole).Select
 
 Do Until ActiveCell.Value = "YTD"
 ActiveCell.Offset(0, 1).Select
@@ -4229,9 +4229,9 @@ Selection.Copy
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
-ActiveSheet.UsedRange.Find(What:="Open Service Interest CQ - PR", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Open Service Interest CQ - PR", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 Application.ActiveCell.PasteSpecial xlPasteAll
 
@@ -4254,7 +4254,7 @@ Workbooks(outputFl).Activate
 Dim Sheet
 For Each Sheet In ActiveWorkbook.Sheets
 Sheet.Activate
-ActiveSheet.UsedRange.Find(What:="YTD", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 ActiveCell.End(xlToRight).Select
 Dim forNA As Integer
