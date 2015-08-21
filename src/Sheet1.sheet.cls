@@ -1,7 +1,24 @@
 Option Explicit
+Public exitLoop As Integer
 
-Private Sub chkDashboard_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal y As Single)
+Private Sub chkDashboard_Click()
+    Sheet1.combYear.Enabled = True
+    Sheet1.cmbIncreaseMonth.Enabled = True
+    Sheet1.cmbDecreaseMonth.Enabled = True
+End Sub
+
+Private Sub chkDashboard_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal Y As Single)
 Call showInfoTip(lblDashboard)
+End Sub
+
+Private Sub chkRevenue_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal Y As Single)
+Call showInfoTip(revenueLbl)
+End Sub
+
+Private Sub chkRevenue_Click()
+    Sheet1.combYear.Enabled = False
+    Sheet1.cmbIncreaseMonth.Enabled = False
+    Sheet1.cmbDecreaseMonth.Enabled = False
 End Sub
 
 'output file generation
@@ -38,7 +55,10 @@ startTime = Second(Now())
             Call CQ_Calculations
             
     ElseIf Sheet1.chkRevenue.value = True Then
-    'Call Revenue_Product_Group_Select
+            
+            Call Revenue_Graph_Creation
+            
+            'Call Market_Revenue_Chart_Generation
     
     ElseIf Sheet1.chkCTS.value = True Then
     
@@ -72,6 +92,28 @@ Private Sub cmbDecreaseMonth_Click()
 Call Decrease_Year_And_Month_Value
 End Sub
 
+
+Private Sub cmb6NC2OK_Click()
+On Error Resume Next
+    Sheet1.lstBx6NC.Visible = False
+    Sheet1.cmb6NC2OK.Visible = False
+    Sheet1.comb6NC2.value = ""
+    Dim i As Integer
+    For i = 0 To 20
+        If Sheet1.lstBx6NC.Selected(i) = True Then
+            Sheet1.comb6NC2.value = Sheet1.comb6NC2.value & " " & Sheet1.lstBx6NC.List(i) & " "
+        End If
+    Next
+End Sub
+
+
+Private Sub comb6NC2_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    If Sheet1.lstBx6NC.Visible = False Then
+        Sheet1.lstBx6NC.Visible = True
+        Sheet1.cmb6NC2OK.Visible = True
+    End If
+End Sub
+
 Private Sub helpMenu_Click()
 On Error Resume Next
 Dim wordFl As Object
@@ -90,10 +132,15 @@ Private Sub chkAllGroups_Click()
         Sheet1.comb6NC2.Enabled = False
         Sheet1.combProductGroup.value = ""
         Sheet1.combProductGroup.Enabled = False
+        Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
+        Sheet1.lstBx6NC.value = ""
+        Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
+        Sheet1.comb6NC2.value = ""
     Else
         Sheet1.comb6NC1.Enabled = True
         Sheet1.comb6NC2.Enabled = True
         Sheet1.combProductGroup.Enabled = True
         Sheet1.combProductGroup.value = "Select Product Group"
+        Sheet1.comb6NC1.value = "Select Product Group"
     End If
 End Sub
