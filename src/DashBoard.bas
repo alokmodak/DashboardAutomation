@@ -602,6 +602,7 @@ End If
 
 insFileNt2:
 'clear values fleched from input file
+Application.Workbooks(outputFlName).Activate
 ActiveSheet.Cells(200, 27).Select
 ActiveSheet.Range(ActiveCell.Address, ActiveCell.Offset(0, 1).End(xlDown).Address).Clear
 ActiveSheet.Cells(2, 2).Select

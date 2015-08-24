@@ -36,25 +36,37 @@ Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 Dim strtMonth As String
 
-'On Error Resume Next
+On Error Resume Next
 'Copy Data from SAP file
 strtMonth = Format(Now() - 31, "mmmyyyy")
 inputRevenue = "Revenue_MoS_Jan14_May15.xlsx"
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
-SharedDrive_Path inputRevenue
+
+'shared drive and local drive option
+If Sheet1.rdbSharedDrive.Value = True Then
+    SharedDrive_Path inputRevenue
+Else
+    sharedDrivePath = ThisWorkbook.Path & "\" & inputRevenue
+End If
 Application.Workbooks.Open (sharedDrivePath), False
 inputFileNameContracts = inputRevenue
-SharedDrive_Path marketInputFile
+
+If Sheet1.rdbSharedDrive.Value = True Then
+    SharedDrive_Path marketInputFile
+Else
+    sharedDrivePath = ThisWorkbook.Path & "\" & marketInputFile
+End If
+
 Application.Workbooks.Open (sharedDrivePath), False
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 
-revenueOutputGlobal = Left(sharedDrivePath, InStrRev(sharedDrivePath, "\") - 1) & "\" & "ContractDynamics_Waterfall_" & Format(Now, "mmmyy") & ".xlsx"
+revenueOutputGlobal = Left(sharedDrivePath, InStrRev(sharedDrivePath, "\") - 1) & "\" & "ContractDynamics_Waterfall_" & Format(Now, "mmmyy") & ".xlsm"
 Application.AlertBeforeOverwriting = False
 Application.DisplayAlerts = False
 If Dir(revenueOutputGlobal) = "" Then
     Application.Workbooks.Add
-    ActiveWorkbook.SaveAs fileName:=revenueOutputGlobal, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
+    ActiveWorkbook.SaveAs fileName:=revenueOutputGlobal, FileFormat:=xlOpenXMLWorkbookMacroEnabled, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
     revenueOutputGlobal = ActiveWorkbook.name
 Else
     Application.Workbooks.Open (revenueOutputGlobal), False
@@ -179,6 +191,50 @@ Selection.Copy
 Selection.PasteSpecial (xlValues)
 marketRNG.Delete
 
+'Adding EOL
+Application.Workbooks(marketInputFile).Activate
+ActiveWorkbook.Sheets("Sheet2").Activate
+ActiveSheet.UsedRange.Find(what:="EOL System code", lookat:=xlWhole).Select
+
+marketFSTAdd = ActiveCell.Address
+ActiveCell.Offset(0, 2).Select
+ActiveCell.End(xlDown).Select
+marketLSTAdd = ActiveCell.Address
+ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
+Selection.Copy
+
+Workbooks(revenueOutputGlobal).Activate
+ActiveWorkbook.Sheets("Data").Activate
+ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
+ActiveCell.End(xlToRight).Select
+ActiveCell.Offset(0, 1).Select
+ActiveCell.PasteSpecial xlPasteAll
+Set marketRNG = Range(Selection.Address)
+
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveCell.EntireColumn.Insert xlToRight
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveCell.Offset(0, -1).Value = "EOL Status"
+
+rngStringMarket = marketRNG.Address
+ActiveCell.Offset(1, 0).Select
+fstPasteRNG = ActiveCell.Offset(0, -1).Address
+ActiveCell.End(xlDown).Select
+lstPasteRNG = ActiveCell.Offset(0, -1).Address
+ActiveCell.End(xlUp).Select
+ActiveCell.Offset(1, 0).Select
+lookForVal = ActiveCell.Address(False, False)
+
+ActiveCell.Offset(0, -1).Select
+ActiveCell.Formula = "=IF(IFERROR(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "3" & "," & "FALSE)<" & Chr(61) & "YEAR(TODAY()),)," & Chr(34) & "EOL" & Chr(34) & "," & Chr(34) & "Not EOL" & Chr(34) & ")"
+'=IF(VLOOKUP(B31,$AS$30:$AU$64,3,FALSE)<YEAR(TODAY()),"EOL","Not EOL")
+ActiveCell.Copy
+ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
+ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
+Selection.Copy
+Selection.PasteSpecial (xlValues)
+marketRNG.Delete
+
 ActiveWorkbook.Sheets("Data").Activate
 Set wsData = Worksheets("Data")
 
@@ -218,9 +274,17 @@ pvtTblName = pvtTbl.name
     ActiveWorkbook.Sheets("Pivot").Select
     Cells(3, 1).Select
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "System Code (6NC)")
+        "EOL Status")
         .Orientation = xlRowField
         .Position = 1
+    End With
+    ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "EOL Status").Subtotals = Array(False, False, False, False _
+        , False, False, False, False, False, False, False, False)
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "System Code (6NC)")
+        .Orientation = xlRowField
+        .Position = 2
     End With
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "System Code (6NC)").Subtotals = Array(False, False, False, False _
@@ -228,7 +292,7 @@ pvtTblName = pvtTbl.name
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "Market")
         .Orientation = xlRowField
-        .Position = 2
+        .Position = 3
     End With
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "Market").Subtotals = Array(False, False, False, False _
@@ -236,14 +300,14 @@ pvtTblName = pvtTbl.name
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] System Code Material (Material no of  R Eq)")
         .Orientation = xlRowField
-        .Position = 3
+        .Position = 4
     End With
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] System Code Material (Material no of  R Eq)").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
     With ActiveSheet.PivotTables(pvtTblName).PivotFields("Country")
         .Orientation = xlRowField
-        .Position = 4
+        .Position = 5
     End With
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "Country").Subtotals = Array(False, False, False, False _
@@ -251,7 +315,7 @@ pvtTblName = pvtTbl.name
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Reference Equipment")
         .Orientation = xlRowField
-        .Position = 5
+        .Position = 6
     End With
     Range("A5").Select
     ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Reference Equipment") _
@@ -268,12 +332,12 @@ pvtTblName = pvtTbl.name
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract Start Date (Header)")
         .Orientation = xlRowField
-        .Position = 6
+        .Position = 7
     End With
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract End Date (Header)")
         .Orientation = xlRowField
-        .Position = 7
+        .Position = 8
     End With
     Range("B6").Select
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
@@ -293,7 +357,7 @@ pvtTblName = pvtTbl.name
         False, False, False, False, False, False, False, False)
     With ActiveSheet.PivotTables("PivotTable1").PivotFields("[C,S] Contract Type")
         .Orientation = xlRowField
-        .Position = 8
+        .Position = 9
     End With
     Range("D5").Select
     With ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Contract Type")
@@ -343,7 +407,7 @@ pvtTbl.ManualUpdate = False
 
 'Copy Pivot table values to new sheet
 ActiveWorkbook.Sheets("Pivot").Activate
-ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="EOL Status", lookat:=xlWhole).Select
 fstAddForPivot = ActiveCell.Address
 ActiveCell.SpecialCells(xlCellTypeLastCell).Select
 ActiveCell.End(xlUp).Select
@@ -352,14 +416,27 @@ ActiveSheet.Range(fstAddForPivot, lstAddForPivot).Select
 Selection.Copy
 
 ActiveWorkbook.Sheets.Add
-With ActiveSheet.Cells(2, 36)
+With ActiveSheet.Cells(2, 35)
     .PasteSpecial xlPasteValues
 End With
 
 ActiveSheet.name = "Contracts-Chart"
 ActiveWorkbook.Sheets("Pivot").Delete
 
+
 ActiveWorkbook.Sheets("Contracts-Chart").Activate
+'FOr EOL Blank cells
+ActiveSheet.Cells(2, 35).Select
+Do Until ActiveCell.Offset(1, 8).Value = ""
+    ActiveCell.Offset(1, 0).Select
+    If ActiveCell.Value = "" Then
+        ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
+    End If
+    If ActiveCell.Value = "#NA" Then
+        ActiveCell.Value = "Not Available"
+    End If
+Loop
+
 ActiveSheet.Cells(2, 40).Select
 Dim fstTableAdd As String
 fstTableAdd = ActiveCell.Address
@@ -457,7 +534,10 @@ If ActiveCell.Value <> "" Then
             ElseIf duration >= 61 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "MoreThan5Years"
             End If
-    
+            If ActiveCell.Offset(0, -5).Value = "EOL" Then
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "EOL"
+            End If
+            
         'condition for After warranty
         If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
         j = 1
@@ -491,7 +571,10 @@ End If
             ElseIf duration >= 61 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "MoreThan5Years"
             End If
-    
+            If ActiveCell.Offset(0, -5).Value = "EOL" Then
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "EOL"
+            End If
+            
             If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
             j = 1
             zcswVal = True
@@ -523,6 +606,10 @@ If i = 2 And ActiveCell.Offset(0, monthCellForTable).Value = "Yes" Then
    ElseIf duration >= 61 Then
      ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
    End If
+   If ActiveCell.Offset(0, -5).Value = "EOL" Then
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "EOL"
+            End If
+            
 'condition for After warranty
 If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
    j = 1
@@ -556,7 +643,10 @@ End If
                     ElseIf duration >= 61 Then
                         ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
                     End If
-                    
+                    If ActiveCell.Offset(0, -5).Value = "EOL" Then
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "EOL"
+            End If
+            
                     'condition for After warranty
                     If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
                         j = 1
@@ -591,7 +681,7 @@ ActiveCell.Offset(1, 0).Select
 Dim rowCount As Integer
 Dim lstRowCnt As Long
 Dim celAdd As String
-celAdd = Mid(ActiveCell.Address, 2, 2)
+celAdd = Mid(ActiveCell.Offset(0, 4).Address, 2, 2)
 rowCount = 0
 lstRowCnt = ActiveSheet.Range(celAdd & Rows.Count).End(xlUp).Row
 For rowCount = 0 To lstRowCnt - 4
@@ -616,9 +706,9 @@ Next
 ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 For rowCount = 0 To lstRowCnt - 4
-    If ActiveCell.Offset(1, -1).Value = "" Then
+    If ActiveCell.Value = "" Then
+        ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
         ActiveCell.Offset(1, 0).Select
-        ActiveCell.Offset(0, -1).Value = ActiveCell.Offset(-1, -1).Value
     Else
         ActiveCell.Offset(1, 0).Select
     End If
@@ -882,7 +972,7 @@ lstChartAdd = ActiveCell.Address
     ActiveChart.SetSourceData Source:=Range("Pivot!" & chartRange)
     ActiveChart.seriesCollection(2).Select
     ActiveChart.ClearToMatchStyle
-    ActiveChart.ChartStyle = 18
+    ActiveChart.ChartStyle = 279
     ActiveChart.ClearToMatchStyle
     Selection.Format.Fill.Visible = msoFalse
     ActiveChart.seriesCollection(1).Select
@@ -899,10 +989,10 @@ lstChartAdd = ActiveCell.Address
     ActiveChart.ChartArea.Select
     ActiveChart.SetElement (msoElementLegendLeft)
     With ActiveChart.Parent
-         .Height = 325 ' resize
-         .Width = 900  ' resize
+         .Height = 350 ' resize
+         .Width = 750  ' resize
          .Top = 10    ' reposition
-         .Left = 160   ' reposition
+         .Left = 300   ' reposition
      End With
     ActiveChart.seriesCollection(9).Select
     With Selection.Format.Fill
@@ -1003,7 +1093,7 @@ ActiveSheet.ChartObjects("Chart 1").Activate
     ActiveChart.seriesCollection(9).ApplyDataLabels
     ActiveChart.seriesCollection(10).Select
     ActiveChart.seriesCollection(10).ApplyDataLabels
-
+    ActiveChart.ChartTitle.Text = "Contracts Joins & Drops"
     ActiveSheet.ChartObjects("Chart 1").Activate
     ActiveChart.seriesCollection(1).Select
     ActiveChart.seriesCollection(1).Points(73).Select
@@ -1055,7 +1145,7 @@ ActiveSheet.ChartObjects("Chart 1").Activate
         .Transparency = 0
         .Solid
     End With
-    
+    ActiveSheet.ChartObjects(1).name = "ContractsDynamics"
 'deleting old chart
 Dim ws As Worksheet
 For Each ws In ActiveWorkbook.Sheets
@@ -1081,34 +1171,109 @@ Application.CutCopyMode = False
     ActiveWorkbook.SlicerCaches.Add(ActiveSheet.PivotTables("PivotTable1"), _
         "[C,S] System Code Material (Material no of  R Eq)").Slicers.Add ActiveSheet, _
         , "[C,S] System Code Material (Material no of  R Eq)", _
-        "[C,S] System Code Material (Material no of  R Eq)", 120, 153, 144, 198
+        "[C,S] System Code Material (Material no of  R Eq)", 5, 5, 144, 198
     ActiveWorkbook.SlicerCaches.Add(ActiveSheet.PivotTables("PivotTable1"), _
         "Country").Slicers.Add ActiveSheet, , "Country", _
-        "Country", 220.5, 153, 144, 198
-    ActiveSheet.Shapes.Range(Array("Country")).Select
-    ActiveSheet.Shapes.Range(Array("Country")).Top = 10
-    ActiveSheet.Shapes.Range(Array("Country")).Left = 10
-    ActiveSheet.Shapes.Range(Array( _
-        "[C,S] System Code Material (Material no of  R Eq)")).Select
-    ActiveSheet.Shapes.Range(Array( _
-        "[C,S] System Code Material (Material no of  R Eq)")).Top = 10
-    ActiveSheet.Shapes.Range(Array( _
-        "[C,S] System Code Material (Material no of  R Eq)")).Left = 30
-    ActiveSheet.Shapes("Country").IncrementLeft -0.75
-    ActiveSheet.Shapes("Country").IncrementTop 210.75
-    ActiveSheet.Shapes.Range(Array( _
-        "[C,S] System Code Material (Material no of  R Eq)")).Select
-    ActiveSheet.Shapes("[C,S] System Code Material (Material no of  R Eq)"). _
-        IncrementLeft -21
-    ActiveSheet.Shapes("Chart 1").ScaleWidth 1.1013888889, msoFalse, _
-        msoScaleFromTopLeft
-    ActiveSheet.Shapes("Chart 1").ScaleHeight 1.2615384615, msoFalse, _
-        msoScaleFromTopLeft
+        "Country", 210, 150, 144, 198
+        ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
+        "System Code (6NC)").Slicers.Add ActiveSheet, , "System Code (6NC)", _
+        "System Code (6NC)", 5, 150, 144, 198
+    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
+        "Market").Slicers.Add ActiveSheet, , "Market", "Market", 210, 5, 144, _
+        198
 
-Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
-Sheet1.lstBx6NC.Value = ""
-Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
-Sheet1.comb6NC2.Value = ""
+Range(fstChartAdd, lstChartAdd).Select
+Dim fstAddForSecondChart As String
+Dim lstAddForSecondChart As String
+Dim fstSourceDataAdd As String
+Dim lstSourceDataAdd As String
+Dim seventhAdd As String
+
+ActiveCell.Offset(1, 0).Select
+fstAddForSecondChart = ActiveCell.Offset(-1, 0).Address
+fstSourceDataAdd = ActiveCell.Offset(-1, 1).Address
+seventhAdd = ActiveCell.Offset(9, 7).Address
+lstAddForSecondChart = ActiveCell.End(xlDown).Address
+ActiveCell.Offset(-1, 1).Select
+ActiveCell.End(xlToRight).Select
+ActiveCell.Offset(10, 0).Select
+lstSourceDataAdd = ActiveCell.Address
+
+ActiveSheet.Cells(2, 2).Value = fstAddForSecondChart
+ActiveSheet.Cells(3, 2).Value = lstAddForSecondChart
+ActiveSheet.Cells(4, 2).Value = fstSourceDataAdd
+ActiveSheet.Cells(5, 2).Value = lstSourceDataAdd
+ActiveSheet.Cells(6, 2).Value = seventhAdd
+
+'Adding ScrollBars in to the sheet
+ActiveSheet.OLEObjects.Add(ClassType:="Forms.ScrollBar.1", Link:=False, _
+        DisplayAsIcon:=False, Left:=1100, Top:=100, _
+        Width:=27.1739130434783, Height:=196.739130434783).Select
+        ActiveSheet.OLEObjects.Add(ClassType:="Forms.ScrollBar.1", Link:=False, _
+        DisplayAsIcon:=False, Left:=550, Top:=400, Width:= _
+        318.478260869565, Height:=25).Select
+        
+ActiveSheet.ChartObjects("Chart 1").Activate
+Dim maxZoomAxes As Integer
+maxZoomAxes = ActiveChart.Axes(xlValue).MaximumScale
+ActiveSheet.Shapes("ScrollBar1").OLEFormat.Object.Object.Max = maxZoomAxes
+ActiveSheet.Shapes("ScrollBar2").OLEFormat.Object.Object.Max = 92
+
+'Writting code into the new created chart book
+    Dim myWrkb As Workbook
+    Dim strMacro As String
+    Dim prrfModule As VBComponent
+    Dim inxNum As Integer
+    Dim cdName As String
+    cdName = ActiveWorkbook.Sheets("ContractDynamics-WaterFall").CodeName
+    inxNum = ActiveWorkbook.Sheets("ContractDynamics-WaterFall").Index
+    Set myWrkb = ActiveWorkbook
+    
+    Set prrfModule = myWrkb.VBProject.VBComponents(cdName)    '  ..VBComponents.Add(1)
+    strMacro = "Private Sub ScrollBar1_Change()" & vbCrLf & _
+                "Dim chartName As String" & vbCrLf & _
+                "ActiveSheet.ChartObjects(" & Chr(34) & "Chart 1" & Chr(34) & ").Activate" & vbCrLf & _
+                "    ActiveChart.PlotArea.Select" & vbCrLf & _
+                "    ActiveChart.Axes(xlValue).MinimumScale = ScrollBar1.Value" & vbCrLf & _
+                "End Sub"
+    strMacro = strMacro & vbCrLf & vbCrLf & _
+                "Private Sub ScrollBar2_Change()" & vbCrLf & _
+                "On Error Resume Next" & vbCrLf & _
+                "Dim xx As Integer" & vbCrLf & _
+                "    xx = ScrollBar2.Value" & vbCrLf & _
+                "Dim DATARANGE As Range" & vbCrLf & _
+                "Dim dataRng As String" & vbCrLf & _
+                "Dim fstAdd As String, fstOriginalAdd As String" & vbCrLf & _
+                "Dim lstAdd As String, lstOriginalAdd As String" & vbCrLf & _
+                "fstOriginalAdd = ActiveSheet.Cells(4, 2).Value" & vbCrLf & _
+                "lstOriginalAdd = ActiveSheet.Cells(5, 2).Value" & vbCrLf & _
+                "fstAdd = Range(ActiveSheet.Cells(4, 2).Value).Offset(0, xx + 7).Address" & vbCrLf & _
+                "lstAdd = Range(ActiveSheet.Cells(6, 2).Value).Offset(0, xx + 7).Address" & vbCrLf & _
+                "If ScrollBar2.Value = 0 Then" & vbCrLf & _
+                "ActiveChart.Legend.Select" & vbCrLf & _
+                "Selection.Format.TextFrame2.TextRange.Font.Size = 9"
+    strMacro = strMacro & vbCrLf & _
+                "dataRng =" & Chr(32) & Chr(34) & Chr(32) & "'ContractDynamics-WaterFall'!" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "ActiveSheet.Cells(2, 2).Value" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ":" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "ActiveSheet.Cells(3, 2).Value" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ",'ContractDynamics-WaterFall'!" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "fstOriginalAdd" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ":" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "lstOriginalAdd" & vbCrLf & _
+                "Else" & vbCrLf & _
+                "ActiveChart.Legend.Select" & vbCrLf & _
+                "Selection.Format.TextFrame2.TextRange.Font.Size = 9" & vbCrLf & _
+                "    dataRng = " & Chr(32) & Chr(34) & Chr(32) & "'ContractDynamics-WaterFall'!" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "ActiveSheet.Cells(2, 2).Value" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ":" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "ActiveSheet.Cells(3, 2).Value" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ",'ContractDynamics-WaterFall'!" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "fstAdd" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ":" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "lstAdd" & vbCrLf & _
+                "End If" & vbCrLf & _
+                "Set DataRange = Range(dataRng)" & vbCrLf & _
+                "ActiveSheet.ChartObjects(" & Chr(34) & "ContractsDynamics" & Chr(34) & ").Chart.SetSourceData Source:=DATARANGE" & vbCrLf & _
+                "ActiveSheet.ChartObjects(" & Chr(34) & "ContractsDynamics" & Chr(34) & ").Activate" & vbCrLf & _
+                "    ActiveChart.PlotBy = xlRows" & vbCrLf & _
+                "    ActiveChart.FullSeriesCollection(2).Select" & vbCrLf & _
+                "    Selection.Format.Fill.Visible = msoFalse" & vbCrLf & vbCrLf
+
+    strMacro = strMacro & vbCrLf & _
+                "ActiveSheet.ChartObjects(" & Chr(34) & "ContractsDynamics" & Chr(34) & ").Activate" & vbCrLf & _
+                "End Sub"
+
+ActiveSheet.Cells(1, 1).Select
+Application.Workbooks(marketInputFile).Close False
+Application.Workbooks(inputRevenue).Close False
+prrfModule.CodeModule.AddFromString strMacro
 Application.Workbooks(revenueOutputGlobal).Save
 Application.Calculation = xlCalculationAutomatic
 
@@ -1141,10 +1306,23 @@ Dim strtMonth As String
 strtMonth = Format(Now() - 31, "mmmyyyy")
 inputRevenue = "Revenue_MoS_Jan14_May15.xlsx"
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
-SharedDrive_Path inputRevenue
+
+'option for local drive and shared drive
+If Sheet1.rdbSharedDrive.Value = True Then
+    SharedDrive_Path inputRevenue
+Else
+    sharedDrivePath = ThisWorkbook.Path & "\" & inputRevenue
+End If
+
 Application.Workbooks.Open (sharedDrivePath), False
 inputFileNameContracts = inputRevenue
-SharedDrive_Path marketInputFile
+
+If Sheet1.rdbSharedDrive.Value = True Then
+    SharedDrive_Path marketInputFile
+Else
+    sharedDrivePath = ThisWorkbook.Path & "\" & marketInputFile
+End If
+
 Application.Workbooks.Open (sharedDrivePath), False
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
@@ -2733,6 +2911,8 @@ ActiveSheet.Cells(1, 1).Select
     ActiveSheet.Paste
     Application.ScreenUpdating = True
     Application.Calculation = xlCalculationAutomatic
+    Application.Workbooks(inputFileNameContracts).Close False
+    Application.Workbooks(marketInputFile).Close False
     
 End Sub
 
@@ -2764,10 +2944,23 @@ Application.DisplayAlerts = False
 strtMonth = Format(Now() - 31, "mmmyyyy")
 inputRevenue = "Contract_Penetration_SAPBW_Download.xlsx"
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
-SharedDrive_Path inputRevenue
+
+'for local and shared drive option
+If Sheet1.rdbSharedDrive.Value = True Then
+    SharedDrive_Path inputRevenue
+Else
+    sharedDrivePath = ThisWorkbook.Path & "\" & inputRevenue
+End If
+
 Application.Workbooks.Open (sharedDrivePath), False
 inputFileNameContracts = inputRevenue
-SharedDrive_Path marketInputFile
+
+If Sheet1.rdbSharedDrive.Value = True Then
+    SharedDrive_Path marketInputFile
+Else
+    sharedDrivePath = ThisWorkbook.Path & "\" & marketInputFile
+End If
+
 Application.Workbooks.Open (sharedDrivePath), False
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
@@ -2966,7 +3159,7 @@ ActiveCell.Offset(1, 0).Select
 lookForVal = ActiveCell.Address(False, False)
 
 ActiveCell.Offset(0, -1).Select
-ActiveCell.Formula = "=VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)"
+ActiveCell.Formula = "=IFERROR(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)," & Chr(34) & "Others" & Chr(34) & ")"
 ActiveCell.Copy
 ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
 ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
@@ -3567,8 +3760,13 @@ pvtTbl.ManualUpdate = False
         .PatternTintAndShade = 0
     End With
     
+    Application.Workbooks(inputFileNameContracts).Close False
+    Application.Workbooks(marketInputFile).Close False
     ActiveSheet.Cells(1, 1).Select
     ActiveSheet.name = "CP Select Vs Global"
     ActiveWorkbook.Save
-    
+    Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
+    Sheet1.lstBx6NC.Value = ""
+    Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
+    Sheet1.comb6NC2.Value = ""
 End Sub
