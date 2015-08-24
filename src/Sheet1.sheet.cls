@@ -53,6 +53,8 @@ startTime = Second(Now())
             
             Call Service_Information
             
+            Call PLCM_Calculations
+            
             Call CQ_Calculations
             
     ElseIf Sheet1.chkRevenue.Value = True Then

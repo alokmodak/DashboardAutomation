@@ -12,8 +12,6 @@ Public shtNotPresent(20) As String
 Public shtNt As Integer
 Public outputFileGlobal As String
 
-
-
 Public Sub Generate_Dashboard_Output()
 
 On Error Resume Next
@@ -86,7 +84,7 @@ outputFlName = outputFileGlobal
 End If
 
 Application.Workbooks.Open (outputPath), False
-Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
+Application.Workbooks(outputFileGlobal).Windows(1).Visible = False
 
 'Open service scorecard file and install file
 
@@ -144,7 +142,7 @@ End If
     ActiveSheet.UsedRange.Find("Column Labels").Select
     
 Application.Workbooks(myWorkBook).Windows(1).Visible = False
-Application.Workbooks(installFileOpen).Windows(1).Visible = True
+Application.Workbooks(installFileOpen).Windows(1).Visible = False
 
 'Filtering servicescorecard data based on selection
 Dim productGroup As String
@@ -4250,7 +4248,6 @@ ActiveSheet.Cells(11, 11).Select
 Next productItem 'for all product groups
 
 Workbooks(inputFl).Close False
-Application.Workbooks(outputFl).Windows(1).Visible = True
 Workbooks(outputFl).Activate
 Dim Sheet
 For Each Sheet In ActiveWorkbook.Sheets
@@ -4295,3 +4292,257 @@ Next
 
 End Sub
 
+
+Public Sub PLCM_Calculations()
+
+On Error Resume Next
+Dim inputFl As String
+Dim outputFl As String
+Dim plcmProductGroup As String
+Dim cProductGroup As String
+Dim plcmDate As String
+Dim i As Integer
+Dim j As Integer
+Dim productItem As Variant
+Dim yrSelectedFirst As String 'Month and year selected at first
+Dim selMonth As String
+Dim KPISheetName As String
+Dim selectSheet As Integer
+Dim fstMonthChk As String
+Dim ws As Worksheet
+
+fstMonthChk = Format(Sheet1.combYear.Value, "mmmyy")
+
+yrSelectedFirst = Sheet1.combYear.Value
+
+outputFl = "KPI Summary.xlsx" 'outputFileGlobal
+inputFl = ThisWorkbook.Path & "\" & "CS_Dashboard.xlsx"
+
+'Skipping if input file not present
+If Sheet1.rdbLocalDrive.Value = True Then
+    If Dir(ThisWorkbook.Path & "\" & "CS_Dashboard.xlsx") = "" Then
+        Application.Workbooks(outputFl).Windows(1).Visible = True
+        Exit Sub
+    End If
+End If
+
+If Sheet1.rdbSharedDrive.Value = True Then
+    SharedDrive_Path "CS_Dashboard.xlsx"
+        'if file is not present in shared drive then exit
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "CS_Dashboard.xlsx" Then
+        Application.Workbooks(outputFl).Windows(1).Visible = True
+        
+            Exit Sub
+        End If
+    inputFl = sharedDrivePath
+End If
+
+Application.Workbooks.Open (inputFl), False
+inputFl = "CS_Dashboard.xlsx"
+
+'checking if operating review sheet is present
+Application.Workbooks(inputFl).Activate
+Dim operatingSheetPresent As Boolean
+operatingSheetPresent = False
+For Each ws In ActiveWorkbook.Sheets
+   If ws.name = "Operating Review" Then
+       operatingSheetPresent = True
+   End If
+Next
+
+If operatingSheetPresent = False Then
+Exit Sub
+End If
+
+plcmProductGroup = Sheet1.combProductGroup.Value
+
+'loop for all the product groups
+For Each productItem In Sheet1.combProductGroup.List
+    If Sheet1.chkAllGroups.Value = True Then
+        Sheet1.combProductGroup.Value = productItem
+        plcmProductGroup = Sheet1.combProductGroup.Value
+            
+            'exit for for end of list
+            If plcmProductGroup = "" Then
+            Exit For
+            End If
+    End If
+
+selectSheet = 0
+
+i = 0
+plcmDate = Mid(Sheet1.combYear.Value, 6, 2)
+j = Mid(Sheet1.combYear.Value, 6, 2)
+
+Dim fstAdd As String
+Dim lstAdd As String
+
+'Case select for sheet tab
+KPISheetName = Sheet1.combProductGroup.Value
+
+Select Case KPISheetName
+
+Case "IXR-MOS Pulsera-Y"
+KPISheetName = "Pulsera"
+plcmProductGroup = "MOS"
+fstAdd = "$J$3"
+lstAdd = "V11"
+
+Case "IXR-MOS BV Vectra-N"
+KPISheetName = "BV Vectra"
+plcmProductGroup = "HIC Legacy"
+fstAdd = "$J$21"
+lstAdd = "$V$29"
+
+Case "IXR-MOS Endura-Y"
+KPISheetName = "Endura"
+plcmProductGroup = "MOS"
+fstAdd = "$J$3"
+lstAdd = "V11"
+
+Case "IXR-MOS Veradius-Y"
+KPISheetName = "Veradius"
+plcmProductGroup = "MOS"
+fstAdd = "$J$3"
+lstAdd = "V11"
+
+Case "IXR-CV Allura FC-Y"
+KPISheetName = "Allura FC"
+plcmProductGroup = "HIC Legacy"
+fstAdd = "$J$21"
+lstAdd = "$V$29"
+
+Case "IXR-MOS Libra-N"
+KPISheetName = "Libra"
+plcmProductGroup = "HIC Legacy"
+fstAdd = "$J$21"
+lstAdd = "$V$29"
+
+Case "DXR-PrimaryDiagnost Digital-N"
+KPISheetName = "PrimaryDiagnost Digital"
+plcmProductGroup = "HIC Legacy"
+fstAdd = "$J$21"
+lstAdd = "$V$29"
+
+Case "DXR-MicroDose Mammography-Y"
+KPISheetName = "MicroDose Mammography"
+plcmProductGroup = "Mammo"
+fstAdd = "$J$12"
+lstAdd = "$V$20"
+
+Case "DXR-MobileDiagnost Opta-N"
+KPISheetName = "HIC Legacy"
+plcmProductGroup = "MobileDiagnost Opta"
+fstAdd = "$J$21"
+lstAdd = "$V$29"
+
+End Select
+
+'checking whether sheet exists in the output file
+Dim exists As Boolean
+exists = False
+Workbooks(outputFl).Activate
+For i = 1 To Workbooks(outputFl).Sheets.Count
+    If Workbooks(outputFl).Sheets(i).name = KPISheetName Then
+        exists = True
+    End If
+Next i
+
+If Not exists Then
+    GoTo sheetNameNotPresent
+End If
+
+'Do Until j = 0
+Select Case j
+
+    Case 1
+    plcmDate = "Jan"
+    selMonth = "01"
+    Case 2
+    plcmDate = "Feb"
+    selMonth = "02"
+    Case 3
+    plcmDate = "Mar"
+    selMonth = "03"
+    Case 4
+    plcmDate = "Apr"
+    selMonth = "04"
+    Case 5
+    plcmDate = "May"
+    selMonth = "05"
+    Case 6
+    plcmDate = "Jun"
+    selMonth = "06"
+    Case 7
+    plcmDate = "Jul"
+    selMonth = "07"
+    Case 8
+    plcmDate = "Aug"
+    selMonth = "08"
+    Case 9
+    plcmDate = "Sep"
+    selMonth = "09"
+    Case 10
+    plcmDate = "Oct"
+    selMonth = "10"
+    Case 11
+    plcmDate = "Nov"
+    selMonth = "11"
+    Case 12
+    plcmDate = "Dec"
+    selMonth = "12"
+End Select
+
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets("Operating Review").Activate
+
+ActiveSheet.Range(fstAdd, lstAdd).Select
+Selection.Copy
+
+Workbooks(outputFl).Activate
+ActiveWorkbook.Sheets(KPISheetName).Activate
+ActiveSheet.UsedRange.Find(what:="FRU Readiness %", lookat:=xlWhole).Select
+i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
+ActiveCell.Offset(i - 2, 0).Select
+Application.ActiveCell.PasteSpecial xlPasteAll
+
+'j = j - 1 'loop for each month
+'Loop
+
+sheetNameNotPresent:
+'exit loop if all groups option is not selected
+If Sheet1.chkAllGroups.Value = False Then
+    Exit For
+End If
+
+Next productItem 'for all product groups
+
+Workbooks(inputFl).Close False
+Application.Workbooks(outputFl).Windows(1).Visible = True
+Workbooks(outputFl).Activate
+Dim Sheet
+For Each Sheet In ActiveWorkbook.Sheets
+Sheet.Activate
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
+ActiveCell.Offset(1, 0).Select
+ActiveCell.End(xlToRight).Select
+Dim forNA As Integer
+For forNA = 1 To 48
+    If ActiveCell.Value = "" Then
+        ActiveCell.Value = "NA"
+    End If
+    ActiveCell.Offset(1, 0).Select
+Next
+ActiveSheet.Cells.Select
+Selection.Font.Size = 18
+ActiveSheet.Cells(11, 11).Select
+Next
+
+Workbooks(outputFl).Save
+
+If Sheet1.chkAllGroups.Value = True Then
+ActiveWorkbook.Sheets(2).Activate
+End If
+
+End Sub

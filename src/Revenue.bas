@@ -1269,7 +1269,48 @@ ActiveSheet.Shapes("ScrollBar2").OLEFormat.Object.Object.Max = 92
     strMacro = strMacro & vbCrLf & _
                 "ActiveSheet.ChartObjects(" & Chr(34) & "ContractsDynamics" & Chr(34) & ").Activate" & vbCrLf & _
                 "End Sub"
-
+    
+    'Creating tables for Sceifics of drops and joins
+    Range(fstChartAdd).Select
+    ActiveCell.Offset(-1, 0).Select
+    For i = 1 To 11
+        ActiveCell.Offset(i, -1).Value = i
+    Next i
+    
+    Range(fstChartAdd).Select
+    Dim fstSceficsAdd As String
+    fstSceficsAdd = ActiveCell.Offset(0, 1).Address
+    Dim tableRef As String
+    tableRef = ActiveCell.Offset(0, -1).Address(False, True)
+    Dim tableRefForHlook As String
+    tableRefForHlook = ActiveCell.Offset(3, -1).Address(False, True)
+    
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(3, 0).Select
+    
+    For i = 1 To 36
+        ActiveCell.Offset(-1, i).Value = i * 3
+    Next i
+    
+    Dim multiplyCellAdd As String
+    multiplyCellAdd = ActiveCell.Offset(-1, 1).Address(False, False)
+    Dim negativeAdd As String
+    negativeAdd = ActiveCell.Offset(10, 1).Address(False, False)
+    ActiveCell.Offset(0, 1).Select
+    
+    ActiveCell.Formula = "=OFFSET(" & fstSceficsAdd & ",0," & multiplyCellAdd & ")"
+                                    '=OFFSET($G$11166,0,G11178)
+    ActiveCell.Offset(1, 0).Formula = "=HLOOKUP(" & fstSceficsAdd & "," & fstChartAdd & ":" & lstChartAdd & "," & multiplyCellAdd & ",False)"
+                                    '=HLOOKUP(G$11179,$G$11166:$DJ$11176,$E11167,FALSE)
+    ActiveCell.Offset(4, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstSceficsAdd & ",3),RIGHT(" & fstSceficsAdd & ",2)," & Chr(34) & "-Joined" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook & ",False)"
+                                    '=HLOOKUP(CONCATENATE(LEFT(G$11179,3),RIGHT(G$11179,2),"-Joined"),$G$11166:$DJ$11176,$E11169,FALSE)
+    ActiveCell.Offset(10, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstSceficsAdd & ",3),RIGHT(" & fstSceficsAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook & ",False)"
+                                    '=HLOOKUP(CONCATENATE(LEFT(G$11179,3),RIGHT(G$11179,2),"-Dropped"),$G$11166:$DJ$11176,$E11169,FALSE)
+    ActiveCell.Offset(16, 0).Formula = "=" & negativeAdd & "*-1"
+                                    '=G11189*-1
+                                    
+                                    
 ActiveSheet.Cells(1, 1).Select
 Application.Workbooks(marketInputFile).Close False
 Application.Workbooks(inputRevenue).Close False
