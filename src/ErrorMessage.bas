@@ -257,6 +257,17 @@ If Sheet1.rdbSharedDrive.Value = True Then
     
     End If
     
+    
+    'For PLCM Data File Validation
+    Dim PLCMDataFile As String
+    PLCMDataFile = "CS_Dashboard.xlsx"
+    SharedDrive_Path PLCMDataFile
+    
+    If fileExists = False Then
+    fileNotFoundShared = fileNotFoundShared & Chr(34) & "CS_Dashboard.xlsx" & Chr(34) & vbCrLf
+    End If
+    
+    
     'For CQ Data File Validation
     CQDataFile = "CQ_Data_SPM.xlsx"
     SharedDrive_Path CQDataFile
@@ -280,4 +291,41 @@ If Sheet1.rdbSharedDrive.Value = True Then
         End
         End If
 End If
+
+End Sub
+
+'Error message for Revenue file not present
+Public Sub ErrorMessage_RevenueFiles(inputFile As String)
+On Error Resume Next
+Dim inputRevenue As String
+inputRevenue = inputFile
+
+If Sheet1.rdbSharedDrive.Value = True Then
+    SharedDrive_Path inputRevenue
+Else
+    sharedDrivePath = ThisWorkbook.Path & "\" & inputRevenue
+End If
+
+Dim flPresent As String
+flPresent = ""
+flPresent = Dir(sharedDrivePath)
+If flPresent = "" Then
+MsgBox Chr(34) & inputRevenue & Chr(34) & " File not Found! Please select Appropriate Path"
+End
+End If
+marketInputFile = "Market_Groups_Markets_Country.xlsx"
+
+If Sheet1.rdbSharedDrive.Value = True Then
+    SharedDrive_Path marketInputFile
+Else
+    sharedDrivePath = ThisWorkbook.Path & "\" & marketInputFile
+End If
+
+flPresent = ""
+flPresent = Dir(sharedDrivePath)
+If flPresent = "" Then
+MsgBox Chr(34) & marketInputFile & Chr(34) & " File not Found! Please select Appropriate Path"
+End
+End If
+
 End Sub

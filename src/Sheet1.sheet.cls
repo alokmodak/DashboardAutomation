@@ -19,6 +19,7 @@ Private Sub chkRevenue_Click()
     Sheet1.combYear.Enabled = False
     Sheet1.cmbIncreaseMonth.Enabled = False
     Sheet1.cmbDecreaseMonth.Enabled = False
+    Sheet1.comb6NC2.Enabled = True
 End Sub
 
 'output file generation
@@ -52,14 +53,40 @@ startTime = Second(Now())
             
             Call Service_Information
             
+            Call PLCM_Calculations
+            
             Call CQ_Calculations
             
     ElseIf Sheet1.chkRevenue.Value = True Then
             
-            Call Revenue_Graph_Creation
+            Dim i As Integer
+            For i = 0 To Sheet1.lstBx6NC.ListCount - 1
+               If Sheet1.lstBx6NC.Selected(i) Then
+                   If Sheet1.lstBx6NC.List(i) = "ContractsDynamics_Waterfall" Then
+                       
+                       'Checking whether file present
+                       Call ErrorMessage_RevenueFiles("Revenue_MoS_Jan14_May15.xlsx")
+                       
+                       Call Revenue_Graph_Creation
+                       
+                   End If
+                   If Sheet1.lstBx6NC.List(i) = "MarketDynamics_Waterfall" Then
+                   
+                       'Checking whether file present
+                       Call ErrorMessage_RevenueFiles("Revenue_MoS_Jan14_May15.xlsx")
+                       
+                       Call Market_Revenue_Chart_Generation
+                   End If
+                    If Sheet1.lstBx6NC.List(i) = "Contract_Penetration" Then
+                       
+                       'Checking whether file present
+                       Call ErrorMessage_RevenueFiles("Contract_Penetration_SAPBW_Download.xlsx")
+                       
+                       Call Contract_Penetration
+                   End If
+               End If
+            Next i
             
-            'Call Market_Revenue_Chart_Generation
-    
     ElseIf Sheet1.chkCTS.Value = True Then
     
     Else
