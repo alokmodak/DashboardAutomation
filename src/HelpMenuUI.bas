@@ -49,11 +49,12 @@ warrantyVal = Replace(Sheet1.combYear.Value, "-", "")
 "7) Level 4 Warranty Spend Analysis - " & warrantyVal & " @ " & warrantyVal - 1 & " BS Rate_IGT" & vbCrLf & _
 "8) Level 4 Warranty Spend Analysis - " & warrantyVal & " @ " & warrantyVal - 1 & " BS Rate_DI" & vbCrLf & _
 "9) KPI dashboard_Innovation_" & lblMonthCheck & ".xlsx" & vbCrLf & _
-"10) CQ_Data_SPM.xlsx"
+"10) CQ_Data_SPM.xlsx" & vbCrLf & _
+"11) CS_Dashboard.xlsx"
 
 revenueLblText = "Input files required are -" & vbCrLf & _
 "1) Market_Groups_Markets_Country.xlsx" & vbCrLf & _
-"2) Revenue_MoS.xlsx" & vbCrLf & _
+"2) Revenue_MoS_SAPBW_Download.xlsx" & vbCrLf & _
 "3) Contract_Penetration_SAPBW_Download.xlsx"
 
 Sheet1.revenueLbl.Caption = revenueLblText

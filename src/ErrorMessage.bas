@@ -61,6 +61,7 @@ End If
     Dim TestStr As String
     Dim CQDataFile As String
     Dim serviceInfoDataFile As String
+    Dim PLCMDataFile As String
     
 If Sheet1.rdbLocalDrive.Value = True Then 'Input files check for Local drive
 
@@ -155,11 +156,19 @@ If Sheet1.rdbLocalDrive.Value = True Then 'Input files check for Local drive
     fileNotPresent = fileNotPresent & Chr(34) & "CQ_Data_SPM.xlsx" & Chr(34) & vbCrLf
     End If
     
+    'For CQ Data File Validation
+    PLCMDataFile = ""
+    PLCMDataFile = Dir(ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx")
+    
+    If PLCMDataFile = "" Then
+    fileNotPresent = fileNotPresent & Chr(34) & "CS_Dashboard.xlsx" & Chr(34) & vbCrLf
+    End If
+    
     'For service information Data File Validation
     serviceInfoDataFile = ""
     serviceInfoDataFile = Dir(ThisWorkbook.Path & "\" & "Service_Information_Quality_Completion.xlsx")
     
-    If CQDataFile = "" Then
+    If serviceInfoDataFile = "" Then
     fileNotPresent = fileNotPresent & Chr(34) & "Service_Information_Quality_Completion.xlsx" & Chr(34) & vbCrLf
     End If
 
@@ -259,7 +268,6 @@ If Sheet1.rdbSharedDrive.Value = True Then
     
     
     'For PLCM Data File Validation
-    Dim PLCMDataFile As String
     PLCMDataFile = "CS_Dashboard.xlsx"
     SharedDrive_Path PLCMDataFile
     
@@ -271,6 +279,15 @@ If Sheet1.rdbSharedDrive.Value = True Then
     'For CQ Data File Validation
     CQDataFile = "CQ_Data_SPM.xlsx"
     SharedDrive_Path CQDataFile
+    
+    If fileExists = False Then
+    fileNotFoundShared = fileNotFoundShared & Chr(34) & "CQ_Data_SPM.xlsx" & Chr(34) & vbCrLf
+    
+    End If
+    
+    'For PLCM data File Validation
+    PLCMDataFile = "CS_Dashboard.xlsx"
+    SharedDrive_Path PLCMDataFile
     
     If fileExists = False Then
     fileNotFoundShared = fileNotFoundShared & Chr(34) & "CQ_Data_SPM.xlsx" & Chr(34) & vbCrLf
@@ -295,6 +312,22 @@ End If
 End Sub
 
 'Error message for Revenue file not present
+Public Sub Error_RevenueNoSelection()
+    On Error Resume Next
+    Dim i As Integer
+    Dim selected As Boolean
+    selected = False
+            For i = 0 To Sheet1.lstBx6NC.ListCount - 1
+               If Sheet1.lstBx6NC.selected(i) Then
+                   selected = True
+               End If
+            Next i
+
+    If selected = False Then
+        MsgBox "Please select a chart type by double click over revenue text box!"
+        End
+    End If
+End Sub
 Public Sub ErrorMessage_RevenueFiles(inputFile As String)
 On Error Resume Next
 Dim inputRevenue As String
