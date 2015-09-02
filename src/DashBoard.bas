@@ -4021,7 +4021,7 @@ ActiveSheet.UsedRange.Find(what:="Service Information Quality", lookat:=xlWhole)
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
-Application.ActiveCell.PasteSpecial xlPasteAll
+Application.ActiveCell.PasteSpecial xlPasteValues
 
 'j = j - 1 'loop for each month
 'Loop
@@ -4232,7 +4232,7 @@ ActiveSheet.UsedRange.Find(what:="Open Service Interest CQ - PR", lookat:=xlWhol
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
-Application.ActiveCell.PasteSpecial xlPasteAll
+Application.ActiveCell.PasteSpecial xlPasteValues
 
 'j = j - 1 'loop for each month
 'Loop
@@ -4505,7 +4505,7 @@ ActiveSheet.UsedRange.Find(what:="FRU Readiness %", lookat:=xlWhole).Select
 i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
 ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
-Application.ActiveCell.PasteSpecial xlPasteAll
+Application.ActiveCell.PasteSpecial xlPasteValues
 
 'j = j - 1 'loop for each month
 'Loop

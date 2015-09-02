@@ -39,7 +39,7 @@ Dim strtMonth As String
 On Error Resume Next
 'Copy Data from SAP file
 strtMonth = Format(Now() - 31, "mmmyyyy")
-inputRevenue = "Revenue_MoS_Jan14_May15.xlsx"
+inputRevenue = "Revenue_MoS_SAPBW_Download.xlsx"
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
 
 'shared drive and local drive option
@@ -607,7 +607,7 @@ If i = 2 And ActiveCell.Offset(0, monthCellForTable).Value = "Yes" Then
      ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
    End If
    If ActiveCell.Offset(0, -5).Value = "EOL" Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "EOL"
+                ActiveCell.Offset(0, monthCellForTable - 1).Value = "EOL"
             End If
             
 'condition for After warranty
@@ -644,7 +644,7 @@ End If
                         ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
                     End If
                     If ActiveCell.Offset(0, -5).Value = "EOL" Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "EOL"
+                ActiveCell.Offset(0, monthCellForTable - 1).Value = "EOL"
             End If
             
                     'condition for After warranty
@@ -962,7 +962,7 @@ ActiveSheet.Range(lstCelNum).Select
 ActiveCell.Offset(-1, 1).Select
 fstChartAdd = ActiveCell.Offset(0, -1).Address
 ActiveCell.End(xlToRight).Select
-ActiveCell.Offset(11, 0).Select
+ActiveCell.Offset(10, 0).Select
 lstChartAdd = ActiveCell.Address
 
     Range(fstChartAdd, lstChartAdd).Select
@@ -1128,6 +1128,22 @@ ActiveSheet.ChartObjects("Chart 1").Activate
     End With
                 
     ActiveChart.FullSeriesCollection(10).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent1
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent1
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.5
+        .Transparency = 0
+        .Solid
+    End With
     ActiveChart.FullSeriesCollection(9).Select
     With Selection.Format.Fill
         .Visible = msoTrue
@@ -1157,7 +1173,7 @@ ActiveWorkbook.Sheets("Contracts-Chart").Activate
 ActiveSheet.name = "Contracts-Data"
 ActiveWorkbook.Sheets("Pivot").Activate
 ActiveSheet.name = "ContractDynamics-WaterFall"
-Range("A1:J29").Select
+Range("A1:AG29").Select
     With Selection.Interior
         .PatternColorIndex = xlAutomatic
         .ThemeColor = xlThemeColorLight2
@@ -1199,12 +1215,6 @@ ActiveCell.End(xlToRight).Select
 ActiveCell.Offset(10, 0).Select
 lstSourceDataAdd = ActiveCell.Address
 
-ActiveSheet.Cells(2, 2).Value = fstAddForSecondChart
-ActiveSheet.Cells(3, 2).Value = lstAddForSecondChart
-ActiveSheet.Cells(4, 2).Value = fstSourceDataAdd
-ActiveSheet.Cells(5, 2).Value = lstSourceDataAdd
-ActiveSheet.Cells(6, 2).Value = seventhAdd
-
 'Adding ScrollBars in to the sheet
 ActiveSheet.OLEObjects.Add(ClassType:="Forms.ScrollBar.1", Link:=False, _
         DisplayAsIcon:=False, Left:=1100, Top:=100, _
@@ -1212,12 +1222,20 @@ ActiveSheet.OLEObjects.Add(ClassType:="Forms.ScrollBar.1", Link:=False, _
         ActiveSheet.OLEObjects.Add(ClassType:="Forms.ScrollBar.1", Link:=False, _
         DisplayAsIcon:=False, Left:=550, Top:=400, Width:= _
         318.478260869565, Height:=25).Select
+        ActiveSheet.OLEObjects.Add(ClassType:="Forms.ScrollBar.1", Link:=False, _
+        DisplayAsIcon:=False, Left:=2100, Top:=400, Width:= _
+        318.478260869565, Height:=25).Select
+        ActiveSheet.OLEObjects.Add(ClassType:="Forms.ScrollBar.1", Link:=False, _
+        DisplayAsIcon:=False, Left:=2800, Top:=100, Width:= _
+        27, Height:=196).Select
         
 ActiveSheet.ChartObjects("Chart 1").Activate
 Dim maxZoomAxes As Integer
 maxZoomAxes = ActiveChart.Axes(xlValue).MaximumScale
 ActiveSheet.Shapes("ScrollBar1").OLEFormat.Object.Object.Max = maxZoomAxes
 ActiveSheet.Shapes("ScrollBar2").OLEFormat.Object.Object.Max = 92
+ActiveSheet.Shapes("ScrollBar3").OLEFormat.Object.Object.Max = 35
+
 
 'Writting code into the new created chart book
     Dim myWrkb As Workbook
@@ -1232,44 +1250,110 @@ ActiveSheet.Shapes("ScrollBar2").OLEFormat.Object.Object.Max = 92
     Set prrfModule = myWrkb.VBProject.VBComponents(cdName)    '  ..VBComponents.Add(1)
     strMacro = "Private Sub ScrollBar1_Change()" & vbCrLf & _
                 "Dim chartName As String" & vbCrLf & _
-                "ActiveSheet.ChartObjects(" & Chr(34) & "Chart 1" & Chr(34) & ").Activate" & vbCrLf & _
+                "ActiveSheet.ChartObjects(" & Chr(34) & "ContractsDynamics" & Chr(34) & ").Activate" & vbCrLf & _
                 "    ActiveChart.PlotArea.Select" & vbCrLf & _
                 "    ActiveChart.Axes(xlValue).MinimumScale = ScrollBar1.Value" & vbCrLf & _
                 "End Sub"
     strMacro = strMacro & vbCrLf & vbCrLf & _
                 "Private Sub ScrollBar2_Change()" & vbCrLf & _
                 "On Error Resume Next" & vbCrLf & _
-                "Dim xx As Integer" & vbCrLf & _
-                "    xx = ScrollBar2.Value" & vbCrLf & _
-                "Dim DATARANGE As Range" & vbCrLf & _
-                "Dim dataRng As String" & vbCrLf & _
-                "Dim fstAdd As String, fstOriginalAdd As String" & vbCrLf & _
-                "Dim lstAdd As String, lstOriginalAdd As String" & vbCrLf & _
-                "fstOriginalAdd = ActiveSheet.Cells(4, 2).Value" & vbCrLf & _
-                "lstOriginalAdd = ActiveSheet.Cells(5, 2).Value" & vbCrLf & _
-                "fstAdd = Range(ActiveSheet.Cells(4, 2).Value).Offset(0, xx + 7).Address" & vbCrLf & _
-                "lstAdd = Range(ActiveSheet.Cells(6, 2).Value).Offset(0, xx + 7).Address" & vbCrLf & _
-                "If ScrollBar2.Value = 0 Then" & vbCrLf & _
-                "ActiveChart.Legend.Select" & vbCrLf & _
-                "Selection.Format.TextFrame2.TextRange.Font.Size = 9"
-    strMacro = strMacro & vbCrLf & _
-                "dataRng =" & Chr(32) & Chr(34) & Chr(32) & "'ContractDynamics-WaterFall'!" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "ActiveSheet.Cells(2, 2).Value" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ":" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "ActiveSheet.Cells(3, 2).Value" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ",'ContractDynamics-WaterFall'!" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "fstOriginalAdd" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ":" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "lstOriginalAdd" & vbCrLf & _
-                "Else" & vbCrLf & _
-                "ActiveChart.Legend.Select" & vbCrLf & _
-                "Selection.Format.TextFrame2.TextRange.Font.Size = 9" & vbCrLf & _
-                "    dataRng = " & Chr(32) & Chr(34) & Chr(32) & "'ContractDynamics-WaterFall'!" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "ActiveSheet.Cells(2, 2).Value" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ":" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "ActiveSheet.Cells(3, 2).Value" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ",'ContractDynamics-WaterFall'!" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "fstAdd" & Chr(32) & Chr(38) & Chr(32) & Chr(34) & Chr(32) & ":" & Chr(32) & Chr(34) & Chr(32) & Chr(38) & Chr(32) & "lstAdd" & vbCrLf & _
-                "End If" & vbCrLf & _
-                "Set DataRange = Range(dataRng)" & vbCrLf & _
-                "ActiveSheet.ChartObjects(" & Chr(34) & "ContractsDynamics" & Chr(34) & ").Chart.SetSourceData Source:=DATARANGE" & vbCrLf & _
+                "Dim i As Integer" & vbCrLf & _
                 "ActiveSheet.ChartObjects(" & Chr(34) & "ContractsDynamics" & Chr(34) & ").Activate" & vbCrLf & _
-                "    ActiveChart.PlotBy = xlRows" & vbCrLf & _
-                "    ActiveChart.FullSeriesCollection(2).Select" & vbCrLf & _
-                "    Selection.Format.Fill.Visible = msoFalse" & vbCrLf & vbCrLf
-
-    strMacro = strMacro & vbCrLf & _
+                "If ScrollBar2.Value = 0 Then" & vbCrLf & _
+                "For i = 1 To 108" & vbCrLf & _
+                "ActiveChart.ChartGroups(1).FullCategoryCollection(i).IsFiltered = False" & vbCrLf & _
+                "ActiveChart.FullSeriesCollection(i).HasDataLabels = False" & vbCrLf & _
+                "Next" & vbCrLf & _
+                "Else" & vbCrLf & _
+                    "For i = 1 To 108" & vbCrLf & _
+                    "    If i = ScrollBar2.Value Or i = ScrollBar2.Value + 1 Or i = ScrollBar2.Value + 2 Or i = ScrollBar2.Value + 3 Or i = ScrollBar2.Value + 4 Or i = ScrollBar2.Value + 5 Or i = ScrollBar2.Value + 6 Then" & vbCrLf & _
+                    "        ActiveChart.ChartGroups(1).FullCategoryCollection(i).IsFiltered = False" & vbCrLf & _
+                    "       ActiveChart.FullSeriesCollection(i).ApplyDataLabels" & vbCrLf & _
+                    "    Else" & vbCrLf & _
+                    "        ActiveChart.ChartGroups(1).FullCategoryCollection(i).IsFiltered = True" & vbCrLf & _
+                    "    End If" & vbCrLf & _
+                    "Next" & vbCrLf & _
+                "End If" & vbCrLf & _
                 "ActiveSheet.ChartObjects(" & Chr(34) & "ContractsDynamics" & Chr(34) & ").Activate" & vbCrLf & _
                 "End Sub"
-    
+
+    strMacro = strMacro & vbCrLf & vbCrLf & _
+                "Private Sub ScrollBar3_Change()" & vbCrLf & _
+                "On Error Resume Next" & vbCrLf & _
+                "Dim i As Integer" & vbCrLf & _
+                "ActiveSheet.ChartObjects(" & Chr(34) & "JoinsAndDropsAll" & Chr(34) & ").Activate" & vbCrLf & _
+                "For i = 1 To 12" & vbCrLf & _
+                "ActiveChart.FullSeriesCollection(i).ApplyDataLabels" & vbCrLf & _
+                "Next" & vbCrLf & _
+                "If ScrollBar3.Value = 0 Then" & vbCrLf & _
+                "ActiveChart.FullSeriesCollection(13).IsFiltered = false" & vbCrLf & _
+                "For i = 1 To 35" & vbCrLf & _
+                "ActiveChart.ChartGroups(1).FullCategoryCollection(i).IsFiltered = False" & vbCrLf & _
+                "ActiveChart.FullSeriesCollection(i).HasDataLabels = False" & vbCrLf & _
+                "Next" & vbCrLf & _
+                "Else" & vbCrLf & _
+                "ActiveChart.FullSeriesCollection(13).IsFiltered = True" & vbCrLf & _
+                    "For i = 1 To 35" & vbCrLf & _
+                    "    If i = ScrollBar3.Value Or i = ScrollBar3.Value + 1 Or i = ScrollBar3.Value + 2 Or i = ScrollBar3.Value + 3 Then" & vbCrLf & _
+                    "        ActiveChart.ChartGroups(1).FullCategoryCollection(i).IsFiltered = False" & vbCrLf & _
+                    "       ActiveChart.FullSeriesCollection(i).ApplyDataLabels" & vbCrLf & _
+                    "    Else" & vbCrLf & _
+                    "        ActiveChart.ChartGroups(1).FullCategoryCollection(i).IsFiltered = True" & vbCrLf & _
+                    "    End If" & vbCrLf & _
+                    "Next" & vbCrLf & _
+                "End If"
+
+strMacro = strMacro & vbCrLf & _
+                "ActiveSheet.ChartObjects(" & Chr(34) & "JoinsAndDropsAll" & Chr(34) & ").Activate" & vbCrLf & _
+                "End Sub" & vbCrLf & vbCrLf & _
+            "Private Sub ScrollBar4_Change()" & vbCrLf & _
+            "ActiveSheet.ChartObjects(" & Chr(34) & "JoinsAndDropsAll" & Chr(34) & ").Activate" & vbCrLf & _
+            "ActiveChart.PlotArea.Select" & vbCrLf & _
+            "ActiveChart.Axes(xlValue).MinimumScale = -ScrollBar4.Value" & vbCrLf & _
+            "ActiveChart.Axes(xlValue).MaximumScale = ScrollBar4.Value" & vbCrLf & _
+           "End Sub"
+
+    prrfModule.CodeModule.AddFromString strMacro
+        
+    Range("D26:F26").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlBottom
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Selection.Merge
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = True
+    End With
+    Range("D26:F26").Select
+    ActiveCell.FormulaR1C1 = "Scroll Right To Zoom"
+    Range("D26:F26").Select
+    With Selection.Font
+        .ThemeColor = xlThemeColorDark1
+        .TintAndShade = 0
+    End With
+    Range("I6").Select
+    With Selection.Font
+        .ThemeColor = xlThemeColorDark1
+        .TintAndShade = 0
+    End With
+    ActiveCell.FormulaR1C1 = "Scroll Down To zoom"
+    Range("I6").Select
+        
     'Creating tables for Sceifics of drops and joins
     Range(fstChartAdd).Select
     ActiveCell.Offset(-1, 0).Select
@@ -1281,7 +1365,7 @@ ActiveSheet.Shapes("ScrollBar2").OLEFormat.Object.Object.Max = 92
     Dim fstSceficsAdd As String
     fstSceficsAdd = ActiveCell.Offset(0, 1).Address
     Dim tableRef As String
-    tableRef = ActiveCell.Offset(0, -1).Address(False, True)
+    tableRef = ActiveCell.Offset(1, -1).Address(False, True)
     Dim tableRefForHlook As String
     tableRefForHlook = ActiveCell.Offset(3, -1).Address(False, True)
     
@@ -1289,7 +1373,7 @@ ActiveSheet.Shapes("ScrollBar2").OLEFormat.Object.Object.Max = 92
     ActiveCell.End(xlDown).Select
     ActiveCell.Offset(3, 0).Select
     
-    For i = 1 To 36
+    For i = 1 To 35
         ActiveCell.Offset(-1, i).Value = i * 3
     Next i
     
@@ -1297,24 +1381,306 @@ ActiveSheet.Shapes("ScrollBar2").OLEFormat.Object.Object.Max = 92
     multiplyCellAdd = ActiveCell.Offset(-1, 1).Address(False, False)
     Dim negativeAdd As String
     negativeAdd = ActiveCell.Offset(10, 1).Address(False, False)
+    Dim fstNewTableAdd As String
+    fstNewTableAdd = ActiveCell.Offset(0, 1).Address(True, False)
+    
     ActiveCell.Offset(0, 1).Select
     
     ActiveCell.Formula = "=OFFSET(" & fstSceficsAdd & ",0," & multiplyCellAdd & ")"
                                     '=OFFSET($G$11166,0,G11178)
-    ActiveCell.Offset(1, 0).Formula = "=HLOOKUP(" & fstSceficsAdd & "," & fstChartAdd & ":" & lstChartAdd & "," & multiplyCellAdd & ",False)"
-                                    '=HLOOKUP(G$11179,$G$11166:$DJ$11176,$E11167,FALSE)
-    ActiveCell.Offset(4, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstSceficsAdd & ",3),RIGHT(" & fstSceficsAdd & ",2)," & Chr(34) & "-Joined" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook & ",False)"
+    ActiveCell.Offset(1, 0).Formula = "=HLOOKUP(" & fstNewTableAdd & "," & fstChartAdd & ":" & lstChartAdd & "," & tableRef & ",False)"
+                                    '=HLOOKUP($G$11187,$F$11174:$DJ$11185,E11175,FALSE)
+    ActiveCell.Offset(2, 0).Formula = "=HLOOKUP(" & fstNewTableAdd & "," & fstChartAdd & ":" & lstChartAdd & "," & "10" & ",False)"
+    ActiveCell.Offset(3, 0).Formula = "=HLOOKUP(" & fstNewTableAdd & "," & fstChartAdd & ":" & lstChartAdd & "," & "11" & ",False)"
+    
+    ActiveCell.Offset(4, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Joined" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook & ",False)"
                                     '=HLOOKUP(CONCATENATE(LEFT(G$11179,3),RIGHT(G$11179,2),"-Joined"),$G$11166:$DJ$11176,$E11169,FALSE)
-    ActiveCell.Offset(10, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstSceficsAdd & ",3),RIGHT(" & fstSceficsAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook & ",False)"
+    ActiveCell.Offset(10, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook & ",False)"
                                     '=HLOOKUP(CONCATENATE(LEFT(G$11179,3),RIGHT(G$11179,2),"-Dropped"),$G$11166:$DJ$11176,$E11169,FALSE)
     ActiveCell.Offset(16, 0).Formula = "=" & negativeAdd & "*-1"
                                     '=G11189*-1
-                                    
-                                    
+                     
+    For i = 1 To 22
+        If ActiveCell.Value = "" Then
+            ActiveCell.Offset(-1, 0).Copy
+            ActiveCell.PasteSpecial xlPasteFormulas
+        End If
+        ActiveCell.Offset(1, 0).Select
+    Next i
+                 
+    Range(fstNewTableAdd).Select
+    Range(ActiveCell.Address, ActiveCell.End(xlDown).Address).Copy
+    
+    Do Until ActiveCell.Offset(-1, 1).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    Range(fstNewTableAdd).Select
+ActiveCell.Offset(1, -1).Value = "ZCSS"
+ActiveCell.Offset(2, -1).Value = "ZCSP"
+ActiveCell.Offset(3, -1).Value = "ZCSW"
+ActiveCell.Offset(4, -1).Value = "Join - 0To1Year"
+ActiveCell.Offset(5, -1).Value = "Join - 1To3Years"
+ActiveCell.Offset(6, -1).Value = "Join - 3To5Years"
+ActiveCell.Offset(7, -1).Value = "Join -MoreThan5Years"
+ActiveCell.Offset(8, -1).Value = "Join -Warranty"
+ActiveCell.Offset(9, -1).Value = "Join -EOL"
+ActiveCell.Offset(10, -1).Value = "Drop - 0To1Year"
+ActiveCell.Offset(11, -1).Value = "Drop - 1To3Years"
+ActiveCell.Offset(12, -1).Value = "Drop - 3To5Years"
+ActiveCell.Offset(13, -1).Value = "Drop -MoreThan5Years"
+ActiveCell.Offset(14, -1).Value = "Drop -Warranty"
+ActiveCell.Offset(15, -1).Value = "Drop -EOL"
+ActiveCell.Offset(16, -1).Value = "Drop - 0To1Year"
+ActiveCell.Offset(17, -1).Value = "Drop - 1To3Years"
+ActiveCell.Offset(18, -1).Value = "Drop - 3To5Years"
+ActiveCell.Offset(19, -1).Value = "Drop -MoreThan5Years"
+ActiveCell.Offset(20, -1).Value = "Drop -Warranty"
+ActiveCell.Offset(21, -1).Value = "Drop -EOL"
+
+ActiveCell.Offset(23, 0).Formula = "=" & ActiveCell.Address(True, False)
+ActiveCell.Offset(24, 0).Formula = "=SUM(" & ActiveCell.Offset(4, 0).Address(False, False) & ":" & ActiveCell.Offset(9, 0).Address(False, False) & ")"
+                                    '=SUM(G11183:G11188)
+ActiveCell.Offset(25, 0).Formula = "=SUM(" & ActiveCell.Offset(10, 0).Address(False, False) & ":" & ActiveCell.Offset(15, 0).Address(False, False) & ")" & "*-1"
+                                    '=SUM(G11189:G11194)*-1
+ActiveCell.Offset(26, 0).Formula = "=SUM(" & ActiveCell.Offset(1, 0).Address(False, False) & ":" & ActiveCell.Offset(3, 0).Address(False, False) & ")"
+
+ActiveCell.Offset(27, 0).Formula = "=" & ActiveCell.Offset(25, 0).Address(False, False) & "*-1"
+ActiveCell.Offset(28, 0).Formula = "=" & ActiveCell.Offset(26, 0).Address(False, False) & "*-1"
+
+ActiveCell.Offset(24, -1).Value = "Join Total"
+ActiveCell.Offset(25, -1).Value = "Drop Total"
+ActiveCell.Offset(26, -1).Value = "IB Total"
+ActiveCell.Offset(27, -1).Value = "Drop Total Label"
+ActiveCell.Offset(28, -1).Value = "IB Dummy"
+
+ActiveCell.Offset(23, 0).Select
+Range(ActiveCell.Address, ActiveCell.End(xlDown).Address).Copy
+
+Do Until ActiveCell.Offset(-2, 1).Value = ""
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+Loop
+
+ActiveCell.End(xlToLeft).Select
+ActiveCell.Offset(0, -1).Select
+
+Dim fstChartJoinDrop As String
+Dim lstChartJoinDrop As String
+
+fstChartJoinDrop = ActiveCell.Address
+ActiveCell.Offset(3, 0).Select
+ActiveCell.End(xlToRight).Select
+lstChartJoinDrop = ActiveCell.Address
+
+ActiveSheet.Shapes.AddChart2(279, xlColumnStacked).Select
+    ActiveChart.SetSourceData Source:=Range( _
+        "'ContractDynamics-WaterFall'!" & fstChartJoinDrop & ":" & lstChartJoinDrop)
+    ActiveChart.Axes(xlCategory).Select
+    Selection.TickLabelPosition = xlLow
+    With ActiveChart.Parent
+         .Height = 350 ' resize
+         .Width = 750  ' resize
+         .Top = 10    ' reposition
+         .Left = 1200   ' reposition
+     End With
+ActiveChart.ChartArea.Select
+    ActiveChart.ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(1).ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(1).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(2).ChartType = xlColumnClustered
+    ActiveChart.FullSeriesCollection(2).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(3).ChartType = xlLine
+    ActiveChart.FullSeriesCollection(3).AxisGroup = 1
+    ActiveChart.FullSeriesCollection(3).AxisGroup = 2
+    ActiveChart.Axes(xlValue, xlSecondary).Select
+    ActiveChart.Axes(xlValue, xlSecondary).MinimumScale = -8000
+    ActiveChart.FullSeriesCollection(3).Select
+    ActiveChart.FullSeriesCollection(3).ApplyDataLabels
+    ActiveChart.FullSeriesCollection(2).Select
+    ActiveChart.FullSeriesCollection(2).ApplyDataLabels
+    ActiveChart.FullSeriesCollection(1).Select
+    ActiveChart.FullSeriesCollection(1).ApplyDataLabels
+    ActiveSheet.ChartObjects(2).name = "JoinsAndDrops"
+    ActiveSheet.Shapes("ScrollBar4").OLEFormat.Object.Object.Max = ActiveChart.Axes(xlValue).MaximumScale
+    ActiveChart.ChartTitle.Text = "Contracts Joins & Drops Total"
+    
+Range(fstNewTableAdd).Select
+Dim fstSecondChartAdd As String
+Dim lstSecondChartAdd As String
+
+fstSecondChartAdd = ActiveCell.Offset(0, -1).Address
+ActiveCell.End(xlToRight).Select
+ActiveCell.End(xlDown).Select
+lstSecondChartAdd = ActiveCell.Address
+
+Range(fstChartJoinDrop).Select
+Dim ibTotalAdd As String
+Dim fstToAddAddress As String
+Dim lstToAddAddress As String
+
+ibTotalAdd = ActiveCell.Offset(3, 0).Address
+ActiveCell.Offset(3, 0).Select
+fstToAddAddress = ActiveCell.Offset(0, 1).Address
+ActiveCell.End(xlToRight).Select
+lstToAddAddress = ActiveCell.Address
+
+ActiveSheet.Shapes.AddChart2(279, xlColumnStacked).Select
+ActiveChart.SetSourceData Source:=Range( _
+        "'ContractDynamics-WaterFall'!" & fstSecondChartAdd & ":" & lstSecondChartAdd)
+ActiveChart.Axes(xlCategory).Select
+    Selection.TickLabelPosition = xlLow
+    With ActiveChart.Parent
+         .Height = 350 ' resize
+         .Width = 750  ' resize
+         .Top = 10    ' reposition
+         .Left = 2000   ' reposition
+     End With
+     
+ActiveChart.ChartTitle.Text = "Contracts Joins & Drops Saggrigated"
+ActiveChart.seriesCollection(1).Delete
+ActiveChart.seriesCollection(1).Delete
+ActiveChart.seriesCollection(1).Delete
+ActiveChart.seriesCollection(7).Delete
+ActiveChart.seriesCollection(7).Delete
+ActiveChart.seriesCollection(7).Delete
+ActiveChart.seriesCollection(7).Delete
+ActiveChart.seriesCollection(7).Delete
+ActiveChart.seriesCollection(7).Delete
+
+ActiveChart.ChartArea.Select
+    ActiveChart.seriesCollection.NewSeries
+    ActiveChart.FullSeriesCollection(13).name = _
+        "='ContractDynamics-WaterFall'!" & ibTotalAdd
+    ActiveChart.FullSeriesCollection(13).Values = _
+        "='ContractDynamics-WaterFall'!" & fstToAddAddress & ":" & lstToAddAddress
+    ActiveChart.FullSeriesCollection(13).Select
+    ActiveChart.ChartArea.Select
+    ActiveChart.FullSeriesCollection(13).ChartType = xlLine
+    ActiveChart.FullSeriesCollection(13).AxisGroup = 2
+    ActiveChart.Axes(xlValue, xlSecondary).Select
+    ActiveChart.Axes(xlValue, xlSecondary).MinimumScale = -8000
+    ActiveChart.FullSeriesCollection(13).Select
+    ActiveChart.FullSeriesCollection(13).ApplyDataLabels
+    ActiveChart.FullSeriesCollection(1).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.25
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(2).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(3).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.2
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(4).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.5
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(5).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(6).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent6
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 9
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(7).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.25
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(8).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(9).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.2
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(10).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.5
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(11).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(12).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 9
+        .Transparency = 0
+        .Solid
+    End With
+    Cells(2, 2).Value = ActiveChart.Axes(xlValue).MaximumScale
+    Cells(3, 2).Value = ActiveChart.Axes(xlValue).MinimumScale
+    
+ActiveSheet.ChartObjects(3).name = "JoinsAndDropsAll"
+    
+
+    
 ActiveSheet.Cells(1, 1).Select
 Application.Workbooks(marketInputFile).Close False
 Application.Workbooks(inputRevenue).Close False
-prrfModule.CodeModule.AddFromString strMacro
 Application.Workbooks(revenueOutputGlobal).Save
 Application.Calculation = xlCalculationAutomatic
 
@@ -1345,7 +1711,7 @@ Dim strtMonth As String
 'On Error Resume Next
 'Copy Data from SAP file
 strtMonth = Format(Now() - 31, "mmmyyyy")
-inputRevenue = "Revenue_MoS_Jan14_May15.xlsx"
+inputRevenue = "Revenue_MoS_SAPBW_Download.xlsx"
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
 
 'option for local drive and shared drive
