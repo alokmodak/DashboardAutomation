@@ -65,7 +65,7 @@ startTime = second(Now())
                    If Sheet1.lstBx6NC.List(i) = "ContractsDynamics_Waterfall" Then
                        
                        'Checking whether file present
-                       Call ErrorMessage_RevenueFiles("Revenue_MoS_SAPBW_Download.xlsx")
+                       'Call ErrorMessage_RevenueFiles("Revenue_MoS_SAPBW_Download.xlsx")
                        
                        Call Revenue_Graph_Creation
                        
@@ -73,14 +73,14 @@ startTime = second(Now())
                    If Sheet1.lstBx6NC.List(i) = "MarketDynamics_Waterfall" Then
                    
                        'Checking whether file present
-                       Call ErrorMessage_RevenueFiles("Revenue_MoS_SAPBW_Download.xlsx")
+                       'Call ErrorMessage_RevenueFiles("Revenue_MoS_SAPBW_Download.xlsx")
                        
                        Call Market_Revenue_Chart_Generation
                    End If
                     If Sheet1.lstBx6NC.List(i) = "Contract_Penetration" Then
                        
                        'Checking whether file present
-                       Call ErrorMessage_RevenueFiles("Contract_Penetration_SAPBW_Download.xlsx")
+                       'Call ErrorMessage_RevenueFiles("Contract_Penetration_SAPBW_Download.xlsx")
                        
                        Call Contract_Penetration
                    End If

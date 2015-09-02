@@ -54,9 +54,8 @@ With NewMail
   .CC = ""
   .BCC = ""
   .textbody = ""
-  .AddAttachment "C:\ABC.xls"
+  '.AddAttachment "C:\ABC.xls"
 End With
-  
   
 NewMail.Send
 MsgBox ("Mail has been Sent")
@@ -65,3 +64,4 @@ MsgBox ("Mail has been Sent")
 Set NewMail = Nothing
    
 
+End Sub

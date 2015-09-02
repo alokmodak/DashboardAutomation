@@ -55,7 +55,8 @@ warrantyVal = Replace(Sheet1.combYear.Value, "-", "")
 revenueLblText = "Input files required are -" & vbCrLf & _
 "1) Market_Groups_Markets_Country.xlsx" & vbCrLf & _
 "2) Revenue_MoS_SAPBW_Download.xlsx" & vbCrLf & _
-"3) Contract_Penetration_SAPBW_Download.xlsx"
+"3) Contract_Penetration_SAPBW_Download.xlsx" & vbCrLf & _
+"Input data files are individually selectable, " & Chr(34) & "Market_Groups_Markets_Country.xlsx" & Chr(34) & " Should be in the same folder with input files"
 
 Sheet1.revenueLbl.Caption = revenueLblText
 Sheet1.lblDashboard.Caption = lblText

@@ -24,10 +24,9 @@ Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, Cancel As Boolean)
 End Sub
 
 Public Sub SetEnvironmentVariable()
-
 Dim objUserEnvVars As Object
 Dim strVar As String
 Set objUserEnvVars = CreateObject("WScript.Shell").Environment("User")
-strVar = objUserEnvVars.Item("Dashboard_Automation")
+strVar = objUserEnvVars.Item("Dashboard_Automation2")
 MsgBox strVar
 End Sub
