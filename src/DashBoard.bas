@@ -84,7 +84,7 @@ outputFlName = outputFileGlobal
 End If
 
 Application.Workbooks.Open (outputPath), False
-Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
+Application.Workbooks(outputFileGlobal).Windows(1).Visible = False
 
 'Open service scorecard file and install file
 
@@ -161,7 +161,6 @@ For Each productItem In Sheet1.combProductGroup.List
             End If
     End If
     
-
 'Case select for sheet tab
 KPISheetName = Sheet1.combProductGroup.Value
 
@@ -336,8 +335,7 @@ Sheet1.combYear.Value = inputFindMonth
 Workbooks(inputFlName).Activate
 Worksheets("Data Analysis Pivot").Activate
 ActiveWorkbook.ActiveSheet.UsedRange.Find(Sheet1.combYear.Value).Select
-    
-    
+        
 If inputFindMonth <> Sheet1.combYear.Value Then
 MsgBox inputFindMonth
 End If
@@ -584,7 +582,6 @@ ActiveCell.Offset(0, 1).Select
 Dim fstAdd As String
 Dim lstAdd As String
 
-
 Dim YTDinstallPasteValue As String
 YTDinstallPasteValue = ActiveCell.Value
 
@@ -618,7 +615,6 @@ Application.Workbooks(outputFlName).Activate
 ActiveSheet.Cells(200, 27).Select
 ActiveSheet.Range(ActiveCell.Address, ActiveCell.Offset(0, 1).End(xlDown).Address).Clear
 ActiveSheet.Cells(2, 2).Select
-
 
 'Fletching YTD values
 i = 0
@@ -815,8 +811,7 @@ For Each celItem In Range(firstCell, lastCell)
         Workbooks(outputFlName).Activate
         ActiveCell.Value = YTDPasteValue * CStr(Split(Sheet1.combYear.Value, "-")(UBound(Split(Sheet1.combYear.Value, "-"))))
         YTDPasteValue = ""
-        
-    
+            
     Case "CM Material"
         ActiveSheet.UsedRange.Find("Corrective Maintenance Material Cost").Select
         i = 0
@@ -1582,7 +1577,6 @@ ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = p95ValToPaste
 
-
 'for escalations
 Workbooks(escInputFl).Activate
 ActiveWorkbook.Sheets("Open Esc_Product").Activate
@@ -1737,7 +1731,6 @@ ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = p95ValToPaste
 
-
 'for escalations
 Workbooks(escInputFl).Activate
 ActiveWorkbook.Sheets("Open Esc_Product").Activate
@@ -1891,7 +1884,6 @@ ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = p95ValToPaste
 
-
 'for escalations
 Workbooks(escInputFl).Activate
 ActiveWorkbook.Sheets("Open Esc_Product").Activate
@@ -2044,7 +2036,6 @@ complaintsFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(complaintsFstAdd - 2, 0).Select
 ActiveCell.Value = p95ValToPaste
-
 
 'for escalations
 Workbooks(escInputFl).Activate
@@ -3462,6 +3453,12 @@ ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total",
 ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
+mcSysCode1 = 0
+mcSysCode2 = 0
+mcSysCode3 = 0
+mcSysCode4 = 0
+mcSysCode5 = 0
+
 Do Until ActiveCell.Value = ""
 
     If ActiveCell.End(xlToLeft).Value = mamoSysCode1 Then
@@ -3518,6 +3515,8 @@ ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total",
 ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
+mcSysCode1 = 0
+mcSysCode2 = 0
 Do Until ActiveCell.Value = ""
 
     If ActiveCell.End(xlToLeft).Value = PDSysCode1 Then
@@ -3565,6 +3564,8 @@ ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total",
 ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
 
 i = 0
+mcSysCode1 = 0
+mcSysCode2 = 0
 Do Until ActiveCell.Value = ""
 
 If ActiveCell.End(xlToLeft).Value = enduraSysCode1 Then
@@ -3616,6 +3617,8 @@ ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total",
 ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
+mcSysCode1 = 0
+mcSysCode2 = 0
 Do Until ActiveCell.Value = ""
 
     If ActiveCell.End(xlToLeft).Value = pulseraSysCode1 Then
@@ -3660,6 +3663,9 @@ ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total",
 ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
+mcSysCode1 = 0
+mcSysCode2 = 0
+mcSysCode3 = 0
 Do Until ActiveCell.Value = ""
 
     If ActiveCell.End(xlToLeft).Value = veradiusSysCode1 Then
@@ -3706,10 +3712,12 @@ ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total",
 ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
+mcSysCode1 = 0
+
 Do Until ActiveCell.Value = ""
 
     If ActiveCell.End(xlToLeft).Value = vectraSysCode Then
-    mcSysCode1 = ActiveCell.Value * 12 * 100 / vectraASP 'Chaned to 40K from 45K as discussed
+    mcSysCode1 = ActiveCell.Value * 12 / vectraASP 'Chaned to 40K from 45K as discussed
     End If
     
 ActiveCell.Offset(1, 0).Select
@@ -3753,6 +3761,8 @@ ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total",
 ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
+mcSysCode1 = 0
+
 Do Until ActiveCell.Value = ""
 
     If ActiveCell.End(xlToLeft).Value = alluraSysCode Then
@@ -3800,10 +3810,10 @@ mcSysCode2 = 0
 Do Until ActiveCell.Value = ""
 
     If ActiveCell.End(xlToLeft).Value = optaSysCode1 Then
-    mcSysCode1 = ActiveCell.Value * 12 / optaASP
+    mcSysCode1 = ActiveCell.Value
     End If
     If ActiveCell.End(xlToLeft).Value = optaSysCode2 Then
-    mcSysCode2 = ActiveCell.Value * 12 / optaASP
+    mcSysCode2 = ActiveCell.Value
     End If
 ActiveCell.Offset(1, 0).Select
 i = i + 1
@@ -3812,7 +3822,7 @@ Exit Do
 End If
 Loop
 
-ytdIGTvalToPaste = Application.WorksheetFunction.Average(mcSysCode1, mcSysCode2)
+ytdIGTvalToPaste = (mcSysCode1 + mcSysCode2) * 12 / optaASP
 
 Workbooks(outputFl).Activate
 ActiveWorkbook.Sheets(KPISheetName).Activate
@@ -4087,7 +4097,7 @@ inputFl = ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx"
 'Skipping if input file not present
 If Sheet1.rdbLocalDrive.Value = True Then
     If Dir(ThisWorkbook.Path & "\" & "CQ_Data_SPM.xlsx") = "" Then
-        Application.Workbooks(outputFl).Windows(1).Visible = True
+        Application.Workbooks(outputFl).Windows(1).Visible = False
         Exit Sub
     End If
 End If
@@ -4096,7 +4106,7 @@ If Sheet1.rdbSharedDrive.Value = True Then
     SharedDrive_Path "CQ_Data_SPM.xlsx"
         'if file is not present in shared drive then exit
         If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "CQ_Data_SPM.xlsx" Then
-        Application.Workbooks(outputFl).Windows(1).Visible = True
+        Application.Workbooks(outputFl).Windows(1).Visible = False
         
             Exit Sub
         End If
@@ -4338,7 +4348,7 @@ inputFl = ThisWorkbook.Path & "\" & "CS_Dashboard.xlsx"
 'Skipping if input file not present
 If Sheet1.rdbLocalDrive.Value = True Then
     If Dir(ThisWorkbook.Path & "\" & "CS_Dashboard.xlsx") = "" Then
-        Application.Workbooks(outputFl).Windows(1).Visible = True
+        Application.Workbooks(outputFl).Windows(1).Visible = False
         Exit Sub
     End If
 End If
@@ -4347,7 +4357,7 @@ If Sheet1.rdbSharedDrive.Value = True Then
     SharedDrive_Path "CS_Dashboard.xlsx"
         'if file is not present in shared drive then exit
         If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "CS_Dashboard.xlsx" Then
-        Application.Workbooks(outputFl).Windows(1).Visible = True
+        Application.Workbooks(outputFl).Windows(1).Visible = False
         
             Exit Sub
         End If
