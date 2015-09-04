@@ -1566,6 +1566,7 @@ ActiveChart.ChartArea.Select
     Cells(3, 2).Value = ActiveChart.Axes(xlValue).MinimumScale
     
 ActiveSheet.ChartObjects(3).name = "JoinsAndDropsAll"
+Creating_Trend_Drops_Joins 'calling function for trends
 ActiveSheet.Cells(1, 1).Select
 Application.Workbooks(marketInputFile).Close False
 Application.Workbooks(inputRevenue).Close False
@@ -4148,6 +4149,198 @@ Public Sub Creating_Trends_Market_Dynamics(nxtYearFormulaAdd As String)
         .ThemeColor = xlThemeColorDark1
         .TintAndShade = 0
     End With
+    Range("F4").Select
+    With Selection.Font
+        .Color = -16711681
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
+        "=$F$4=CHAR(233)"
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Font
+        .ThemeColor = xlThemeColorAccent6
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
+        "=$F$4=CHAR(234)"
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Font
+        .Color = -16776961
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
     Range("A1").Select
     
 End Sub
+
+Public Sub Creating_Trend_Drops_Joins()
+Range("K2").Select
+    ActiveCell.FormulaR1C1 = "Drop"
+    Range("K4").Select
+    ActiveCell.FormulaR1C1 = "Current"
+    Range("K5").Select
+    ActiveCell.FormulaR1C1 = "Global"
+    Range("L3").Select
+    ActiveCell.FormulaR1C1 = "YTD"
+    Range("M3").Select
+    ActiveCell.FormulaR1C1 = "VLY"
+    Range("N3").Select
+    ActiveCell.FormulaR1C1 = "Trend"
+    Range("K2:N5").Select
+    Selection.Copy
+    Range("P2").Select
+    ActiveSheet.Paste
+    Application.CutCopyMode = False
+    
+    Dim currMonth As String
+    Dim YTDMonth As String
+    Dim currmonthDrop As String
+    Dim YTDMonthDrop As String
+    
+    currMonth = Format(Now(), "mmm") & "-" & Format(Now(), "yy")
+    YTDMonth = "Jan" & "-" & Format(Now(), "yy")
+    
+    ActiveSheet.UsedRange.Find(what:="Join Total", lookat:=xlWhole).Select
+    ActiveSheet.Cells(5, 12).Value = Application.WorksheetFunction.Sum(Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address))
+    ActiveCell.Offset(3, 0).Select
+    ActiveSheet.Cells(5, 17).Value = Application.WorksheetFunction.Sum(Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address))
+    
+    ActiveSheet.UsedRange.Find(what:="Join Total", lookat:=xlWhole).Select
+    Do Until ActiveCell.Offset(-1, 0).Value = YTDMonth
+        ActiveCell.Offset(0, 1).Select
+    Loop
+    
+    Dim fstAddForTrend As String
+    Dim lstAddForTrend As String
+    
+    fstAddForTrend = ActiveCell.Address
+    currmonthDrop = ActiveCell.Offset(3, 0).Address
+    
+    Do Until ActiveCell.Offset(-1, 0).Value = currMonth
+        ActiveCell.Offset(0, 1).Select
+    Loop
+    
+    lstAddForTrend = ActiveCell.Address
+    YTDMonthDrop = ActiveCell.Offset(3, 0).Address
+    
+    
+    ActiveSheet.Cells(4, 12).Formula = "=Sum(" & fstAddForTrend & ":" & lstAddForTrend & ")"
+    ActiveSheet.Cells(4, 17).Formula = "=Sum(" & currmonthDrop & ":" & YTDMonthDrop & ")"
+    
+    Range(lstAddForTrend).Select
+    ActiveSheet.Cells(4, 13).Formula = "=IFERROR((" & ActiveCell.Address & "-" & ActiveCell.Offset(0, -12).Address & ")" & "/" & ActiveCell.Offset(0, -12).Address & ",)"
+    ActiveSheet.Cells(4, 18).Formula = "=IFERROR((" & ActiveCell.Offset(3, 0).Address & "-" & ActiveCell.Offset(3, -12).Address & ")" & "/" & ActiveCell.Offset(3, -12).Address & ",)"
+    
+    ActiveSheet.Cells(4, 14).Formula = "=IF(" & lstAddForTrend & ">AVERAGE(" & fstAddForTrend & ":" & Range(lstAddForTrend).Offset(0, -1).Address & "),CHAR(233),IF(" & lstAddForTrend & "<AVERAGE(" & fstAddForTrend & ":" & Range(lstAddForTrend).Offset(0, -1).Address & "),CHAR(234),CHAR(232)))"
+    ActiveSheet.Cells(4, 19).Formula = "=IF(" & YTDMonthDrop & ">AVERAGE(" & currmonthDrop & ":" & Range(YTDMonthDrop).Offset(0, -1).Address & "),CHAR(233),IF(" & YTDMonthDrop & "<AVERAGE(" & currmonthDrop & ":" & Range(YTDMonthDrop).Offset(0, -1).Address & "),CHAR(234),CHAR(232)))"
+    
+    Range("N4").Select
+    With Selection.Font
+        .name = "Wingdings"
+        .Size = 11
+        .Strikethrough = False
+        .Superscript = False
+        .Subscript = False
+        .OutlineFont = False
+        .Shadow = False
+        .Underline = xlUnderlineStyleNone
+        .Color = -16711681
+        .TintAndShade = 0
+        .ThemeFont = xlThemeFontNone
+    End With
+    Range("S4").Select
+    With Selection.Font
+        .name = "Wingdings"
+        .Size = 11
+        .Strikethrough = False
+        .Superscript = False
+        .Subscript = False
+        .OutlineFont = False
+        .Shadow = False
+        .Underline = xlUnderlineStyleNone
+        .Color = -16711681
+        .TintAndShade = 0
+        .ThemeFont = xlThemeFontNone
+    End With
+    Range("N4").Select
+    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
+        "=$N$4=CHAR(233)"
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Font
+        .ThemeColor = xlThemeColorAccent6
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
+        "=$N$4=CHAR(234)"
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Font
+        .Color = -16776961
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+    Range("S4").Select
+    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
+        "=$S$4=CHAR(233)"
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Font
+        .ThemeColor = xlThemeColorAccent6
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
+        "=$S$4=CHAR(234)"
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Font
+        .Color = -16776961
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+    
+    ActiveSheet.ChartObjects("JoinsAndDrops").Activate
+    ActiveSheet.ChartObjects("JoinsAndDrops").Activate
+    ActiveChart.FullSeriesCollection(1).ChartType = xlColumnStacked
+    ActiveChart.FullSeriesCollection(2).DataLabels.Select
+    Selection.Position = xlLabelPositionInsideBase
+    ActiveChart.FullSeriesCollection(1).DataLabels.Select
+    Selection.Position = xlLabelPositionInsideBase
+    ActiveSheet.Shapes("JoinsAndDrops").ScaleWidth 1.008, msoFalse, _
+        msoScaleFromBottomRight
+    ActiveSheet.Shapes("JoinsAndDrops").ScaleHeight 0.7864285714, msoFalse, _
+        msoScaleFromBottomRight
+    Range("K2:S5").Select
+    With Selection.Font
+        .ThemeColor = xlThemeColorDark1
+        .TintAndShade = 0
+    End With
+    Range("M4").Select
+    Selection.Style = "Percent"
+    Range("R4").Select
+    Selection.Style = "Percent"
+    Range("K2:S5").Select
+    With Selection
+        .HorizontalAlignment = xlGeneral
+        .VerticalAlignment = xlCenter
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    
+End Sub
+
