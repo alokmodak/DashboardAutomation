@@ -249,6 +249,8 @@ Selection.Copy
 Selection.PasteSpecial (xlValues)
 marketRNG.Delete
 
+Calculating_Data_Downloaded_Date
+
 ActiveWorkbook.Sheets("Data").Activate
 Set wsData = Worksheets("Data")
 
@@ -3587,12 +3589,27 @@ pvtTbl.ManualUpdate = False
         Dim rngForChart As String
         rngForChart = Selection.Address
         
+        ActiveCell.End(xlToRight).Select
+        Range(ActiveCell.Address, ActiveCell.End(xlDown).Address).Copy
+        ActiveCell.PasteSpecial xlPasteValues
+        ActiveSheet.UsedRange.Find(what:="Sum of CP%", lookat:=xlWhole).Select
+        ActiveSheet.PivotTables("cpPivotTable").RowGrand = False
+        
+        Range(rngForChart).Select
         ActiveSheet.Shapes.AddChart2(227, xlLine).Select
     ActiveChart.SetSourceData Source:=Range("Pivot!" & rngForChart)
     ActiveChart.ChartStyle = 279
     ActiveChart.Legend.Position = xlLegendPositionRight
     ActiveChart.SetElement (msoElementPrimaryCategoryGridLinesMajor)
     ActiveChart.ChartTitle.Text = "Contract Pentration - Market Trend"
+    ActiveChart.FullSeriesCollection(17).Select
+    With Selection.Format.Line
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorText1
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0
+        .Transparency = 0
+    End With
     Application.CutCopyMode = False
      With ActiveChart.Parent
          .Height = 220 ' resize
@@ -4096,7 +4113,7 @@ Public Sub Creating_Trends_Market_Dynamics(nxtYearFormulaAdd As String)
     lstVerayance = ActiveCell.Offset(-6, 0).Address(False, False)
     currentYr = ActiveCell.Offset(-1, 0).Address(False, False)
     ActiveSheet.Cells(4, 5).Select
-    ActiveCell.Formula = "=(" & fstVerayance & "-" & lstVerayance & ")/" & lstVerayance
+    ActiveCell.Formula = "=IFERROR((" & fstVerayance & "-" & lstVerayance & ")/" & lstVerayance & ",)"
     ActiveCell.NumberFormat = "0%"
     ActiveCell.Offset(-1, 0).Value = "VLY"
     ActiveCell.Offset(0, 2).Formula = "=" & currentYr
@@ -4120,7 +4137,7 @@ Public Sub Creating_Trends_Market_Dynamics(nxtYearFormulaAdd As String)
     End With
     
     Range("J4:K5").Select
-    Selection.NumberFormat = "0"
+    Selection.NumberFormat = "#,##0"
     
     Range("E3:L5").Select
     With Selection
@@ -4191,6 +4208,7 @@ Range("K2").Select
     Selection.Copy
     Range("P2").Select
     ActiveSheet.Paste
+    ActiveCell.FormulaR1C1 = "Join"
     Application.CutCopyMode = False
     
     Dim currMonth As String
@@ -4202,9 +4220,9 @@ Range("K2").Select
     YTDMonth = "Jan" & "-" & Format(Now(), "yy")
     
     ActiveSheet.UsedRange.Find(what:="Join Total", lookat:=xlWhole).Select
-    ActiveSheet.Cells(5, 12).Value = Application.WorksheetFunction.Sum(Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address))
+    ActiveSheet.Cells(5, 12).Formula = "=IFERROR(SUM(" & ActiveCell.Offset(0, 1).Address & ":" & ActiveCell.End(xlToRight).Address & "),)"
     ActiveCell.Offset(3, 0).Select
-    ActiveSheet.Cells(5, 17).Value = Application.WorksheetFunction.Sum(Range(ActiveCell.Offset(0, 1).Address, ActiveCell.End(xlToRight).Address))
+    ActiveSheet.Cells(5, 17).Formula = "=IFERROR(SUM(" & ActiveCell.Offset(0, 1).Address & ":" & ActiveCell.End(xlToRight).Address & "),)"
     
     ActiveSheet.UsedRange.Find(what:="Join Total", lookat:=xlWhole).Select
     Do Until ActiveCell.Offset(-1, 0).Value = YTDMonth
@@ -4344,3 +4362,30 @@ Range("K2").Select
     
 End Sub
 
+Public Sub Calculating_Data_Downloaded_Date()
+ActiveWorkbook.Sheets("Data").Activate
+ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
+ActiveCell.EntireColumn.Insert xlToRight
+ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
+ActiveCell.Offset(0, -1).Select
+ActiveCell.Value = "Fiscal Year/Period"
+
+ActiveCell.Offset(1, 1).Select
+fstPasteRNG = ActiveCell.Offset(0, -1).Address
+ActiveCell.Offset(0, 1).Select
+ActiveCell.End(xlDown).Select
+ActiveCell.Offset(0, -1).Select
+lstPasteRNG = ActiveCell.Offset(0, -1).Address
+ActiveCell.End(xlUp).Select
+ActiveCell.Offset(1, -1).Select
+lookForVal = ActiveCell.Offset(0, 1).Address(False, False)
+
+ActiveCell.Formula = "=MID(" & lookForVal & ", 5, 4)" & "&" & Chr(34) & "-" & Chr(34) & "&" & "MID(" & lookForVal & ", 2, 2)"
+ActiveCell.Copy
+ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
+ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
+Selection.Copy
+Selection.PasteSpecial (xlValues)
+
+
+End Sub
