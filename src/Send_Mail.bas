@@ -1,33 +1,23 @@
 Attribute VB_Name = "Send_Mail"
-Sub CDO_Mail_Small_Text()
-    Dim iMsg As Object
-    Dim iConf As Object
-    Dim strbody As String
-    Dim Flds As Variant
+Sub Send_Email_Via_OutlookInbox(flName As String, toEmailAdd As String, subject As String, txtBody As String)
 
-    Set iMsg = CreateObject("CDO.Message")
-    Set iConf = CreateObject("CDO.Configuration")
-
-        iConf.Load -1    ' CDO Source Defaults
-        Set Flds = iConf.Fields
-        With Flds
-            .Item("http://schemas.microsoft.com/cdo/configuration/sendusing") = 1
-            '.Item("http://schemas.microsoft.com/cdo/configuration/smtpserver") = "mumcas.igate.com"
-            .Item("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = 25
-            .Update
-        End With
-
-    strbody = "Hi there"
-
-    With iMsg
-        Set .Configuration = iConf
-        .To = "Jitendra.deshmukh@igate.com"
-        .CC = ""
-        .BCC = ""
-        .From = "Jitendra.deshmukh@igate.com"
-        .Subject = "New figures"
-        .TextBody = strbody
-        .Send
+    Dim OutApp As Object
+    Dim OutMail As Object
+    Set OutApp = CreateObject("Outlook.Application")
+    
+    Set OutMail = OutApp.CreateItem(0)
+    On Error Resume Next
+    With OutMail
+        .To = toEmailAdd
+        '.CC = Cells(i, 2).Value
+        .subject = subject
+        .Body = txtBody
+        .Attachments.Add flName
+        .Display  'or use .Send
     End With
+    
+    On Error GoTo 0
 
+    Set OutMail = Nothing
+    Set OutApp = Nothing
 End Sub

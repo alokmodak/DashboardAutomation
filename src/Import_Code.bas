@@ -43,7 +43,7 @@ strVar = objUserEnvVars.Item("Dashboard_Automation")
         Exit Function
     End If
 
-    Dim FSO As New Scripting.FileSystemObject
+    Dim FSO As New scripting.FileSystemObject
     Dim projDir As String
     projDir = strVar
     
@@ -94,7 +94,7 @@ Public Sub importVbaCode(vbaProject As VBProject, Optional includeClassFiles As 
     Set sheetsToImport = New Dictionary
     Set vbaProjectToImport = vbaProject
 
-    Dim FSO As New Scripting.FileSystemObject
+    Dim FSO As New scripting.FileSystemObject
     Dim projContents As Folder
     Set projContents = FSO.GetFolder(export_path)
     Dim file As Object

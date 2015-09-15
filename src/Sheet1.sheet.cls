@@ -84,6 +84,14 @@ startTime = second(Now())
                        
                        Call Contract_Penetration
                    End If
+                   If Sheet1.lstBx6NC.List(i) = "SendEmail_Contracts-Join&Drops" Then
+                       
+                       'Checking whether file present
+                       'Call ErrorMessage_RevenueFiles("Contract_Penetration_SAPBW_Download.xlsx")
+                       
+                       Call Send_Email_For_Contracts_Drops_Joins
+                   End If
+                   
                End If
             Next i
             

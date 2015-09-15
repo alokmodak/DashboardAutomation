@@ -3,6 +3,7 @@ Option Explicit
 Public revenueSelCountry As String
 Public revenueOutputGlobal As String
 Public marketInputFile As String
+Public lastmonthVal As String
 
 Public Sub Revenue_Graph_Creation()
 
@@ -320,13 +321,13 @@ pvtTblName = pvtTbl.name
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] System Code Material (Material no of  R Eq)").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
-    With ActiveSheet.PivotTables(pvtTblName).PivotFields("Country")
+        With ActiveSheet.PivotTables("PivotTable1").PivotFields("Country A")
         .Orientation = xlRowField
         .Position = 5
     End With
-    ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "Country").Subtotals = Array(False, False, False, False _
-        , False, False, False, False, False, False, False, False)
+
+    ActiveSheet.PivotTables("PivotTable1").PivotFields("Country A").Subtotals = _
+        Array(False, False, False, False, False, False, False, False, False, False, False, False)
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Reference Equipment")
         .Orientation = xlRowField
@@ -676,7 +677,7 @@ ActiveCell.Offset(1, 0).Select
 Next
 
 'Filling country code in the table
-ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Country A", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 Dim rowCount As Integer
 Dim lstRowCnt As Long
@@ -692,7 +693,7 @@ For rowCount = 0 To lstRowCnt - 4
         ActiveCell.Offset(1, 0).Select
     End If
 Next
-ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Country A", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 For rowCount = 0 To lstRowCnt - 4
     If ActiveCell.Offset(1, -1).Value = "" Then
@@ -778,12 +779,12 @@ pvtName = ActiveCell.PivotTable.name
         .DisplayContextTooltips = False
         .ShowDrillIndicators = False
     End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields("Country")
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields("Country A")
         .Orientation = xlRowField
         .Position = 2
     End With
     ActiveSheet.PivotTables("PivotTable1").PivotFields( _
-        "Country").Subtotals = Array(False, _
+        "Country A").Subtotals = Array(False, _
         False, False, False, False, False, False, False, False, False, False, False)
     Range("B5").Select
     With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
@@ -1189,7 +1190,7 @@ Application.CutCopyMode = False
         , "[C,S] System Code Material (Material no of  R Eq)", _
         "[C,S] System Code Material (Material no of  R Eq)", 5, 5, 144, 198
     ActiveWorkbook.SlicerCaches.Add(ActiveSheet.PivotTables("PivotTable1"), _
-        "Country").Slicers.Add ActiveSheet, , "Country", _
+        "Country A").Slicers.Add ActiveSheet, , "Country", _
         "Country", 210, 150, 144, 198
         ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
         "System Code (6NC)").Slicers.Add ActiveSheet, , "System Code (6NC)", _
@@ -1882,7 +1883,7 @@ pvtTblName = pvtTbl.name
         .Function = xlSum
     End With
     With ActiveSheet.PivotTables("marketPivotTable").PivotFields( _
-        "Country")
+        "Country A")
         .Orientation = xlPageField
         .Position = 1
     End With
@@ -2087,7 +2088,7 @@ pvtTbl.ManualUpdate = False
         , "Market").Slicers.Add ActiveSheet, , "Market 1", "Market", 477, 297, 144, _
         198.75
     ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("marketPivotTable") _
-        , "Country").Slicers.Add ActiveSheet, , "Country 1", "Country", 514.5, 334.5, _
+        , "Country A").Slicers.Add ActiveSheet, , "Country 1", "Country", 514.5, 334.5, _
         144, 198.75
     ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("marketPivotTable"), _
         "System Code (6NC)").Slicers.Add ActiveSheet, , "System Code (6NC)", _
@@ -2168,7 +2169,7 @@ pvtTblName = pvtTbl.name
         .Function = xlSum
     End With
     With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
-        "Country")
+        "Country A")
         .Orientation = xlPageField
         .Position = 1
     End With
@@ -2600,7 +2601,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
         , "Market").Slicers.Add ActiveSheet, , "Market 2", "Market", 210, 5, _
         144, 198.75
     ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("contractsPivotTable") _
-        , "Country").Slicers.Add ActiveSheet, , "Country 2", "Country", 210, 150 _
+        , "Country A").Slicers.Add ActiveSheet, , "Country 2", "Country", 210, 150 _
         , 144, 198.75
     
     Range("A1:Z60").Select
@@ -4208,7 +4209,12 @@ Range("K2").Select
     Selection.Copy
     Range("P2").Select
     ActiveSheet.Paste
+    Range("K2").Select
     ActiveCell.FormulaR1C1 = "Join"
+    
+    ActiveSheet.Cells(4, 15).Value = lastmonthVal
+    ActiveSheet.Cells(3, 15).Value = "Current Month"
+
     Application.CutCopyMode = False
     
     Dim currMonth As String
@@ -4216,7 +4222,7 @@ Range("K2").Select
     Dim currmonthDrop As String
     Dim YTDMonthDrop As String
     
-    currMonth = Format(Now(), "mmm") & "-" & Format(Now(), "yy")
+    currMonth = Format(lastmonthVal, "mmm") & "-" & Format(lastmonthVal, "yy")
     YTDMonth = "Jan" & "-" & Format(Now(), "yy")
     
     ActiveSheet.UsedRange.Find(what:="Join Total", lookat:=xlWhole).Select
@@ -4252,6 +4258,13 @@ Range("K2").Select
     
     ActiveSheet.Cells(4, 14).Formula = "=IF(" & lstAddForTrend & ">AVERAGE(" & fstAddForTrend & ":" & Range(lstAddForTrend).Offset(0, -1).Address & "),CHAR(233),IF(" & lstAddForTrend & "<AVERAGE(" & fstAddForTrend & ":" & Range(lstAddForTrend).Offset(0, -1).Address & "),CHAR(234),CHAR(232)))"
     ActiveSheet.Cells(4, 19).Formula = "=IF(" & YTDMonthDrop & ">AVERAGE(" & currmonthDrop & ":" & Range(YTDMonthDrop).Offset(0, -1).Address & "),CHAR(233),IF(" & YTDMonthDrop & "<AVERAGE(" & currmonthDrop & ":" & Range(YTDMonthDrop).Offset(0, -1).Address & "),CHAR(234),CHAR(232)))"
+    
+    Range("L4:N4").Copy
+    Range("L5").PasteSpecial xlPasteValues
+    Range("L5").PasteSpecial xlPasteFormats
+    Range("Q4:S4").Copy
+    Range("Q5").PasteSpecial xlPasteValues
+    Range("Q5").PasteSpecial xlPasteFormats
     
     Range("N4").Select
     With Selection.Font
@@ -4363,6 +4376,11 @@ Range("K2").Select
 End Sub
 
 Public Sub Calculating_Data_Downloaded_Date()
+Dim fstPasteRNG As String
+Dim lstPasteRNG As String
+Dim lookForVal As String
+
+
 ActiveWorkbook.Sheets("Data").Activate
 ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
@@ -4387,5 +4405,17 @@ ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
 Selection.Copy
 Selection.PasteSpecial (xlValues)
 
-
+Application.CutCopyMode = False
+    ActiveWorkbook.Worksheets("Data").Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets("Data").Sort.SortFields.Add Key:=Range("AC2"), _
+        SortOn:=xlSortOnValues, Order:=xlDescending, DataOption:=xlSortNormal
+    With ActiveWorkbook.Worksheets("Data").Sort
+        .SetRange Range(fstPasteRNG & ":" & lstPasteRNG)
+        .Header = xlNo
+        .MatchCase = False
+        .Orientation = xlTopToBottom
+        .SortMethod = xlPinYin
+        .Apply
+    End With
+lastmonthVal = ActiveCell.Value
 End Sub
