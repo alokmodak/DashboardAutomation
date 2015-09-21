@@ -23,10 +23,10 @@ With Sheet1.combProductGroup
 .AddItem ("DXR-MobileDiagnost Opta-N")
 End With
 
-
+Sheet1.comb6NC1.Enabled = True
 Sheet1.comb6NC1.Clear
-With Sheet1.comb6NC1
 Sheet1.chkCTS.Enabled = True
+With Sheet1.comb6NC1
 .AddItem ("IXR-MOS Endura-Y")
 .AddItem ("IXR-MOS Pulsera-Y")
 .AddItem ("IXR-MOS BV Vectra-N")
@@ -44,6 +44,7 @@ With Sheet1.lstBx6NC
 .AddItem "ContractsDynamics_Waterfall"
 .AddItem "MarketDynamics_Waterfall"
 .AddItem "Contract_Penetration"
+.AddItem "SendEmail_Contracts-Join&Drops"
 End With
 
 Sheet1.rdbLocalDrive.value = True
@@ -51,7 +52,7 @@ Sheet1.processTime.value = 0
 Sheet1.processTime.Enabled = False
 Sheet1.minProcessTime.Enabled = False
 Sheet1.combProductGroup.value = "Select Product Group"
-Sheet1.chkCTS.value = "Select Product Group"
+Sheet1.chkCTS.Enabled = True
 Sheet1.chkRevenue.Enabled = True
 Sheet1.chkAllGroups.value = False
 Sheet1.minProcessTime.value = 0
