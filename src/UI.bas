@@ -23,24 +23,40 @@ With Sheet1.combProductGroup
 .AddItem ("DXR-MobileDiagnost Opta-N")
 End With
 
+Sheet1.comb6NC1.Enabled = True
+Sheet1.comb6NC1.Clear
+Sheet1.chkCTS.Enabled = True
+With Sheet1.comb6NC1
+.AddItem ("IXR-MOS Endura-Y")
+.AddItem ("IXR-MOS Pulsera-Y")
+.AddItem ("IXR-MOS BV Vectra-N")
+.AddItem ("IXR-MOS Veradius-Y")
+.AddItem ("IXR-CV Allura FC-Y")
+.AddItem ("IXR-MOS Libra-N")
+.AddItem ("DXR-PrimaryDiagnost Digital-N")
+.AddItem ("DXR-MicroDose Mammography-Y")
+.AddItem ("DXR-MobileDiagnost Opta-N")
+End With
+
 Sheet1.lstBx6NC.Visible = False
 Sheet1.cmb6NC2OK.Visible = False
 With Sheet1.lstBx6NC
 .AddItem "ContractsDynamics_Waterfall"
 .AddItem "MarketDynamics_Waterfall"
 .AddItem "Contract_Penetration"
+.AddItem "SendEmail_Contracts-Join&Drops"
 End With
 
-Sheet1.rdbLocalDrive.Value = True
-Sheet1.processTime.Value = 0
+Sheet1.rdbLocalDrive.value = True
+Sheet1.processTime.value = 0
 Sheet1.processTime.Enabled = False
 Sheet1.minProcessTime.Enabled = False
 Sheet1.combProductGroup.Value = "Select Product Group"
-Sheet1.chkCTS.Enabled = False
+Sheet1.chkCTS.Enabled = True
 Sheet1.chkRevenue.Enabled = True
-Sheet1.chkAllGroups.Value = False
-Sheet1.minProcessTime.Value = 0
-Sheet1.processTime.Value = 0
+Sheet1.chkAllGroups.value = False
+Sheet1.minProcessTime.value = 0
+Sheet1.processTime.value = 0
 
 Dim yearValue As String
 Dim monthVal As String

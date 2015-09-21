@@ -16,6 +16,7 @@ Sub hideInfoTips(Optional Dummy As Boolean)
     With Sheet1
         .lblDashboard.Visible = False
         .revenueLbl.Visible = False
+        .CTSlbl.Visible = False
     End With
     
     Application.Cursor = xlDefault
@@ -35,6 +36,7 @@ Dim lblMonthCheck As String
 Dim lblText As String
 Dim warrantyVal As String
 Dim revenueLblText As String
+Dim CTSLblText As String
 
 warrantyVal = Replace(Sheet1.combYear.Value, "-", "")
  lblMonthCheck = Format(Sheet1.combYear.Value, "mmmyy")
@@ -55,11 +57,18 @@ warrantyVal = Replace(Sheet1.combYear.Value, "-", "")
 revenueLblText = "Input files required are -" & vbCrLf & _
 "1) Market_Groups_Markets_Country.xlsx" & vbCrLf & _
 "2) Revenue_MoS_SAPBW_Download.xlsx" & vbCrLf & _
-"3) Contract_Penetration_SAPBW_Download.xlsx"
+"3) Contract_Penetration_SAPBW_Download.xlsx" & vbCrLf & _
+"Input data files are individually selectable, " & Chr(34) & "Market_Groups_Markets_Country.xlsx" & Chr(34) & " Should be in the same folder with input files"
+
+CTSLblText = "Input files required are -" & vbCrLf & _
+"1) Select product from productGroup for CTS" & vbCrLf & _
+" e.g. If you select " & "IXR-MOS Veradius-Y " & "from  dropdown list " & vbCrLf & _
+"of CTS then " & "Veradius.xlsx " & "will be selected as input file" & vbCrLf & _
+"2) IB_IXR.xlsx"
 
 Sheet1.revenueLbl.Caption = revenueLblText
 Sheet1.lblDashboard.Caption = lblText
-
+Sheet1.CTSlbl.Caption = CTSLblText
 
     
     Application.Cursor = xlNorthwestArrow 'stops mouse pointer from flickering between hourglass and arrow
@@ -93,6 +102,7 @@ Public Sub hideTipsForWorkbookEvent()
         With Sheet1
             .lblDashboard.Visible = False
             .revenueLbl.Visible = False
+            .CTSlbl.Visible = False
         End With
     
     End If

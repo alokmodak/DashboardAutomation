@@ -15,6 +15,10 @@ Private Sub chkRevenue_MouseMove(ByVal Button As Integer, ByVal Shift As Integer
 Call showInfoTip(revenueLbl)
 End Sub
 
+Private Sub chkCTS_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+Call showInfoTip(CTSlbl)
+End Sub
+
 Private Sub chkRevenue_Click()
     Sheet1.combYear.Enabled = False
     Sheet1.cmbIncreaseMonth.Enabled = False
@@ -57,7 +61,7 @@ startTime = second(Now())
             
             Call CQ_Calculations
             
-    ElseIf Sheet1.chkRevenue.Value = True Then
+    ElseIf Sheet1.chkRevenue.value = True Then
             Error_RevenueNoSelection
             Dim i As Integer
             For i = 0 To Sheet1.lstBx6NC.ListCount - 1
@@ -65,7 +69,7 @@ startTime = second(Now())
                    If Sheet1.lstBx6NC.List(i) = "ContractsDynamics_Waterfall" Then
                        
                        'Checking whether file present
-                       Call ErrorMessage_RevenueFiles("Revenue_MoS_SAPBW_Download.xlsx")
+                       'Call ErrorMessage_RevenueFiles("Revenue_MoS_SAPBW_Download.xlsx")
                        
                        Call Revenue_Graph_Creation
                        
@@ -73,22 +77,37 @@ startTime = second(Now())
                    If Sheet1.lstBx6NC.List(i) = "MarketDynamics_Waterfall" Then
                    
                        'Checking whether file present
-                       Call ErrorMessage_RevenueFiles("Revenue_MoS_SAPBW_Download.xlsx")
+                       'Call ErrorMessage_RevenueFiles("Revenue_MoS_SAPBW_Download.xlsx")
                        
                        Call Market_Revenue_Chart_Generation
                    End If
                     If Sheet1.lstBx6NC.List(i) = "Contract_Penetration" Then
                        
                        'Checking whether file present
-                       Call ErrorMessage_RevenueFiles("Contract_Penetration_SAPBW_Download.xlsx")
+                       'Call ErrorMessage_RevenueFiles("Contract_Penetration_SAPBW_Download.xlsx")
                        
                        Call Contract_Penetration
                    End If
+                   If Sheet1.lstBx6NC.List(i) = "SendEmail_Contracts-Join&Drops" Then
+                       
+                       'Checking whether file present
+                       'Call ErrorMessage_RevenueFiles("Contract_Penetration_SAPBW_Download.xlsx")
+                       
+                       Call Send_Email_For_Contracts_Drops_Joins
+                   End If
+                   
                End If
             Next i
             
-    ElseIf Sheet1.chkCTS.Value = True Then
     
+        Call createPivotTableAggregatedKPIMaster
+        Call createPivotTableAggregatedDataKPIALL
+        Call CRRateCalculationNew
+        Call MTTRRateCalculationNew
+        Call ETTRRateCalculationNew
+        ' Call MTTRCalculation
+        'Call ListSubfoldersFile
+        'Call PrtChartCalculation
     Else
     MsgBox "Please select an output option"
     
@@ -124,11 +143,11 @@ Private Sub cmb6NC2OK_Click()
 On Error Resume Next
     Sheet1.lstBx6NC.Visible = False
     Sheet1.cmb6NC2OK.Visible = False
-    Sheet1.comb6NC2.Value = ""
+    Sheet1.comb6NC2.value = ""
     Dim i As Integer
     For i = 0 To 20
         If Sheet1.lstBx6NC.selected(i) = True Then
-            Sheet1.comb6NC2.Value = Sheet1.comb6NC2.Value & " " & Sheet1.lstBx6NC.List(i) & " "
+            Sheet1.comb6NC2.value = Sheet1.comb6NC2.value & " " & Sheet1.lstBx6NC.List(i) & " "
         End If
     Next
 End Sub
@@ -160,9 +179,9 @@ Private Sub chkAllGroups_Click()
         Sheet1.combProductGroup.Value = ""
         Sheet1.combProductGroup.Enabled = False
         Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
-        Sheet1.lstBx6NC.Value = ""
+        Sheet1.lstBx6NC.value = ""
         Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
-        Sheet1.comb6NC2.Value = ""
+        Sheet1.comb6NC2.value = ""
     Else
         Sheet1.comb6NC1.Enabled = True
         Sheet1.comb6NC2.Enabled = True
