@@ -31,7 +31,7 @@ Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 Dim strtMonth As String
 
-On Error Resume Next
+'On Error Resume Next
 
 Application.FileDialog(msoFileDialogFilePicker).AllowMultiSelect = False
 If Application.FileDialog(msoFileDialogFilePicker).Show <> -1 Then
@@ -52,7 +52,7 @@ Application.Workbooks.Open (marketInputFile), False
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 
-revenueOutputGlobal = Left(inputRevenue, InStrRev(inputRevenue, "\") - 1) & "\" & "ContractDynamics_Waterfall_" & Format(Now, "mmmyy") & ".xlsm"
+revenueOutputGlobal = Left(inputRevenue, InStrRev(inputRevenue, "\") - 1) & "\" & "ContractsDiffusion_Rate_" & Format(Now, "mmmyy") & ".xlsm"
 Application.AlertBeforeOverwriting = False
 Application.DisplayAlerts = False
 If Dir(revenueOutputGlobal) = "" Then
@@ -100,152 +100,6 @@ With ActiveSheet.Range("A:A")
 End With
 ActiveSheet.name = "Data"
 
-'Adding 6NC Names column
-marketInputFile = "Market_Groups_Markets_Country.xlsx"
-
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet1").Activate
-ActiveSheet.UsedRange.AutoFilter
-ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
-ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
-Dim marketFSTAdd As String
-Dim marketLSTAdd As String
-
-marketFSTAdd = ActiveCell.Address
-ActiveCell.Offset(0, 1).Select
-ActiveCell.End(xlDown).Select
-marketLSTAdd = ActiveCell.Address
-ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
-Selection.Copy
-
-Workbooks(revenueOutputGlobal).Activate
-ActiveWorkbook.Sheets("Data").Activate
-ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
-ActiveCell.End(xlToRight).Select
-ActiveCell.Offset(0, 1).Select
-ActiveCell.PasteSpecial xlPasteValues
-Dim marketRNG As Range
-Set marketRNG = Range(Selection.Address)
-
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveCell.EntireColumn.Insert xlToRight
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "System Code (6NC)"
-
-Dim lstPasteRNG As String
-Dim fstPasteRNG As String
-Dim lookForVal As String
-Dim rngStringMarket As String
-
-rngStringMarket = marketRNG.Address
-ActiveCell.Offset(1, 0).Select
-fstPasteRNG = ActiveCell.Offset(0, -1).Address
-ActiveCell.End(xlDown).Select
-lstPasteRNG = ActiveCell.Offset(0, -1).Address
-ActiveCell.End(xlUp).Select
-ActiveCell.Offset(1, 0).Select
-lookForVal = ActiveCell.Address(False, False)
-
-ActiveCell.Offset(0, -1).Select
-ActiveCell.Formula = "=IFERROR(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)," & Chr(34) & "Others" & Chr(34) & ")"
-ActiveCell.Copy
-ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
-ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
-Selection.Copy
-Selection.PasteSpecial (xlValues)
-marketRNG.Delete
-
-'Adding Market column
-
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet1").Activate
-ActiveSheet.UsedRange.AutoFilter
-ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
-ActiveSheet.UsedRange.Find(what:="Country Code", lookat:=xlWhole).Select
-
-marketFSTAdd = ActiveCell.Address
-Selection.SpecialCells(xlCellTypeLastCell).Select
-marketLSTAdd = ActiveCell.Address
-ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
-Selection.Copy
-
-Workbooks(revenueOutputGlobal).Activate
-ActiveWorkbook.Sheets("Data").Activate
-ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
-ActiveCell.End(xlToRight).Select
-ActiveCell.Offset(0, 1).Select
-ActiveCell.PasteSpecial xlPasteAll
-Set marketRNG = Range(Selection.Address)
-
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
-ActiveCell.EntireColumn.Insert xlToRight
-ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "Market"
-
-rngStringMarket = marketRNG.Address
-ActiveCell.Offset(1, 0).Select
-fstPasteRNG = ActiveCell.Offset(0, -1).Address
-ActiveCell.End(xlDown).Select
-lstPasteRNG = ActiveCell.Offset(0, -1).Address
-ActiveCell.End(xlUp).Select
-ActiveCell.Offset(1, 0).Select
-lookForVal = ActiveCell.Address(False, False)
-
-ActiveCell.Offset(0, -1).Select
-ActiveCell.Formula = "=VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)"
-ActiveCell.Copy
-ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
-ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
-Selection.Copy
-Selection.PasteSpecial (xlValues)
-marketRNG.Delete
-
-'Adding EOL
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet2").Activate
-ActiveSheet.UsedRange.Find(what:="EOL System code", lookat:=xlWhole).Select
-
-marketFSTAdd = ActiveCell.Address
-ActiveCell.Offset(0, 2).Select
-ActiveCell.End(xlDown).Select
-marketLSTAdd = ActiveCell.Address
-ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
-Selection.Copy
-
-Workbooks(revenueOutputGlobal).Activate
-ActiveWorkbook.Sheets("Data").Activate
-ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
-ActiveCell.End(xlToRight).Select
-ActiveCell.Offset(0, 1).Select
-ActiveCell.PasteSpecial xlPasteAll
-Set marketRNG = Range(Selection.Address)
-
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveCell.EntireColumn.Insert xlToRight
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "EOL Status"
-
-rngStringMarket = marketRNG.Address
-ActiveCell.Offset(1, 0).Select
-fstPasteRNG = ActiveCell.Offset(0, -1).Address
-ActiveCell.End(xlDown).Select
-lstPasteRNG = ActiveCell.Offset(0, -1).Address
-ActiveCell.End(xlUp).Select
-ActiveCell.Offset(1, 0).Select
-lookForVal = ActiveCell.Address(False, False)
-
-ActiveCell.Offset(0, -1).Select
-ActiveCell.Formula = "=IF(IFERROR(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "3" & "," & "FALSE)<" & Chr(61) & "YEAR(TODAY()),)," & Chr(34) & "EOL" & Chr(34) & "," & Chr(34) & "Not EOL" & Chr(34) & ")"
-'=IF(VLOOKUP(B31,$AS$30:$AU$64,3,FALSE)<YEAR(TODAY()),"EOL","Not EOL")
-ActiveCell.Copy
-ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
-ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
-Selection.Copy
-Selection.PasteSpecial (xlValues)
-marketRNG.Delete
-
-Calculating_Data_Downloaded_Date
-
 ActiveWorkbook.Sheets("Data").Activate
 Set wsData = Worksheets("Data")
 
@@ -282,8 +136,6 @@ Dim pvtTblName As String
 pvtTblName = pvtTbl.name
 'Add row, column and page fields in a Pivot Table using the AddFields method:
     ActiveWorkbook.Sheets("Pivot").Select
-    Cells(3, 1).Select
-
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Reference Equipment")
         .Orientation = xlRowField
@@ -315,7 +167,7 @@ pvtTblName = pvtTbl.name
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract Start Date (Header)").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract Start Date (Header)")
         .PivotItems("#").Visible = False
     End With
@@ -327,7 +179,7 @@ pvtTblName = pvtTbl.name
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract End Date (Header)").Subtotals = Array(False, False, False, False, _
         False, False, False, False, False, False, False, False)
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields("[C,S] Contract Type")
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Contract Type")
         .Orientation = xlRowField
         .Position = 4
     End With
@@ -335,7 +187,7 @@ pvtTblName = pvtTbl.name
     With ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Contract Type")
         For Each pvtItem In ActiveSheet.PivotTables(pvtTblName).PivotFields("[C,S] Contract Type").PivotItems
             If pvtItem.name = "ZCSW" Then
-            pvtItem.Visible = True
+            .PivotItems("ZCSW").Visible = True
             Else
             pvtItem.Visible = False
             End If
@@ -345,11 +197,13 @@ pvtTblName = pvtTbl.name
         Subtotals = Array(False, False, False, False, False, False, False, False, False, False, _
         False, False)
         
-With ActiveSheet.PivotTables(pvtTblName)
+    ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "[C,S] System Code Material (Material no of  R Eq)").ClearAllFilters
+    With ActiveSheet.PivotTables(pvtTblName)
         .ColumnGrand = False
         .RowGrand = False
     End With
-
+    
 Dim filterSelectedValues As Integer
     Dim secondLoop As Integer
     secondLoop = 1
@@ -357,15 +211,13 @@ Dim filterSelectedValues As Integer
     ActiveWorkbook.Sheets("Pivot").Activate
 'turn on automatic update / calculation in the Pivot Table
 pvtTbl.ManualUpdate = False
+Set PvtTblCache = Nothing
 
 ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", lookat:=xlWhole).Select
 Dim fstZCSWAdd As String
 Dim lstZCSWAdd As String
 fstZCSWAdd = ActiveCell.Address
-ActiveCell.SpecialCells(xlCellTypeLastCell).Select
-
-ActiveCell.End(xlToLeft).Select
-ActiveCell.End(xlToLeft).Select
+Range(Mid(ActiveCell.Address, 2, 2) & Rows.Count).End(xlUp).Select
 lstZCSWAdd = ActiveCell.Address
 
 Range(fstZCSWAdd, lstZCSWAdd).Copy
@@ -381,17 +233,28 @@ For Each celVal In Range(eqRNG)
     If ActiveCell.Offset(1, 0).Value = "" Then
         ActiveCell.EntireRow.Delete
     End If
-    If ActiveCell.Value = "" Then
+    If ActiveCell.Value = "" Or ActiveCell.Value = "Grand Total" Then
         ActiveCell.EntireRow.Delete
         ActiveCell.Offset(-1, 0).Select
     End If
     ActiveCell.Offset(1, 0).Select
 Next
 
+Dim fstFilterVal1 As String
+Dim lstFilterVal1 As String
+
+ActiveSheet.UsedRange.Copy
+
+fstFilterVal1 = ActiveCell.End(xlUp).Address
+lstFilterVal1 = ActiveCell.Address
 'ActiveWorkbook.Sheets("Pivot").Delete
+
+ActiveWorkbook.Sheets("Contracts-Data").Activate
+ActiveSheet.UsedRange.Copy
 
 ActiveWorkbook.Sheets("Data").Activate
 ActiveSheet.Cells(1, 1).Select
+
 Dim fstFilterAdd As String
 Dim lstFilterAdd As String
 Dim filterRNG As String
@@ -401,12 +264,55 @@ ActiveCell.SpecialCells(xlCellTypeLastCell).Select
 lstFilterAdd = ActiveCell.Address
 filterRNG = Range(fstFilterAdd, lstFilterAdd).Address
 
-Range(filterRNG).AdvancedFilter Action:=xlFilterInPlace, CriteriaRange _
-        :=Sheets("Contracts-Data").Range("A1:A1419"), Unique:=False
+ActiveCell.Offset(10, 10).Select
+ActiveCell.PasteSpecial xlPasteAll
+Dim filterRNG1 As String
+filterRNG1 = Selection.Address
 
+Range(filterRNG).AdvancedFilter Action:=xlFilterInPlace, CriteriaRange _
+        :=Range(filterRNG1), Unique:=False
+
+Range(filterRNG1).Delete
 ActiveCell.SpecialCells(xlCellTypeVisible).Select
 Selection.Copy
 Sheets.Add
 ActiveSheet.Paste
+ActiveSheet.name = "Filtered-Data"
+ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
+ActiveCell.EntireColumn.Insert Shift:=xlToRight
 
+ActiveCell.Value = "Fiscal Year/Period"
+ActiveCell.Offset(1, 0).Select
+Dim fstAddForYear As String
+Dim fstAddRNG2 As String
+Dim lstAddRNG2 As String
+fstAddForYear = ActiveCell.Offset(0, 1).Address(False, False)
+fstAddRNG2 = ActiveCell.Address
+ActiveCell.Formula = "=RIGHT(" & fstAddForYear & ",4)"
+Range(fstAddForYear).Select
+ActiveCell.End(xlDown).Select
+ActiveCell.Offset(0, -1).Select
+lstAddRNG2 = ActiveCell.Address
+Range(fstAddForYear).Select
+ActiveCell.Offset(0, -1).Copy
+Range(fstAddRNG2, lstAddRNG2).Select
+Selection.PasteSpecial xlPasteFormulas
+Selection.Copy
+Selection.PasteSpecial xlPasteValues
+
+ActiveSheet.UsedRange.Select
+Dim pivoRNG As String
+pivoRNG = Selection.Address
+Dim sourceData1 As String
+
+
+sourceData1 = "Filtered-Data!" & pivoRNG
+Application.CutCopyMode = False
+Sheets.Add
+ActiveSheet.name = "Revenue"
+    ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
+        "Filtered-Data!R1C1:R53020C47", Version:=xlPivotTableVersion15). _
+        CreatePivotTable TableDestination:="Revenue!R3C1", TableName:="PivotTable1" _
+        , DefaultVersion:=xlPivotTableVersion15
+ActiveWorkbook.Sheets("Pivot").Delete
 End Sub

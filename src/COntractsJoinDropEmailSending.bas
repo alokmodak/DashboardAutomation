@@ -374,7 +374,7 @@ pvtTblName = pvtTbl.name
         "System Code (6NC)").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "Market")
+        "[C,S] System Code Material (Material no of  R Eq)")
         .Orientation = xlRowField
         .Position = 8
     End With
@@ -382,7 +382,7 @@ pvtTblName = pvtTbl.name
         "Market").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "[C,S] System Code Material (Material no of  R Eq)")
+        "Market")
         .Orientation = xlRowField
         .Position = 9
     End With
@@ -791,7 +791,7 @@ Application.DisplayAlerts = False
     Sheets("Contracts-Joins&Drops").Select
     Sheets("Contracts-Joins&Drops").Move
     Dim flName As String
-    flName = exportFolder & filterValCountry & "_" & filterValMarket & "-DropsAndJoins.xlsx"
+    flName = exportFolder & filterValCountry & "_" & filterValMarket & "-Drops.xlsx"
     ActiveWorkbook.SaveAs fileName:=flName, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
 Application.DisplayAlerts = True
 
@@ -811,10 +811,92 @@ Do Until ActiveCell.Value = ""
     End If
 Loop
 
+Dim cutAdd As String
+Dim pasteAdd As String
+
 ActiveSheet.UsedRange.Select
 Selection.Columns.AutoFit
+ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", lookat:=xlWhole).Select
+ActiveCell.Value = "Equipment ID"
+ActiveSheet.UsedRange.Find(what:="[C,S] Ship-To Party Line Item", lookat:=xlWhole).Select
+ActiveCell.Value = "Customer ID"
+ActiveSheet.UsedRange.Find(what:="[C,S] Ship-To Party Line Item A", lookat:=xlWhole).Select
+ActiveCell.Value = "Customer Name"
+ActiveSheet.UsedRange.Find(what:="Ship-to City", lookat:=xlWhole).Select
+ActiveCell.Value = "Location"
+ActiveSheet.UsedRange.Find(what:="EOL Status", lookat:=xlWhole).Select
+ActiveCell.Value = "EOL ?"
+ActiveSheet.UsedRange.Find(what:="    Contract" & Chr(10) & "Net Value", lookat:=xlWhole).Select
+ActiveCell.Value = "Contract Value"
+cutAdd = ActiveCell.Address
+ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
+ActiveCell.Value = "System Name"
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveCell.Value = "System 6NC"
+ActiveSheet.UsedRange.Find(what:="[C,S] Contract Start Date (Header)", lookat:=xlWhole).Select
+ActiveCell.Value = "Contract Start"
+ActiveSheet.UsedRange.Find(what:="[C,S] Contract End Date (Header)", lookat:=xlWhole).Select
+ActiveCell.Value = "Contract End"
+ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
+ActiveCell.Value = "Contract Type"
+pasteAdd = ActiveCell.Address
+    Range(cutAdd).Select
+    Range(ActiveCell.Address & ":" & ActiveCell.End(xlDown).Address).Select
+    Selection.Cut
+    Range(pasteAdd).Select
+    Selection.Insert Shift:=xlToLeft
+
+ActiveSheet.UsedRange.Select
+Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
+    ActiveCell.EntireRow.Select
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorDark2
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
 
 ActiveSheet.Cells(1, 1).Select
+ActiveWorkbook.Save
 
 Send_Email_Via_OutlookInbox flName, toEmailAdd, subject, txtBody
 
