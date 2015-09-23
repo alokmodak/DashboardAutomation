@@ -1550,7 +1550,7 @@ Call IBPivotTable
     fnlEndDate1 = Format(endDate2, "mmm" & "-" & "yyyy")
     frmEndDate = Format(fnlEndDate, "mmm" & "-" & "yyyy")
     Range("M1").Select
-    ActiveCell.value = "VLY"
+    ActiveCell.value = "Last Year"
     Range("I1").Select
     ActiveCell.value = "Current Year CR/Sys"
     Range("R2").Select
@@ -2082,7 +2082,9 @@ Selection.NumberFormat = "0.0000"
     ActiveCell.Formula = "=SUM(" & "AC" & sumMidAdd & ":" & "AC" & sumMidAdd1 & ")"
     Sheets("CR").Select
     Range("Q3").Select
-    ActiveCell.FormulaR1C1 = "=RC[-7]>RC[-3]"
+   ActiveCell.FormulaR1C1 = "=AND(RC[-7]>RC[-6],RC[-12]<RC[-9])"
+
+   ' ActiveCell.FormulaR1C1 = "=RC[-7]>RC[-3]"
     Range("Q3").Select
     Selection.AutoFill Destination:=Range("" & "Q" & sumMidAdd - 1 & ":" & "Q" & sumMidAdd1 & "")
     Range("" & "Q" & sumMidAdd - 1 & ":" & "Q" & sumMidAdd1 & "").Select
@@ -2132,17 +2134,68 @@ Selection.NumberFormat = "0.0000"
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    Range("Q3").Select
-    Range(Selection, Selection.End(xlDown)).Select
-    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
-        Formula1:="=TRUE"
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Interior
+    
+    
+    
+    
+    
+    Sheets("CR").Select
+    Sheets("CR").UsedRange.Find(what:="BuildingBlock", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 3).Select
+    fstAdd = ActiveCell.Address(False, False)
+    fstMidAdd = Mid(fstAdd, 2)
+    
+    Sheets("CR").UsedRange.Find(what:="BuildingBlock", lookat:=xlWhole).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 4).Select
+    lstAdd = ActiveCell.Address(False, False)
+    lstMidAdd = Mid(lstAdd, 2)
+    ActiveCell.Offset(1, 0).Select
+   
+    ActiveCell.Formula = "=LARGE(" & "F" & fstMidAdd & ":" & "G" & lstMidAdd & ",20)"
+    topTwentyVal = ActiveCell.value
+    Sheets("CR").UsedRange.Find(what:="Trigger", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    If ActiveCell.value = "True" Then
+    With Selection.Interior
+        .Pattern = xlSolid
         .PatternColorIndex = xlAutomatic
-        .Color = 240
+        .Color = 255
         .TintAndShade = 0
+        .PatternTintAndShade = 0
+        End With
+    End If
+    
+    ActiveCell.Offset(1, 0).Select
+    Do While ActiveCell.value <> ""
+    If ActiveCell.value = "True" Then
+        If Range("F" & fstMidAdd).value >= topTwentyVal Or Range("G" & fstMidAdd).value >= topTwentyVal Then
+        With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 255
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
     End With
-    Selection.FormatConditions(1).StopIfTrue = False
+'        ActiveCell.Interior.Color = 255
+        Else
+        With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 26367
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+        End If
+        
+    End If
+    fstMidAdd = fstMidAdd + 1
+    ActiveCell.Offset(1, 0).Select
+    
+    Loop
+    Range(lstAdd).Offset(1, 0).Select
+    Selection.ClearContents
+
     Range("A1").Select
     Selection.EntireColumn.Delete
     Range("C1").Select
@@ -3073,7 +3126,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     fnlEndDate1 = Format(endDate2, "mmm" & "-" & "yyyy")
     frmEndDate = Format(fnlEndDate, "mmm" & "-" & "yyyy")
     Range("M1").Select
-    ActiveCell.value = "VLY"
+    ActiveCell.value = "Last Year"
     Range("I1").Select
     ActiveCell.value = "Avg. MTTR / Call (Current Month)"
     Range("R2").Select
@@ -4534,7 +4587,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     fnlEndDate1 = Format(endDate2, "mmm" & "-" & "yyyy")
     frmEndDate = Format(fnlEndDate, "mmm" & "-" & "yyyy")
     Range("M1").Select
-    ActiveCell.value = "VLY"
+    ActiveCell.value = "Last Year"
     Range("I1").Select
     ActiveCell.value = "Avg. ETTR / Sys (Current Month)"
     Range("R2").Select
@@ -5192,6 +5245,10 @@ Range("A1").Select
     Range("A1").Select
     Workbooks(myPvtWorkBook).Close
     Workbooks(OutPutFileWB).Activate
+    
+'Create a new sheet for the summary of the All subsystems and Building blocks
+    Call allSSsummarySheet
+    Sheets("KPI-Master").Select
     ActiveWorkbook.SaveAs fileName:= _
         ThisWorkbook.Path & "\CTS_KPI_Summary_" & prdFileName & ".xlsx", FileFormat:= _
         xlOpenXMLWorkbook, CreateBackup:=False
@@ -7405,6 +7462,8 @@ Range("E6").Select
     Selection.Delete
     ActiveSheet.Shapes.Range(Array("Part12NC-Sub Parts")).Select
     Selection.Delete
+    ActiveSheet.Shapes.Range(Array("PartDescription")).Select
+    Selection.Delete
     Workbooks(myPvtWorkBook).Activate
     pvtTbl.TableRange2.Copy
     Workbooks(outputFlName).Activate
@@ -7430,9 +7489,7 @@ Range("E6").Select
         
             IBVal = ActiveCell.Offset(0, 1).value
   
- 'Call function RRR to add RRR Data
-        Call RRR
-  
+
   'Add RRR% and CallRate Columns
 Workbooks(outputFlName).Activate
 Sheets("KPI-Master").Select
@@ -7990,6 +8047,14 @@ Dim lastRow As Integer
             .Cells.SpecialCells(xlCellTypeVisible).Delete Shift:=xlUp
         End With
 
+     SearchForWords1 = Array("*TBD*")
+     Range("A1").Select
+     Selection.EntireRow.Select
+        With Selection
+            .AutoFilter Field:=5, Criteria1:=SearchForWords1
+           Range("A1").Cells.SpecialCells(xlCellTypeVisible).Delete Shift:=xlUp
+        End With
+
 'Create a Pivot Table
     ActiveSheet.UsedRange.Find(what:="IBTotal", lookat:=xlWhole).Select
     pvtAdd = ActiveCell.Offset(0, 2).Address(ReferenceStyle:=xlR1C1)
@@ -8034,6 +8099,231 @@ Dim lastRow As Integer
         Workbooks(outputFlName).Save
     Application.ScreenUpdating = True
     Application.DisplayAlerts = True
+End Sub
+
+
+Sub allSSsummarySheet()
+
+Sheets("CR").Select
+    Range("A3").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Range("A2:AB3").Select
+    Range("A3").Activate
+    Selection.Copy
+    Sheets.Add before:=ActiveSheet
+    shtName = ActiveSheet.name
+    Range("B2").Select
+    ActiveSheet.Paste
+    ActiveWindow.Zoom = 85
+    Columns("B:G").Select
+    Selection.ColumnWidth = 12
+    Columns("H:AB").Select
+    Selection.ColumnWidth = 7
+    Columns("AC:AC").Select
+    Selection.ColumnWidth = 8
+    Range("B4").Select
+    Sheets("CR").Select
+    Range("A3").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets(shtName).Select
+    Range("E2:G2").Select
+    Application.CutCopyMode = False
+    ActiveCell.FormulaR1C1 = "MAT  profiles"
+    Range("H2:K2").Select
+    ActiveCell.FormulaR1C1 = "Current Year"
+    Range("Q2:AB2").Select
+    ActiveCell.FormulaR1C1 = "Monthly Data"
+    Sheets("CR").Select
+    Range("A4").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.Copy
+    Sheets(shtName).Select
+    Range("B4").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Sheets("MTTR").Select
+    Range("A4").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets(shtName).Select
+    Range("B5").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Sheets("ETTR").Select
+    Range("A4").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Application.CutCopyMode = False
+    Selection.Copy
+    Sheets(shtName).Select
+    Range("B6").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Range("D4").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Application.CutCopyMode = False
+    Selection.NumberFormat = "0.00"
+    Range("AC4").Select
+    Range("$AC$4").SparklineGroups.Add Type:=xlSparkLine, SourceData:="Q4:AB4"
+    Range("AC5").Select
+    Range("$AC$5").SparklineGroups.Add Type:=xlSparkLine, SourceData:="Q5:AB5"
+    Range("AC6").Select
+    Range("$AC$6").SparklineGroups.Add Type:=xlSparkLine, SourceData:="Q6:AB6"
+    Range("$AC$4:$AC$6").Select
+    Selection.SparklineGroups.Item(1).SeriesColor.Color = 9592887
+    Selection.SparklineGroups.Item(1).SeriesColor.TintAndShade = 0
+    Selection.SparklineGroups.Item(1).Points.Negative.Color.Color = 208
+    Selection.SparklineGroups.Item(1).Points.Negative.Color.TintAndShade = 0
+    Selection.SparklineGroups.Item(1).Points.Markers.Color.Color = 208
+    Selection.SparklineGroups.Item(1).Points.Markers.Color.TintAndShade = 0
+    Selection.SparklineGroups.Item(1).Points.Highpoint.Color.Color = 208
+    Selection.SparklineGroups.Item(1).Points.Highpoint.Color.TintAndShade = 0
+    Selection.SparklineGroups.Item(1).Points.Lowpoint.Color.Color = 208
+    Selection.SparklineGroups.Item(1).Points.Lowpoint.Color.TintAndShade = 0
+    Selection.SparklineGroups.Item(1).Points.Firstpoint.Color.Color = 208
+    Selection.SparklineGroups.Item(1).Points.Firstpoint.Color.TintAndShade = 0
+    Selection.SparklineGroups.Item(1).Points.Lastpoint.Color.Color = 208
+    Selection.SparklineGroups.Item(1).Points.Lastpoint.Color.TintAndShade = 0
+    Range("A3").Select
+    ActiveCell.FormulaR1C1 = "KPIs"
+    Range("B3").Select
+    Selection.Copy
+    Range("A2:A3").Select
+    Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
+        SkipBlanks:=False, Transpose:=False
+    Application.CutCopyMode = False
+    Range("A4").Select
+    ActiveCell.FormulaR1C1 = "CR"
+    Range("A5").Select
+    ActiveCell.FormulaR1C1 = "MTTR"
+    Range("A6").Select
+    ActiveCell.FormulaR1C1 = "ETTR"
+    Range("A4").Select
+    ActiveCell.FormulaR1C1 = "CR"
+    Range("A4:A6").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlBottom
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Selection.Font.Bold = True
+    Range("D4").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlBottom
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Range("A1").Select
+    ActiveCell.FormulaR1C1 = "CTS KPI Dashboard Summary for All SubSystems and Building Blocks"
+    Range("A1:AC1").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlBottom
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Selection.Merge
+    With Selection.Font
+        .name = "Calibri"
+        .Size = 16
+        .Strikethrough = False
+        .Superscript = False
+        .Subscript = False
+        .OutlineFont = False
+        .Shadow = False
+        .Underline = xlUnderlineStyleNone
+        .ThemeColor = xlThemeColorLight1
+        .TintAndShade = 0
+        .ThemeFont = xlThemeFontMinor
+    End With
+    Selection.Font.Bold = True
+    Selection.Font.Italic = True
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 10066176
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent6
+        .TintAndShade = 0.599993896298105
+        .PatternTintAndShade = 0
+    End With
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent6
+        .TintAndShade = 0.399975585192419
+        .PatternTintAndShade = 0
+    End With
+    Range("A1:AC6").Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlMedium
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlMedium
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlMedium
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlMedium
+    End With
+    Selection.Borders(xlInsideVertical).LineStyle = xlNone
+    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+    Range(Selection, Selection.End(xlDown)).Select
+    Columns("A:AD").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    ActiveWindow.DisplayGridlines = False
+    Range("P4:P6").Select
+    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
+        Formula1:="=TRUE"
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Interior
+        .PatternColorIndex = xlAutomatic
+        .Color = 255
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+    Columns("P:P").EntireColumn.AutoFit
+    ActiveSheet.name = "All SS-BB"
 End Sub
 
 
