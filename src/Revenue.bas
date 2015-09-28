@@ -4261,9 +4261,11 @@ Range("K2").Select
     
     Range("L4:N4").Copy
     Range("L5").PasteSpecial xlPasteValues
+    Range("L4:N4").Copy
     Range("L5").PasteSpecial xlPasteFormats
     Range("Q4:S4").Copy
     Range("Q5").PasteSpecial xlPasteValues
+    Range("Q4:S4").Copy
     Range("Q5").PasteSpecial xlPasteFormats
     
     Range("N4").Select

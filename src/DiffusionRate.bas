@@ -100,6 +100,70 @@ With ActiveSheet.Range("A:A")
 End With
 ActiveSheet.name = "Data"
 
+'Adding 6NC Names column
+marketInputFile = "Market_Groups_Markets_Country.xlsx"
+
+Application.Workbooks(marketInputFile).Activate
+ActiveWorkbook.Sheets("Sheet1").Activate
+ActiveSheet.UsedRange.AutoFilter
+ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
+ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
+Dim marketFSTAdd As String
+Dim marketLSTAdd As String
+
+marketFSTAdd = ActiveCell.Address
+ActiveCell.Offset(0, 1).Select
+ActiveCell.End(xlDown).Select
+marketLSTAdd = ActiveCell.Address
+ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
+Selection.Copy
+
+Workbooks(revenueOutputGlobal).Activate
+ActiveWorkbook.Sheets("Data").Activate
+ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
+ActiveCell.End(xlToRight).Select
+ActiveCell.Offset(0, 1).Select
+ActiveCell.PasteSpecial xlPasteValues
+Dim marketRNG As Range
+Set marketRNG = Range(Selection.Address)
+
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveCell.EntireColumn.Insert xlToRight
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
+ActiveCell.Offset(0, -1).Value = "System Code (6NC)"
+
+Dim lstPasteRNG As String
+Dim fstPasteRNG As String
+Dim lookForVal As String
+Dim rngStringMarket As String
+
+rngStringMarket = marketRNG.Address
+ActiveCell.Offset(1, 0).Select
+fstPasteRNG = ActiveCell.Offset(0, -1).Address
+ActiveCell.End(xlDown).Select
+lstPasteRNG = ActiveCell.Offset(0, -1).Address
+ActiveCell.End(xlUp).Select
+ActiveCell.Offset(1, 0).Select
+lookForVal = ActiveCell.Address(False, False)
+
+ActiveCell.Offset(0, -1).Select
+ActiveCell.Formula = "=IFERROR(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)," & Chr(34) & "Others" & Chr(34) & ")"
+ActiveCell.Copy
+ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
+ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
+Selection.Copy
+Selection.PasteSpecial (xlValues)
+marketRNG.Delete
+
+'Deleting # lines
+ActiveSheet.UsedRange.Find(what:="[C,S] Contract Start Date (Header)", lookat:=xlWhole).Select
+
+ActiveCell.AutoFilter field:=ActiveCell.Column, Criteria1:="#", Operator:=xlFilterValues
+ActiveCell.EntireRow.Hidden = True
+ActiveSheet.UsedRange.SpecialCells(xlCellTypeVisible).Select
+Selection.EntireRow.Delete
+ActiveSheet.UsedRange.EntireRow.Hidden = False
+
 ActiveWorkbook.Sheets("Data").Activate
 Set wsData = Worksheets("Data")
 
@@ -149,10 +213,7 @@ pvtTblName = pvtTbl.name
         .InGridDropZones = True
         .RowAxisLayout xlTabularRow
     End With
-    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "[C,S] Reference Equipment")
-        .PivotItems("#").Visible = False
-    End With
+    
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract Start Date (Header)")
         .Orientation = xlRowField
@@ -167,14 +228,7 @@ pvtTblName = pvtTbl.name
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract Start Date (Header)").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
-    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "[C,S] Contract Start Date (Header)")
-        .PivotItems("#").Visible = False
-    End With
-    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "[C,S] Contract End Date (Header)")
-        .PivotItems("#").Visible = False
-    End With
+    
     Range("C7").Select
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Contract End Date (Header)").Subtotals = Array(False, False, False, False, _
@@ -217,7 +271,8 @@ ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", lookat:=xlWhole).S
 Dim fstZCSWAdd As String
 Dim lstZCSWAdd As String
 fstZCSWAdd = ActiveCell.Address
-Range(Mid(ActiveCell.Address, 2, 2) & Rows.Count).End(xlUp).Select
+ActiveCell.Offset(0, 1).Select
+ActiveCell.End(xlDown).Select
 lstZCSWAdd = ActiveCell.Address
 
 Range(fstZCSWAdd, lstZCSWAdd).Copy
@@ -228,6 +283,7 @@ ActiveCell.PasteSpecial xlPasteAll
 Dim eqRNG As String
 Dim celVal As Variant
 
+Range(ActiveCell.Address, Cells(Rows.Count, ActiveCell.Column).End(xlUp).Address).Select
 eqRNG = Selection.Address
 For Each celVal In Range(eqRNG)
     If ActiveCell.Offset(1, 0).Value = "" Then
@@ -240,17 +296,46 @@ For Each celVal In Range(eqRNG)
     ActiveCell.Offset(1, 0).Select
 Next
 
+ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", lookat:=xlWhole).Select
+ActiveCell.Offset(0, 2).Value = "IB Year"
+ActiveCell.Offset(1, 0).Select
+
+ActiveCell.Offset(0, 2).Formula = "=RIGHT(" & ActiveCell.Offset(0, 1).Address(False, False) & ",4)"
+Dim fstCopyVal As String
+Dim lstCopyVal As String
+fstCopyVal = ActiveCell.Offset(0, 2).Address
+ActiveCell.End(xlDown).Select
+lstCopyVal = ActiveCell.Offset(0, 2).Address
+
+Range(fstCopyVal).Select
+ActiveCell.Copy
+
+Range(fstCopyVal, lstCopyVal).PasteSpecial xlPasteFormulas
+Selection.Copy
+Selection.PasteSpecial xlPasteValues
+
 Dim fstFilterVal1 As String
 Dim lstFilterVal1 As String
 
-ActiveSheet.UsedRange.Copy
 
-fstFilterVal1 = ActiveCell.End(xlUp).Address
-lstFilterVal1 = ActiveCell.Address
-'ActiveWorkbook.Sheets("Pivot").Delete
+ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", lookat:=xlWhole).Select
+fstFilterVal1 = ActiveCell.Address
+lstFilterVal1 = ActiveCell.End(xlDown).Address
+ActiveWorkbook.Sheets("Pivot").Delete
 
 ActiveWorkbook.Sheets("Contracts-Data").Activate
-ActiveSheet.UsedRange.Copy
+Range(fstFilterVal1, lstFilterVal1).Select
+
+Dim filterRNG1 As String
+Dim n As Long
+filterRNG1 = Selection.Address
+i = 1
+n = Range(filterRNG1).Count
+ReDim aryData(1 To n) As String
+For Each cell In Range(filterRNG1).Cells
+    aryData(i) = cell
+    i = i + 1
+Next
 
 ActiveWorkbook.Sheets("Data").Activate
 ActiveSheet.Cells(1, 1).Select
@@ -259,20 +344,17 @@ Dim fstFilterAdd As String
 Dim lstFilterAdd As String
 Dim filterRNG As String
 
+
 fstFilterAdd = ActiveCell.Address
 ActiveCell.SpecialCells(xlCellTypeLastCell).Select
 lstFilterAdd = ActiveCell.Address
 filterRNG = Range(fstFilterAdd, lstFilterAdd).Address
 
-ActiveCell.Offset(10, 10).Select
-ActiveCell.PasteSpecial xlPasteAll
-Dim filterRNG1 As String
-filterRNG1 = Selection.Address
+ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", lookat:=xlWhole).Select
 
-Range(filterRNG).AdvancedFilter Action:=xlFilterInPlace, CriteriaRange _
-        :=Range(filterRNG1), Unique:=False
+'Filter range from the data
+Range(filterRNG).AutoFilter field:=4, Criteria1:=aryData, Operator:=xlFilterValues
 
-Range(filterRNG1).Delete
 ActiveCell.SpecialCells(xlCellTypeVisible).Select
 Selection.Copy
 Sheets.Add
@@ -300,19 +382,253 @@ Selection.PasteSpecial xlPasteFormulas
 Selection.Copy
 Selection.PasteSpecial xlPasteValues
 
+Do Until ActiveCell.Value = ""
+    If InStr(1, ActiveCell.Value, ".", vbTextCompare) Then
+        ActiveCell.Value = Replace(ActiveCell.Value, ".", "")
+        ActiveCell.Value = ActiveCell.Value & "0"
+    Else
+        ActiveCell.Value = ActiveCell.Value
+    End If
+    ActiveCell.Offset(1, 0).Select
+Loop
+
+ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", lookat:=xlWhole).Select
+ActiveCell.EntireColumn.Insert Shift:=xlToRight
+ActiveCell.Value = "IB Year"
+ActiveCell.Offset(1, 0).Select
+ActiveCell.Formula = "=VLOOKUP(" & ActiveCell.Offset(0, 1).Address(False, False) & ",'Contracts-Data'!" & Sheets("Contracts-Data").UsedRange.Address & ",3,FALSE)"
+
+Dim fstAddToCopyIB As String
+Dim lstAddToCopyIB As String
+
+ActiveCell.Copy
+ActiveCell.Offset(0, 1).Select
+fstAddToCopyIB = ActiveCell.Offset(0, -1).Address
+ActiveCell.End(xlDown).Select
+lstAddToCopyIB = ActiveCell.Offset(0, -1).Address
+
+Range(fstAddToCopyIB, lstAddToCopyIB).Select
+Selection.PasteSpecial xlPasteFormulas
+Selection.Copy
+Selection.PasteSpecial xlPasteValues
+
 ActiveSheet.UsedRange.Select
 Dim pivoRNG As String
 pivoRNG = Selection.Address
 Dim sourceData1 As String
 
-
 sourceData1 = "Filtered-Data!" & pivoRNG
 Application.CutCopyMode = False
 Sheets.Add
 ActiveSheet.name = "Revenue"
+Application.ReferenceStyle = xlR1C1
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-        "Filtered-Data!R1C1:R53020C47", Version:=xlPivotTableVersion15). _
-        CreatePivotTable TableDestination:="Revenue!R3C1", TableName:="PivotTable1" _
+        sourceData1, Version:=xlPivotTableVersion15). _
+        CreatePivotTable TableDestination:="Revenue!R30C1", TableName:="PivotTable1" _
         , DefaultVersion:=xlPivotTableVersion15
-ActiveWorkbook.Sheets("Pivot").Delete
+
+With ActiveSheet.PivotTables("PivotTable1").PivotFields("Fiscal Year/Period")
+        .Orientation = xlColumnField
+        .Position = 1
+    End With
+ActiveSheet.PivotTables("PivotTable1").AddDataField ActiveSheet.PivotTables( _
+        "PivotTable1").PivotFields("    Total Contract Revenue"), _
+        "Count of     Total Contract Revenue", xlCount
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+        "Count of     Total Contract Revenue")
+        .Caption = "Sum of     Total Contract Revenue"
+        .Function = xlSum
+    End With
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields("System Code (6NC)")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields("IB Year")
+        .Orientation = xlPageField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("PivotTable1")
+        .ColumnGrand = False
+        .RowGrand = False
+    End With
+    ActiveSheet.PivotTables("PivotTable1").PivotFields("Fiscal Year/Period"). _
+        ShowAllItems = True
+Application.ReferenceStyle = xlA1
+        
+        ActiveSheet.PivotTables("PivotTable1").PivotSelect "", xlDataAndLabel, True
+    Selection.Copy
+    Range("A37").Select
+    ActiveSheet.Paste
+    
+    pvtTblName = ActiveCell.PivotTable.name
+    Set pvtTbl = ActiveCell.PivotTable
+    
+    For Each pvtFld In pvtTbl.PivotFields
+        If pvtFld.Caption <> "IB Year" Then
+            pvtFld.Orientation = xlHidden
+        End If
+    Next
+        
+    ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "Sum of     Total Contract Revenue").Orientation = xlHidden
+    ActiveSheet.PivotTables(pvtTblName).AddDataField ActiveSheet.PivotTables( _
+        pvtTblName).PivotFields("[C,S] Reference Equipment"), _
+        "Sum of [C,S] Reference Equipment", xlSum
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "Sum of [C,S] Reference Equipment")
+        .Caption = "Count of [C,S] Reference Equipment"
+        .Function = xlCount
+    End With
+    
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "[C,S] Reference Equipment")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
+    
+    Range("A36").Select
+    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables(pvtTblName), _
+        "IB Year").Slicers.Add ActiveSheet, , "IB Year", "IB Year", 289.5, 334.5, 144, _
+        198.75
+    ActiveSheet.Shapes.Range(Array("IB Year")).Select
+    ActiveSheet.Shapes("IB Year").IncrementLeft -297
+    ActiveSheet.Shapes("IB Year").IncrementTop -141
+    ActiveWorkbook.SlicerCaches("Slicer_IB_Year").PivotTables.AddPivotTable ( _
+        ActiveSheet.PivotTables("PivotTable1"))
+    
+    Dim productAdd As String
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    productAdd = ActiveCell.Offset(2, 0).Value
+    
+    ActiveSheet.Cells(1, 1).Value = ""
+    ActiveSheet.Cells(12, 3).Value = productAdd
+    ActiveSheet.Cells(13, 3).Value = "IB Count"
+    
+    Dim ibCountRng As String
+    ActiveSheet.UsedRange.Find(what:="Count of [C,S] Reference Equipment", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    
+    ibCountRng = Range(ActiveCell.Address, ActiveCell.End(xlDown).Address).Address
+    
+    ActiveSheet.Cells(14, 3).Formula = "=COUNT(" & ibCountRng & ")"
+    ActiveSheet.Cells(14, 4).Formula = "=" & Cells(14, 3).Address & "*55000"
+    
+    ActiveSheet.Cells(16, 3).Value = "Diffusion Rate"
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+    Dim yrAdd As String
+    Dim divAdd As String
+    yrAdd = ActiveCell.Offset(1, 1).Address(False, False)
+    divAdd = ActiveCell.Offset(2, 1).Address(False, False)
+    
+    ActiveSheet.Cells(17, 3).Formula = "=" & yrAdd
+    ActiveSheet.Cells(17, 3).Select
+    ActiveCell.Copy
+    Do Until ActiveCell.Offset(15, 0).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    ActiveCell.End(xlToLeft).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.Formula = "=" & divAdd & "/$D$14"
+    ActiveCell.Copy
+    
+    Do Until ActiveCell.Offset(-1, 0).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    Range(ActiveCell.Address, ActiveCell.End(xlToLeft).Address).NumberFormat = "0%"
+    
+    Sheets("Revenue").Select
+    Sheets("Revenue").Copy Before:=Sheets(2)
+    Sheets("Revenue (2)").Select
+    Sheets("Revenue (2)").name = "Cost"
+    Range("A30").Select
+    ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+        "Sum of     Total Contract Revenue").Orientation = xlHidden
+    ActiveSheet.PivotTables("PivotTable1").AddDataField ActiveSheet.PivotTables( _
+        "PivotTable1").PivotFields("Total SWO cost"), "Count of Total SWO cost", _
+        xlCount
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
+        "Count of Total SWO cost")
+        .Caption = "Sum of Total SWO cost"
+        .Function = xlSum
+    End With
+    ActiveSheet.UsedRange.Find(what:="Count of [C,S] Reference Equipment", lookat:=xlWhole).Select
+    pvtTblName = ActiveCell.PivotTable.name
+    Dim fstNewAdd As String
+    fstNewAdd = ActiveCell.Address
+    
+    ActiveSheet.PivotTables(pvtTblName).AddDataField ActiveSheet.PivotTables( _
+        pvtTblName).PivotFields("Total SWO cost"), "Count of Total SWO cost", _
+        xlCount
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "Count of Total SWO cost")
+        .Caption = "Sum of Total SWO cost"
+        .Function = xlSum
+    End With
+    ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+        "Count of [C,S] Reference Equipment").Orientation = xlHidden
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields("Fiscal Year/Period")
+        .Orientation = xlColumnField
+        .Position = 1
+    End With
+    
+    ActiveSheet.Cells(7, 1).Value = "ASP"
+    ActiveSheet.Cells(8, 1).Value = "55000"
+    Range(fstNewAdd).Select
+    Dim fstCostIbCountAdd As String
+    Dim lstCostIbCountAdd As String
+    
+    fstCostIbCountAdd = ActiveCell.Offset(1, 0).Address(False, False)
+    ActiveCell.End(xlToLeft).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 1).Select
+    lstCostIbCountAdd = ActiveCell.Address(False, False)
+    
+    Cells(14, 3).Select
+    ActiveCell.Formula = "=IFERROR(Count(" & fstCostIbCountAdd & ":" & lstCostIbCountAdd & ")*$A$8,)"
+    ActiveCell.Copy
+    Do Until ActiveCell.Offset(3, 0).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    ActiveSheet.UsedRange.Find(what:="Sum of Total SWO cost", lookat:=xlWhole).Select
+    Dim fstCostAdd As String
+    fstCostAdd = ActiveCell.Offset(2, 1).Address(False, False)
+    ActiveSheet.Cells(18, 3).Select
+    ActiveCell.Formula = "=IFERROR(" & fstCostAdd & "/" & ActiveCell.Offset(-4, 0).Address(False, False) & ",)"
+    ActiveCell.Copy
+    
+    Do Until ActiveCell.Offset(-1, 1).Value = ""
+     ActiveCell.Offset(0, 1).Select
+     ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+        
+    ActiveSheet.Cells(20, 3).Value = "Cumm. IB"
+    ActiveSheet.Cells(21, 3).Select
+    ActiveCell.Formula = "=" & ActiveSheet.Cells(14, 3).Address(False, False)
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.Formula = "=" & ActiveSheet.Cells(14, 4).Address(False, False) & "/" & ActiveCell.Offset(0, -1).Address(False, False)
+    ActiveCell.Copy
+    Do Until ActiveCell.Offset(-3, 1).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    ActiveSheet.Cells(23, 3).Value = "Cumm. Diffusion Rate"
+    ActiveSheet.Cells(24, 3).Select
+    ActiveCell.Formula = "=" & fstCostAdd & "/" & ActiveSheet.Cells(21, 3).Address(False, False)
+    
+    ActiveCell.Copy
+    Do Until ActiveCell.Offset(-3, 1).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+        
+    Range(ActiveCell.Address, ActiveCell.End(xlToLeft).Address).NumberFormat = "0%"
+ActiveWorkbook.Sheets("Data").Delete
+
 End Sub
