@@ -83,7 +83,7 @@ Private Sub exportLines(exportPath As String, component As VBComponent)
     fileName = exportPath & "\" & component.name & extension
     Debug.Print "exporting " & component.name & extension
     'component.Export exportPath & "\" & component.name & extension
-    Dim FSO As New Scripting.FileSystemObject
+    Dim FSO As New scripting.FileSystemObject
     Dim outStream As TextStream
     Set outStream = FSO.CreateTextFile(fileName, True, False)
     outStream.Write (component.CodeModule.Lines(1, component.CodeModule.CountOfLines))
@@ -148,7 +148,7 @@ strVar = objUserEnvVars.Item("Dashboard_Automation")
         Exit Function
     End If
 
-    Dim FSO As New Scripting.FileSystemObject
+    Dim FSO As New scripting.FileSystemObject
     Dim projDir As String
     projDir = strVar
     

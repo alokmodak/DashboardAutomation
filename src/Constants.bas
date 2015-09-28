@@ -39,4 +39,5 @@ Public Const mamoSysCode5 = "714248"
 
 Public Const optaSysCode1 = "712301"
 Public Const optaSysCode2 = "704301"
+Public Const alluraSysCode = "723003"
 
