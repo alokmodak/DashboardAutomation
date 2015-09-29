@@ -101,7 +101,7 @@ startTime = second(Now())
             
     ElseIf Sheet1.chkCTS.value = True Then
     
-    
+        Call CTS_Error_Messagebox
         Call createPivotTableAggregatedKPIMaster
         Call createPivotTableAggregatedDataKPIALL
         Call CRRateCalculationNew

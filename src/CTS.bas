@@ -90,7 +90,6 @@ Dim lastRow As Integer
 
     CTSProductName = Sheet1.comb6NC1.value
     dateValue = Sheet1.combYear.value
-   ' prdNameFile = KPISheetName & "_" & dateValue
     prdNameFile = KPISheetName
 
 'Open input file-Aggregated Data File
@@ -130,9 +129,9 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
         
     Next sh
 
-
 'Filter the Buildingblocks Aggregated data and delete the Buildingblocks Aggregated data
-    Sheets("Aggr. SWO Data CV").Activate
+ActiveWorkbook.Sheets(2).Activate
+AggrDataShtName = ActiveSheet.name
     Dim l As Long
     l = Application.WorksheetFunction.Match("BuildingBlock", Range("2:2"), 0)
     Range("A2").Select
@@ -158,7 +157,7 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
     Selection.UnMerge
    DataBrekUpFrPivotKPIALL
        Dim Part12NCClmn As Range
-       Set Part12NCClmn = Sheets("Aggr. SWO Data CV").rows(2).Find("Part12NC", , , xlWhole, , , , False)
+       Set Part12NCClmn = Sheets(AggrDataShtName).rows(2).Find("Part12NC", , , xlWhole, , , , False)
     
       If Not Part12NCClmn Is Nothing Then
         Application.ScreenUpdating = False
@@ -167,7 +166,7 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
       End If
         
        Dim ttlCalls As Range
-       Set ttlCalls = Sheets("Aggr. SWO Data CV").rows(2).Find("Total Calls (#)", , , xlWhole, , , , False)
+       Set ttlCalls = Sheets(AggrDataShtName).rows(2).Find("Total Calls (#)", , , xlWhole, , , , False)
     
       If Not ttlCalls Is Nothing Then
         Application.ScreenUpdating = False
@@ -176,7 +175,7 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
       End If
         
        Dim AvgMTTRprCallHrs As Range
-       Set AvgMTTRprCallHrs = Sheets("Aggr. SWO Data CV").rows(2).Find("Avg. MTTR/Call (hrs)", , , xlWhole, , , , False)
+       Set AvgMTTRprCallHrs = Sheets(AggrDataShtName).rows(2).Find("Avg. MTTR/Call (hrs)", , , xlWhole, , , , False)
     
       If Not AvgMTTRprCallHrs Is Nothing Then
         Application.ScreenUpdating = False
@@ -185,7 +184,7 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
       End If
             
        Dim visitsprCallNP As Range
-       Set visitsprCallNP = Sheets("Aggr. SWO Data CV").rows(2).Find("# of calls with 1 visit", , , xlWhole, , , , False)
+       Set visitsprCallNP = Sheets(AggrDataShtName).rows(2).Find("# of calls with 1 visit", , , xlWhole, , , , False)
     
       If Not visitsprCallNP Is Nothing Then
         Application.ScreenUpdating = False
@@ -194,7 +193,7 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
       End If
       
        Dim visitsprCallP As Range
-       Set visitsprCallP = Sheets("Aggr. SWO Data CV").rows(2).Find("Calls = 0 Visit", , , xlWhole, , , , False)
+       Set visitsprCallP = Sheets(AggrDataShtName).rows(2).Find("Calls = 0 Visit", , , xlWhole, , , , False)
     
       If Not visitsprCallP Is Nothing Then
         Application.ScreenUpdating = False
@@ -205,7 +204,7 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
 'Add one column for "Total Cost of Parts & Non-Parts"
 
   Dim found As Range
-  Set found = Sheets("Aggr. SWO Data CV").rows(2).Find("Total Costs/part (EUR)", , , xlWhole, , , , False)
+  Set found = Sheets(AggrDataShtName).rows(2).Find("Total Costs/part (EUR)", , , xlWhole, , , , False)
     
     If Not found Is Nothing Then
         Application.ScreenUpdating = False
@@ -213,8 +212,7 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
   
   End If
   
-        Workbooks(myPvtWorkBook).Sheets("Aggr. SWO Data CV").Activate
-      ' ActiveSheet.ClearAllFilters
+        Workbooks(myPvtWorkBook).Sheets(AggrDataShtName).Activate
 
         found.End(xlDown).Select
         ActiveCell.Offset(0, 1).Select
@@ -225,47 +223,47 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
    
         ActiveCell.Offset(, 0).Formula = "=IFERROR(IF(" & Part12NcClmnAdd & Chr(61) & Chr(34) & "Parts Aggregated" & Chr(34) & ",(" & ttlCallsAdd & "*" & AvgMTTRprCallHrsAdd & "*" & 100 & ")+(" & visitsprCallPAdd & "*" & 200 & ")," & "IF(" & Part12NcClmnAdd & Chr(61) & Chr(34) & "Non-Parts Aggregated" & Chr(34) & ",(" & ttlCallsAdd & "*" & AvgMTTRprCallHrsAdd & "*" & 100 & ")+(" & visitsprCallNPAdd & "*" & 200 & "))),0)"
       
-      Range(ttlCstAdd).Select
-      Selection.Copy
-      Range(ttlCstAdd, ttlCstLstAdd).PasteSpecial xlPasteFormulas
-      Range(ttlCstAdd, ttlCstLstAdd).Select
-      Selection.Copy
-      Range(ttlCstAdd, ttlCstLstAdd).PasteSpecial xlPasteValues
+        Range(ttlCstAdd).Select
+        Selection.Copy
+        Range(ttlCstAdd, ttlCstLstAdd).PasteSpecial xlPasteFormulas
+        Range(ttlCstAdd, ttlCstLstAdd).Select
+        Selection.Copy
+        Range(ttlCstAdd, ttlCstLstAdd).PasteSpecial xlPasteValues
       
-    ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
-    Cells(1, 1).Select
-    ActiveCell.EntireRow.Select
-    Selection.Delete
-    Columns("A:A").Select
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    Range("A2").Select
-    ActiveCell.FormulaR1C1 = "=MID(RC[1],1,4)&""-""&MID(RC[1],5,2)"
-    Range("A2").Select
-    fstAdd = ActiveCell.Address
-    ActiveCell.Offset(0, 1).Select
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, -1).Select
-    lstAdd = ActiveCell.Address
-    Range("A2").Select
-    Selection.Copy
-    Range(fstAdd, lstAdd).Select
-    Selection.PasteSpecial Paste:=xlPasteFormulas, Operation:=xlNone, SkipBlanks _
+        ActiveWorkbook.Sheets(AggrDataShtName).Activate
+        Cells(1, 1).Select
+        ActiveCell.EntireRow.Select
+        Selection.Delete
+        Columns("A:A").Select
+        Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+        Range("A2").Select
+        ActiveCell.FormulaR1C1 = "=MID(RC[1],1,4)&""-""&MID(RC[1],5,2)"
+        Range("A2").Select
+        fstAdd = ActiveCell.Address
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.End(xlDown).Select
+        ActiveCell.Offset(0, -1).Select
+        lstAdd = ActiveCell.Address
+        Range("A2").Select
+        Selection.Copy
+        Range(fstAdd, lstAdd).Select
+        Selection.PasteSpecial Paste:=xlPasteFormulas, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
         Calculate
-    Range(fstAdd, lstAdd).Select
-    Selection.Copy
-    Range("A2").Select
-    Selection.PasteSpecial Paste:=xlPasteFormulas, Operation:=xlNone, SkipBlanks _
+        Range(fstAdd, lstAdd).Select
+        Selection.Copy
+        Range("A2").Select
+        Selection.PasteSpecial Paste:=xlPasteFormulas, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
-    Range("B1").Select
-    Application.CutCopyMode = False
-    Selection.Copy
-    Range("A1").Select
-    ActiveSheet.Paste
-    Range("A1").value = "Period"
-    Application.CutCopyMode = False
-    Range("B1").Select
-    ActiveCell.FormulaR1C1 = "Period1"
+        Range("B1").Select
+        Application.CutCopyMode = False
+        Selection.Copy
+        Range("A1").Select
+        ActiveSheet.Paste
+        Range("A1").value = "Period"
+        Application.CutCopyMode = False
+        Range("B1").Select
+        ActiveCell.FormulaR1C1 = "Period1"
     
 'Delete Pivot tables from aggregated Data file if any
     For Each xWs In Application.ActiveWorkbook.Worksheets
@@ -282,70 +280,53 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
         If Application.WorksheetFunction.CountA(sh.Cells) = 0 Then sh.Delete
         
     Next sh
-         
-     'DataBrekUpFrPivotKPIALL
-     
-     'Add a new sheet to create a Pivot Table
+    
+'Add a new sheet to create a Pivot Table
         Sheets.Add After:=Worksheets(Worksheets.Count)
-
         Set wsPtTable = Worksheets(Sheets.Count)
-
-        'Set wsPtTable = Worksheets(3)
         wsptName = wsPtTable.name
         Sheets(wsptName).Activate
         ActiveSheet.Cells(1, 1).Select
         fstadd1 = ActiveCell.Address(ReferenceStyle:=xlR1C1)
-        ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
-
-        Set wsData = Worksheets("Aggr. SWO Data CV")
-        Worksheets("Aggr. SWO Data CV").Activate
+        ActiveWorkbook.Sheets(AggrDataShtName).Activate
+        Set wsData = Worksheets(AggrDataShtName)
+        Worksheets(AggrDataShtName).Activate
         sourceSheet = ActiveSheet.name
-        
         Cells(1, 1).Select
-        
         fstAdd = ActiveCell.Address(ReferenceStyle:=xlR1C1)
         ActiveCell.End(xlDown).Select
         ActiveCell.End(xlToRight).Select
-
         lstAdd = ActiveCell.Address(ReferenceStyle:=xlR1C1)
-        
         Sheets(wsptName).Activate
         rngData = fstAdd & ":" & lstAdd
         ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
         sourceSheet & "!" & rngData, Version:=xlPivotTableVersion15).CreatePivotTable _
         TableDestination:=wsptName & "!" & fstadd1, TableName:="PivotTable1", DefaultVersion _
         :=xlPivotTableVersion15
-        
         Range(fstAdd).Select
         ActiveCell.PivotTable.name = "pvtKPIALL"
         wsPtTable.Activate
-        
         Set pt = wsPtTable.PivotTables("pvtKPIALL")
         Set pf = pt.PivotFields("Period")
         pf.Orientation = xlPageField
         pf.Position = 1
-        
         Set pf = pt.PivotFields("SubSystem")
         pf.Orientation = xlRowField
         pf.Position = 1
         Set pf = pt.PivotFields("BuildingBlock")
         pf.Orientation = xlRowField
         pf.Position = 2
-     
         Set pf = pt.PivotFields("Part12NC-Sub Parts")
         pf.Orientation = xlRowField
         pf.Position = 3
-        
         Set pf = pt.PivotFields("PartDescription")
         pf.Orientation = xlRowField
         pf.Position = 4
-        
         Set pf = pt.PivotFields("Part12NC")
         pf.Orientation = xlColumnField
         pf.Position = 1
         ActiveSheet.PivotTables("pvtKPIALL").AddDataField ActiveSheet.PivotTables( _
         "pvtKPIALL").PivotFields("Total Calls (#)"), "# of Calls", xlSum
-        
         ActiveSheet.PivotTables("pvtKPIALL").CalculatedFields.Add _
         "Avg. MTTR/Call (hrs)/12", "='Avg. MTTR/Call (hrs)' /12", True
         ActiveSheet.PivotTables("pvtKPIALL").PivotFields("Avg. MTTR/Call (hrs)/12"). _
@@ -370,13 +351,6 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
         With ActiveSheet.PivotTables("pvtKPIALL").PivotFields("#Avg. ETTR (days)/12")
             .NumberFormat = "0.00"
         End With
-        
-        'ActiveSheet.PivotTables("pvtKPIALL").AddDataField ActiveSheet.PivotTables( _
-        '"pvtKPIALL").PivotFields("Avg. MTTR/Call (hrs)"), "MTTR/Call (hrs)", xlSum
-    
-        'ActiveSheet.PivotTables("pvtKPIALL").AddDataField ActiveSheet.PivotTables( _
-        '"pvtKPIALL").PivotFields("Avg. ETTR (days)"), "ETTR (days)", xlSum
-    
         ActiveSheet.PivotTables("pvtKPIALL").AddDataField ActiveSheet.PivotTables( _
         "pvtKPIALL").PivotFields("Avg. Visits/call (#)"), "Visits/call (#)", xlAverage
         With ActiveSheet.PivotTables("pvtKPIALL").PivotFields("Visits/call (#)")
@@ -431,8 +405,8 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
     Set pvtTbl = ActiveSheet.PivotTables("pvtKPIALL")
     Set pf = pvtTbl.PivotFields("Part12NC")
 
-        pf.ClearAllFilters
-        pf.EnableMultiplePageItems = True
+    pf.ClearAllFilters
+    pf.EnableMultiplePageItems = True
     
     ActiveSheet.PivotTables("pvtKPIALL").HasAutoFormat = False
     ActiveSheet.PivotTables("pvtKPIALL").PivotSelect "", xlDataAndLabel, True
@@ -454,23 +428,22 @@ Application.Workbooks(inputFileGlobal).Windows(1).Visible = True
     fixedDate = Sheet1.combYear.value
     pvtDate = Format(fixedDate, "yyyy" & "-" & "mm")
    
-endDate1 = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
-endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
-Set pvtTbl = ActiveSheet.PivotTables("pvtKPIALL")
-Set pf = pvtTbl.PivotFields("Period")
-pf.ClearAllFilters
-With ActiveSheet.PivotTables("pvtKPIALL")
+    endDate1 = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
+    Set pvtTbl = ActiveSheet.PivotTables("pvtKPIALL")
+    Set pf = pvtTbl.PivotFields("Period")
+    pf.ClearAllFilters
+    With ActiveSheet.PivotTables("pvtKPIALL")
         .ColumnGrand = True
         .RowGrand = False
     End With
-   ' pvtTbl.RefreshTable
-For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-    If pvtItm < endDate Or pvtItm > fixedDate Then
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > fixedDate Then
             pvtItm.Visible = False
-    Else
+        Else
             pvtItm.Visible = True
-    End If
-Next pvtItm
+        End If
+    Next pvtItm
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("SubSystem").ShowDetail = True
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").ShowDetail = _
         True
@@ -543,7 +516,6 @@ Next pvtItm
         .Color = 2668287
         .TintAndShade = 0
     End With
-    
 
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").ShowDetail = _
         False
@@ -575,7 +547,6 @@ Next pvtItm
         .Color = 13012579
         .TintAndShade = 0
     End With
-    
     
     Range("F6").Select
     fstAdd = ActiveCell.Address
@@ -621,9 +592,8 @@ Next pvtItm
         True
    
 'Add conditional formatting on MTTR and ETTR Calls
-
     
-     Range("G6").Select
+    Range("G6").Select
     fstAdd = ActiveCell.Address
     ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
     ActiveCell.Offset(0, 6).Select
@@ -660,7 +630,6 @@ Next pvtItm
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    
     
     Range("I6").Select
     fstAdd = ActiveCell.Address
@@ -723,7 +692,6 @@ Next pvtItm
     End With
     Selection.FormatConditions(1).StopIfTrue = False
     
-    
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").ShowDetail = _
         False
    
@@ -746,7 +714,6 @@ Next pvtItm
     End With
     Selection.FormatConditions(1).StopIfTrue = False
     
-    
     Range("H6").Select
     fstAdd = ActiveCell.Address
     ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
@@ -764,7 +731,6 @@ Next pvtItm
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    
     
     Range("I6").Select
     fstAdd = ActiveCell.Address
@@ -828,7 +794,6 @@ Next pvtItm
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    
         
     Columns("E:P").Select
     With Selection
@@ -908,7 +873,7 @@ Next pvtItm
     End With
     Selection.Merge
     
-    'Open Output file CTS_KPI_Summary.xlsx
+'Open Output file CTS_KPI_Summary.xlsx
     outputFileGlobal = "CTS_KPI_Summary.xlsx"
     If Sheet1.rdbLocalDrive.value = True Then
         outputPath = ThisWorkbook.Path & "\" & outputFileGlobal
@@ -943,7 +908,7 @@ Next pvtItm
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("Part12NC-Sub Parts").EnableMultiplePageItems _
         = True
     
-    'Add Headings to DashBoard
+'Add Headings to DashBoard
     
     Range("A2").Select
     ActiveCell.FormulaR1C1 = "KPI-All Dash Board for " & KPISheetName
@@ -974,40 +939,42 @@ Next pvtItm
      rows("2:2").Select
     Selection.RowHeight = 25
     Range("A2").Select
+    Workbooks(myWorkBook).Activate
+    ActiveWorkbook.Save
     Workbooks(myPvtWorkBook).Close
-    Workbooks(myWorkBook).Save
   
   Application.ScreenUpdating = False
   Application.DisplayAlerts = False
+  
 End Sub
 Sub DataBrekUpFrPivotKPIALL()
-Application.ScreenUpdating = False
-Application.DisplayAlerts = False
-Sheets("Aggr. SWO Data CV").Select
-
-Cells(2, 1).Select
-Selection.EntireRow.Select
-Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
-Selection.Offset(0, 1).Select
-Selection.EntireColumn.Select
-Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-Cells(2, 1).Select
-Selection.EntireRow.Select
-Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
-Selection.Offset(0, 1).Select
-ActiveCell.value = "Part12NC-Sub Parts"
-
-Application.CutCopyMode = False
-ActiveCell.Offset(1, 0).Select
-fstAdd = ActiveCell.Address
-ActiveCell.Offset(0, -1).Select
-ActiveCell.End(xlDown).Select
-ActiveCell.Offset(0, 1).Select
-lstAdd = ActiveCell.Address
-Cells(2, 1).Select
-Selection.EntireRow.Select
-Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
-Selection.Offset(1, 1).Select
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
+    Sheets(AggrDataShtName).Select
+    Cells(2, 1).Select
+    Selection.EntireRow.Select
+    Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
+    Selection.Offset(0, 1).Select
+    Selection.EntireColumn.Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Cells(2, 1).Select
+    Selection.EntireRow.Select
+    Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
+    Selection.Offset(0, 1).Select
+    ActiveCell.value = "Part12NC-Sub Parts"
+    Application.CutCopyMode = False
+    ActiveCell.Offset(1, 0).Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.Offset(0, -1).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 1).Select
+    lstAdd = ActiveCell.Address
+    Cells(2, 1).Select
+    Selection.EntireRow.Select
+    Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
+    Selection.Offset(1, 1).Select
     ActiveCell.FormulaR1C1 = _
         "=IF(OR(RC[-1]=""All Aggregated"",RC[-1]=""Parts Aggregated"",RC[-1]=""Non-Parts Aggregated""),""-"",RC[-1])"
     Selection.AutoFill Destination:=Range(fstAdd, lstAdd)
@@ -1024,27 +991,27 @@ Selection.Offset(1, 1).Select
     Selection.Find(what:="Part12NC-Sub Parts", lookat:=xlWhole).Select
     Selection.Offset(1, 0).Select
     Do Until ActiveCell.value = ""
-    If ActiveCell.value = "-" Then
-    ActiveCell.Offset(1, 0).Select
-    Else
-    ActiveCell.Offset(0, -1).value = ActiveCell.Offset(-1, -1).value
-    ActiveCell.Offset(1, 0).Select
-    End If
+        If ActiveCell.value = "-" Then
+            ActiveCell.Offset(1, 0).Select
+        Else
+            ActiveCell.Offset(0, -1).value = ActiveCell.Offset(-1, -1).value
+            ActiveCell.Offset(1, 0).Select
+        End If
     Loop
     ActiveCell.Offset(0, 1).Select
     If ActiveCell.value = 0 Then
-    Range(Selection, Selection.End(xlDown)).Select
-    Selection.ClearContents
+        Range(Selection, Selection.End(xlDown)).Select
+        Selection.ClearContents
     End If
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
+    
 End Sub
 Public Sub CRRateCalculationNew()
 Dim fixedDate, myPath, CTSExcel, CTSWorkBook, pvtExcel, myPvtWorkBook As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
 Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
 Call IBPivotTable
-'Application.ScreenUpdating = False
 'Case select for sheet tab
     KPISheetName = Sheet1.comb6NC1.value
 
@@ -1140,7 +1107,8 @@ Call IBPivotTable
     CTSProductName = KPISheetName
     
     Workbooks(myPvtWorkBook).Activate
-    ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
     Cells(1, 1).Select
     ActiveCell.EntireRow.Select
     Selection.Delete
@@ -1174,9 +1142,6 @@ Call IBPivotTable
     Range("B1").Select
     ActiveCell.FormulaR1C1 = "Period1"
     Workbooks("CTS_KPI_Summary.xlsx").Activate
-    'outPutFilePath = ThisWorkbook.Path & "\"
-    'installFlName = outPutFilePath & "CTS_KPI_Summary.xlsx"
-    'Application.Workbooks.Open (installFlName), False 'false to disable link update message
     myWorkBook = ActiveWorkbook.name
     Sheets("KPI-All").Select
     
@@ -1257,25 +1222,15 @@ Call IBPivotTable
     ActiveCell.FormulaR1C1 = "All Systems"
     Range("B3").Select
     ActiveCell.FormulaR1C1 = "All Blocks"
-    
-   ' myPath = ThisWorkbook.Path
-    'CTSExcel = myPath & "\" & Dir(myPath & "\" & "CTS_Guidelines.xlsx")  'input file path
-    'Application.Workbooks.Open (CTSExcel), False
-    
-    'CTSWorkBook = ActiveWorkbook.name
-    'Workbooks(CTSWorkBook).Activate
     Sheets("Designed Data").Activate
     Sheets("Designed Data").UsedRange.Find(what:="CR / Sys / Yr", lookat:=xlWhole).Select
 
     Selection.EntireColumn.Select
     Selection.Copy
     Sheets("CR").Activate
-   ' Windows(myWorkBook).Activate
     Range("C1").Select
     ActiveSheet.Paste
     Application.CutCopyMode = False
-    'Workbooks(CTSWorkBook).Close
-    'Windows(myWorkBook).Activate
     Sheets("CR").Activate
     Columns("A:A").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
@@ -1555,9 +1510,9 @@ Call IBPivotTable
     ActiveCell.value = "Current Year CR/Sys"
     Range("R2").Select
     Do Until frmEndDate = frmtData
-    ActiveCell.value = frmEndDate
-    ActiveCell.Offset(0, 1).Select
-    frmEndDate = Format(DateAdd("m", 1, frmEndDate), "mmm" & "-" & "yyyy")
+        ActiveCell.value = frmEndDate
+        ActiveCell.Offset(0, 1).Select
+        frmEndDate = Format(DateAdd("m", 1, frmEndDate), "mmm" & "-" & "yyyy")
     Loop
 
     Range("A1").Select
@@ -1629,8 +1584,7 @@ Call IBPivotTable
     Set pvtTbl = Worksheets("CR").PivotTables("pvtCR")
     fixedDate = Sheet1.combYear.value
     
-    '======================================================================
-    
+'======================================================================
     
 'Enter 12 month's data in column "Call/Sys/Month" after "crossover Trigger"
     fixedDate = Sheet1.combYear.value
@@ -1675,15 +1629,13 @@ Call IBPivotTable
     ActiveSheet.PivotTables("pvtIB").PivotFields("Period").EnableMultiplePageItems _
         = False
     ActiveSheet.PivotTables("pvtIB").PivotFields("Period").CurrentPage = "(All)"
-   
             
             Sheets("IB").PivotTables("pvtIB").PivotFields("Period").CurrentPage = abc
             ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
         
             IBVal = ActiveCell.Offset(0, 1).value
-            
     
-         Sheets("CR").Select
+            Sheets("CR").Select
             If i <= 29 Then
                 For X = myRow To lr
                     On Error Resume Next
@@ -1697,7 +1649,6 @@ Call IBPivotTable
         End If
       
     Next pvtItm
-    
     
     Range("D3").Select
     ActiveCell.Offset(1, 2).Select
@@ -1717,42 +1668,37 @@ Call IBPivotTable
         ReplaceFormat:=False
     Selection.NumberFormat = "0.0000"
     
-    
-    
-    
-    '===========================================================================
-    'IB = 2047
+'===========================================================================
 'Calculate ITM i.e. CR Value for the same motnh in the same year as inPut given from user
-ActiveSheet.UsedRange.Find(what:="CR/Sys/Yr", lookat:=xlWhole).Select
-ActiveCell.Offset(2, 1).Select
-fstAdd = ActiveCell.Address
-ActiveCell.Formula = "=(" & "AC" & sumMidAdd & ")"
-Range(fstAdd).Select
-Selection.Copy
-Range("" & "I" & sumMidAdd & ":" & "I" & sumMidAdd1 & "").PasteSpecial xlPasteFormulas
-Selection.NumberFormat = "0.0000"
-    
+    ActiveSheet.UsedRange.Find(what:="CR/Sys/Yr", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 1).Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.Formula = "=(" & "AC" & sumMidAdd & ")"
+    Range(fstAdd).Select
+    Selection.Copy
+    Range("" & "I" & sumMidAdd & ":" & "I" & sumMidAdd1 & "").PasteSpecial xlPasteFormulas
+    Selection.NumberFormat = "0.0000"
              
 'Calculate IMQ i.e. CR data for the quarter in the current year's Month (3 months before the input Date provided by user)
 
-ActiveSheet.UsedRange.Find(what:="CR/Sys/Yr", lookat:=xlWhole).Select
-ActiveCell.Offset(2, 2).Select
-fstAdd = ActiveCell.Address
-ActiveCell.Formula = "=SUM(" & "AC" & sumMidAdd & ":" & "AA" & sumMidAdd & ")/3"
-Range(fstAdd).Select
-Selection.Copy
-Range("" & "J" & sumMidAdd & ":" & "J" & sumMidAdd1 & "").PasteSpecial xlPasteFormulas
-Selection.NumberFormat = "0.0000"
+    ActiveSheet.UsedRange.Find(what:="CR/Sys/Yr", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 2).Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.Formula = "=SUM(" & "AC" & sumMidAdd & ":" & "AA" & sumMidAdd & ")/3"
+    Range(fstAdd).Select
+    Selection.Copy
+    Range("" & "J" & sumMidAdd & ":" & "J" & sumMidAdd1 & "").PasteSpecial xlPasteFormulas
+    Selection.NumberFormat = "0.0000"
 
 'Calculate MAT i.e. CR data for the last 12 months from the input date provided by user
-ActiveSheet.UsedRange.Find(what:="CR/Sys/Yr", lookat:=xlWhole).Select
-ActiveCell.Offset(2, 4).Select
-fstAdd = ActiveCell.Address
-ActiveCell.Formula = "=SUM(" & "AC" & sumMidAdd & ":" & "R" & sumMidAdd & ")/12"
-Range(fstAdd).Select
-Selection.Copy
-Range("" & "l" & sumMidAdd & ":" & "l" & sumMidAdd1 & "").PasteSpecial xlPasteFormulas
-Selection.NumberFormat = "0.0000"
+    ActiveSheet.UsedRange.Find(what:="CR/Sys/Yr", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 4).Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.Formula = "=SUM(" & "AC" & sumMidAdd & ":" & "R" & sumMidAdd & ")/12"
+    Range(fstAdd).Select
+    Selection.Copy
+    Range("" & "l" & sumMidAdd & ":" & "l" & sumMidAdd1 & "").PasteSpecial xlPasteFormulas
+    Selection.NumberFormat = "0.0000"
 
 'calculate ITM for the same month in the previous year of of the input year provided by the user
     currentdate = Format(Now(), "yyyymm")
@@ -1776,23 +1722,19 @@ Selection.NumberFormat = "0.0000"
     Next
     Sheets("IB").Select
     Sheets("IB").PivotTables("pvtIB").PivotFields("Period").CurrentPage = "(All)"
-    
-            pf.CurrentPage = pvtItm.Caption
-            pvtItmName = pvtItm.Caption
-            ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
-            IBVal = ActiveCell.Offset(0, 1).value
- 
-       
-    
+    pf.CurrentPage = pvtItm.Caption
+    pvtItmName = pvtItm.Caption
+    ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
+    IBVal = ActiveCell.Offset(0, 1).value
     Sheets("CR").Select
-        lr = Worksheets("CR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
+    lr = Worksheets("CR").Cells(rows.Count, "C").End(xlUp).Row
+    Range("AE3").Select
+    fstAdd = ActiveCell.Address(False, False)
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 5).Select
+    lstAdd = ActiveCell.Address(False, False)
+    Range(fstAdd, lstAdd).Select
+    rng = Range(fstAdd, lstAdd)
             
         For X = 3 To lr
             On Error Resume Next
@@ -1819,8 +1761,8 @@ Selection.NumberFormat = "0.0000"
             pvtItm.Visible = False
  
         End If
-           'pvtItmName = pvtItm.value
     Next
+    
     Sheets("IB").Select
     Sheets("IB").PivotTables("pvtIB").PivotFields("Period").CurrentPage = "(All)"
     For Each pvtItm In Sheets("IB").PivotTables("pvtIB").PivotFields("Period").PivotItems
@@ -1834,9 +1776,8 @@ Selection.NumberFormat = "0.0000"
         ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
             IBVal = ActiveCell.Offset(0, 1).value
  
-        
-        'pvtItmName = pvtItm.value
     Next
+    
     Sheets("CR").Select
     If pvtItmName = prvsIMQ Or pvtItmName = previousMonth Or pvtItmName = qMnth Then
 
@@ -1856,6 +1797,7 @@ Selection.NumberFormat = "0.0000"
         Next X
     Else
     End If
+
 'Calculate MAT for the Previous year
 
     currentdate = Format(Now(), "yyyymm")
@@ -1875,7 +1817,6 @@ Selection.NumberFormat = "0.0000"
             pvtItm.Visible = True
             pvtItmName = pvtItm.value
         End If
-            'pvtItmName = pvtItm.value
     Next pvtItm
     Sheets("IB").Select
     Sheets("IB").PivotTables("pvtIB").PivotFields("Period").CurrentPage = "(All)"
@@ -1888,10 +1829,8 @@ Selection.NumberFormat = "0.0000"
         End If
         ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
         IBVal = ActiveCell.Offset(0, 1).value
- 
-        
-        'pvtItmName = pvtItm.value
     Next
+    
     Sheets("CR").Select
     If ActiveSheet.PivotTables("pvtCR").PivotItem = endDate Or ActiveSheet.PivotTables("pvtCR").PivotItem = startDate Then
 
@@ -1911,6 +1850,7 @@ Selection.NumberFormat = "0.0000"
         Next X
     Else
     End If
+
 'Calculate YTD for the selected year i.e. from January to the selected month for the year
 
     currentdate = Format(Now(), "yyyymm")
@@ -1920,7 +1860,7 @@ Selection.NumberFormat = "0.0000"
 
     endDate = Format(DateAdd("m", -EndDateMonth, fixedDate), "yyyy" & "-" & "mm")
    
-     Set pvtTbl = ActiveSheet.PivotTables("pvtCR")
+    Set pvtTbl = ActiveSheet.PivotTables("pvtCR")
     Set pf = pvtTbl.PivotFields("Period")
     pf.ClearAllFilters
     For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
@@ -1931,6 +1871,7 @@ Selection.NumberFormat = "0.0000"
             pvtItmName = pvtItm.Caption
         End If
     Next pvtItm
+    
     Sheets("IB").Select
     Sheets("IB").PivotTables("pvtIB").PivotFields("Period").CurrentPage = "(All)"
     For Each pvtItm In Sheets("IB").PivotTables("pvtIB").PivotFields("Period").PivotItems
@@ -1942,10 +1883,8 @@ Selection.NumberFormat = "0.0000"
         End If
         ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
         IBVal = ActiveCell.Offset(0, 1).value
- 
-        
-        'pvtItmName = pvtItm.value
     Next
+    
     Sheets("CR").Select
     If ActiveSheet.PivotTables("pvtCR").PivotItem = endDate Or ActiveSheet.PivotTables("pvtCR").PivotItem = startDate1 Then
 
@@ -1997,10 +1936,8 @@ Selection.NumberFormat = "0.0000"
         End If
         ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
         IBVal = ActiveCell.Offset(0, 1).value
- 
-        
-        'pvtItmName = pvtItm.value
     Next
+    
     Sheets("CR").Select
     If ActiveSheet.PivotTables("pvtCR").PivotItem = endDate Or ActiveSheet.PivotTables("pvtCR").PivotItem = startDate1 Then
 
@@ -2084,7 +2021,6 @@ Selection.NumberFormat = "0.0000"
     Range("Q3").Select
    ActiveCell.FormulaR1C1 = "=AND(RC[-7]>RC[-6],RC[-12]<RC[-9])"
 
-   ' ActiveCell.FormulaR1C1 = "=RC[-7]>RC[-3]"
     Range("Q3").Select
     Selection.AutoFill Destination:=Range("" & "Q" & sumMidAdd - 1 & ":" & "Q" & sumMidAdd1 & "")
     Range("" & "Q" & sumMidAdd - 1 & ":" & "Q" & sumMidAdd1 & "").Select
@@ -2135,10 +2071,7 @@ Selection.NumberFormat = "0.0000"
     End With
     Selection.FormatConditions(1).StopIfTrue = False
     
-    
-    
-    
-    
+'Highlight crossover Trigger in Red or Orange for true values depending upon 20% largest values
     Sheets("CR").Select
     Sheets("CR").UsedRange.Find(what:="BuildingBlock", lookat:=xlWhole).Select
     ActiveCell.Offset(2, 3).Select
@@ -2177,12 +2110,11 @@ Selection.NumberFormat = "0.0000"
         .TintAndShade = 0
         .PatternTintAndShade = 0
     End With
-'        ActiveCell.Interior.Color = 255
         Else
         With Selection.Interior
         .Pattern = xlSolid
         .PatternColorIndex = xlAutomatic
-        .Color = 26367
+        .Color = 1484526
         .TintAndShade = 0
         .PatternTintAndShade = 0
     End With
@@ -2236,7 +2168,6 @@ Selection.NumberFormat = "0.0000"
     SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
     ReplaceFormat:=False
     Sheets("CR").UsedRange.Find(what:="DataFill", lookat:=xlWhole).Select
-   ' Range("AE3").Select
     fstAdd = ActiveCell.Address(False, False)
     ActiveCell.End(xlDown).Select
     ActiveCell.Offset(0, 6).Select
@@ -2270,10 +2201,10 @@ Selection.NumberFormat = "0.0000"
     Selection.EntireColumn.Select
 
 'Add Heading to DashBoard
- Sheets("CR").Select
-rows("1:1").Select
-Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
-Range("A1").Select
+    Sheets("CR").Select
+    rows("1:1").Select
+    Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
+    Range("A1").Select
     ActiveCell.FormulaR1C1 = "Call Rate Dash Board for " & KPISheetName
     Range("A1:AB1").Select
     With Selection
@@ -2326,9 +2257,10 @@ Range("A1").Select
     Selection.RowHeight = 25
     Range("A1").Select
     Workbooks(myPvtWorkBook).Close
-    Workbooks(myWorkBook).Save
+    Application.Workbooks(myWorkBook).Save
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
+    
 End Sub
 Public Function CRPivotTableNew()
 Dim pt As PivotTable
@@ -2408,9 +2340,7 @@ Dim lastRow As Integer
 
     CTSProductName = Sheet1.comb6NC1.value
     dateValue = Sheet1.combYear.value
-    'prdNameFile = KPISheetName & "_" & dateValue
     prdFileName = KPISheetName
-
 
 'Open input file-Aggregated Data File
 
@@ -2431,7 +2361,8 @@ Dim lastRow As Integer
     myPvtWorkBook = ActiveWorkbook.name
     
     Workbooks(myPvtWorkBook).Activate
-    ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
     Cells(1, 1).Select
     ActiveCell.EntireRow.Select
     Selection.Delete
@@ -2482,7 +2413,7 @@ Dim lastRow As Integer
     Next sh
 
 'Filter the Buildingblocks Aggregated data and delete the Buildingblocks Aggregated data
-    Sheets("Aggr. SWO Data CV").Activate
+    Sheets(AggrDataShtName).Activate
     Cells(1, 1).Select
     fstCellAdd = ActiveCell.Address
     ActiveCell.End(xlToRight).Select
@@ -2500,24 +2431,20 @@ Dim lastRow As Integer
     fstFiltCellAdd1 = ActiveCell.Address
     Range(fstFiltCellAdd1).End(xlToRight).Select
     fstFiltCellAdd2 = ActiveCell.Address
-   ' lastFiltCellAdd = ActiveCell.Address
     Range(fstFiltCellAdd, fstFiltCellAdd2).Select
     Range(fstFiltCellAdd, fstFiltCellAdd2).EntireRow.Delete
     ActiveSheet.ShowAllData
-    
-'Remove the values which are less then 10% of the top value in the Total Calls(#) column
-    
+   
 'Add a new sheet to create a Pivot Table
     Sheets.Add After:=Worksheets(Worksheets.Count)
     Set wsPtTable = Worksheets(Sheets.Count)
-    'Set wsPtTable = Worksheets(3)
     wsptName = wsPtTable.name
     Sheets(wsptName).Activate
     ActiveSheet.Cells(1, 1).Select
     fstadd1 = ActiveCell.Address(ReferenceStyle:=xlR1C1)
-    ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
-    Set wsData = Worksheets("Aggr. SWO Data CV")
-    Worksheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(AggrDataShtName).Activate
+    Set wsData = Worksheets(AggrDataShtName)
+    Worksheets(AggrDataShtName).Activate
     sourceSheet = ActiveSheet.name
     ActiveSheet.Cells(1, 1).Select
     fstAdd = ActiveCell.Address(ReferenceStyle:=xlR1C1)
@@ -2613,9 +2540,8 @@ Dim lastRow As Integer
     Range("AE3").Select
     Selection.AutoFill Destination:=Range("AE3:AE91")
    Application.ScreenUpdating = False
-   ' Application.DisplayAlerts = True
+   
 End Function
-
 Public Sub MTTRRateCalculationNew()
 Dim fixedDate, myPath, CTSExcel, CTSWorkBook, pvtExcel, myPvtWorkBook As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
@@ -2695,29 +2621,15 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             xWs.Range(xpvt.TableRange2.Address).Delete Shift:=xlUp
         Next
     Next
-      fixedDate = Sheet1.combYear.value
-    
-    Workbooks("CTS_KPI_Summary.xlsx").Activate
-    endDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
-    Sheets("IB").Select
-    Set pvtTbl = ActiveSheet.PivotTables("pvtIB")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-    pf.CurrentPage = "(All)"
-        
-    
-            Sheets("IB").Select
-            Sheets("IB").PivotTables("pvtIB").PivotFields("Period").CurrentPage = fixedDate
-            ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
-        
-            IBVal = ActiveCell.Offset(0, 1).value
+      
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
 
     CTSProductName = KPISheetName
     
     Workbooks(myPvtWorkBook).Activate
-    ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
     Cells(1, 1).Select
     ActiveCell.EntireRow.Select
     Selection.Delete
@@ -2751,9 +2663,6 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Range("B1").Select
     ActiveCell.FormulaR1C1 = "Period1"
     Workbooks("CTS_KPI_Summary.xlsx").Activate
-    'outPutFilePath = ThisWorkbook.Path & "\"
-    'installFlName = outPutFilePath & "CTS_KPI_Summary.xlsx"
-   ' Application.Workbooks.Open (installFlName), False 'false to disable link update message
     myWorkBook = ActiveWorkbook.name
     Sheets("KPI-All").Select
     
@@ -2784,12 +2693,16 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     rows("1:1").Select
         
     Sheets("KPI-All").Select
-    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("SubSystem").RepeatLabels = _
-    False
-    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").RepeatLabels _
-    = False
+    ActiveSheet.PivotTables("pvtKPIALL").ClearAllFilters
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").ShowDetail = _
     False
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > fixedDate Then
+            pvtItm.Visible = False
+        Else
+            pvtItm.Visible = True
+        End If
+    Next pvtItm
     pvtTbl.TableRange1.Select
     pvtTbl.TableRange1.Copy
     Sheets("MTTR").Select
@@ -2797,12 +2710,12 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
     :=False, Transpose:=False
     Sheets("KPI-All").Select
-    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("SubSystem").RepeatLabels = _
-    True
-    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").RepeatLabels _
-    = True
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").ShowDetail = _
     True
+    ActiveSheet.PivotTables("pvtKPIALL").ClearAllFilters
+    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("Part12NC-Sub Parts").PivotFilters.Add Type:=xlCaptionEquals, Value1:="-"
+    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("Part12NC-Sub Parts").EnableMultiplePageItems _
+        = True
     Sheets("MTTR").Select
     Range("1:1").Select
     Selection.EntireRow.Delete
@@ -2834,14 +2747,8 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Range("B3").Select
     ActiveCell.FormulaR1C1 = "All Blocks"
     Sheets("Designed Data").Select
-   ' myPath = ThisWorkbook.Path
-    'CTSExcel = myPath & "\" & Dir(myPath & "\" & "CTS_Guidelines.xlsx")  'input file path
-   ' Application.Workbooks.Open (CTSExcel), False
-    
-    'CTSWorkBook = ActiveWorkbook.name
-    'Workbooks(CTSWorkBook).Activate
-   ' Sheets("Shhet2").Activate
-    Sheets("Designed Data").UsedRange.Find(what:="MTTR / Sys / Yr", lookat:=xlWhole).Select
+   Range("A1").Select
+    Sheets("Designed Data").UsedRange.Find(what:="MTTR/ Sys / Yr", lookat:=xlWhole).Select
 
     Selection.EntireColumn.Select
     Selection.Copy
@@ -2850,37 +2757,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Range("C1").Select
     ActiveSheet.Paste
     Application.CutCopyMode = False
-   ' Workbooks(CTSWorkBook).Close
-   ' Windows(myWorkBook).Activate
     Sheets("MTTR").Activate
-    Columns("A:A").Select
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    Range("A2").Select
-    Selection.value = "DataFill"
-    Range("A3").Select
-    
-    ActiveCell.FormulaR1C1 = "=IF(RC[1]="""",R[-1]C,RC[1])"
-    fstAdd = ActiveCell.Address
-    Sheets("MTTR").UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
-    ActiveCell.Offset(0, -1).Select
-    lstAdd = ActiveCell.Address
-    Range(fstAdd).Select
-    
-    Selection.AutoFill Destination:=Range(fstAdd, lstAdd)
-    Range(fstAdd, lstAdd).Select
-    Selection.Copy
-    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
-        :=False, Transpose:=False
-    Sheets("MTTR").UsedRange.Find(what:="SubSystem", lookat:=xlWhole).Select
-    ActiveCell.Offset(1, 0).Select
-    fstAdd = ActiveCell.Address
-    Sheets("MTTR").UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
-    ActiveCell.Offset(0, 2).Select
-    lstAdd = ActiveCell.Address
-    Range(fstAdd, lstAdd).Select
-    Selection.Replace what:="", Replacement:="0", lookat:=xlPart, _
-    SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-    ReplaceFormat:=False
     
     Sheets("MTTR").UsedRange.Find(what:="Designed", lookat:=xlWhole).Select
     ActiveCell.EntireColumn.Select
@@ -2888,29 +2765,14 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     ActiveCell.Offset(2, 0).Select
     fstAdd = ActiveCell.Address
     Sheets("MTTR").UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
-    ActiveCell.Offset(0, 3).Select
+    ActiveCell.Offset(0, 2).Select
     lstAdd = ActiveCell.Address
     Range(fstAdd).Select
-    ActiveCell.FormulaR1C1 = "=RC[-3]&RC[-1]"
+    ActiveCell.FormulaR1C1 = "=RC[-2]&RC[-1]"
     Selection.AutoFill Destination:=ActiveSheet.Range(fstAdd, lstAdd)
     Range(fstAdd, lstAdd).Select
     Calculate
-    Cells(2, 4).value = "SS&BB"
-    Sheets("MTTR").UsedRange.Find(what:="Parts", lookat:=xlWhole).Select
-    ActiveCell.Offset(1, 1).Select
-    CRSysYrFstAdd = ActiveCell.Address
-    ActiveCell.Offset(0, -4).Select
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 4).Select
-    CRSysYrLstAdd = ActiveCell.Address
-    Range(CRSysYrFstAdd).Select
-    ActiveCell.FormulaR1C1 = "=(RC[-1]+RC[-2])/" & IBVal
-    Range(CRSysYrFstAdd).Select
-    Selection.AutoFill Destination:=Range(CRSysYrFstAdd, CRSysYrLstAdd)
-    Range(CRSysYrFstAdd, CRSysYrLstAdd).Select
-    Range(CRSysYrFstAdd, CRSysYrLstAdd).NumberFormat = "0.0000"
-    Calculate
-    Application.CutCopyMode = False
+    Cells(2, 3).value = "SS&BB"
     Sheets("MTTR").UsedRange.Find(what:="Non-Parts", lookat:=xlWhole).Select
     ActiveCell.Offset(2, 0).Select
     nonPartsFstAdd = ActiveCell.Address
@@ -3031,7 +2893,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Sheets("MTTR").UsedRange.Find(what:="Non-Parts", lookat:=xlWhole).Select
     ActiveCell.Offset(-1, 0).Select
     ActiveCell.value = "MAT # of MTTR profiles"
-    Range("F1:H1").Select
+    Range("E1:G1").Select
     With Selection
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlBottom
@@ -3050,30 +2912,17 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     ActiveCell.Offset(0, 1).Select
     ActiveCell.value = "Parts"
     ActiveCell.Offset(0, 1).Select
-    ActiveCell.value = "Avg. MTTR/Sys/Yr"
-    ActiveCell.Offset(1, 0).Select
-    Range(Selection, Selection.End(xlDown)).Select
-    With Selection
-        .HorizontalAlignment = xlCenter
-        .VerticalAlignment = xlBottom
-        .WrapText = True
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
+    ActiveCell.value = "Avg. MTTR/Yr"
     
-    Range("I2").Select
+    Range("H2").Select
     ActiveCell.value = "ITM"
-    Range("J2").Select
+    Range("I2").Select
     ActiveCell.value = "IMQ"
-    Range("K2").Select
+    Range("J2").Select
     ActiveCell.value = "YTD"
-    Range("L2").Select
+    Range("K2").Select
     ActiveCell.value = "MAT"
-    Range("I1:L1").Select
+    Range("H1:K1").Select
     With Selection
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlBottom
@@ -3087,15 +2936,15 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     End With
     Selection.Merge
    
-    Range("M2").Select
+    Range("L2").Select
     ActiveCell.value = "ITM"
-    Range("N2").Select
+    Range("M2").Select
     ActiveCell.value = "IMQ"
-    Range("O2").Select
+    Range("N2").Select
     ActiveCell.value = "YTD"
-    Range("P2").Select
+    Range("O2").Select
     ActiveCell.value = "MAT"
-    Range("M1:P1").Select
+    Range("L1:O1").Select
     With Selection
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlBottom
@@ -3108,11 +2957,11 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
         .MergeCells = False
     End With
     Selection.Merge
-    Range("Q1").Select
+    Range("P1").Select
     ActiveCell.value = "Crossover"
-    Range("Q2").Select
+    Range("P2").Select
     ActiveCell.value = "Trigger"
-    Range("R2").Select
+    Range("Q2").Select
       
     fixedDate1 = Sheet1.combYear.value
     fixDte = Format(fixedDate1, "mmm" & "-" & "yyyy")
@@ -3125,15 +2974,15 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     fnlEndDate = Format(DateAdd("m", 1, endDate1), "mmm" & "-" & "yyyy")
     fnlEndDate1 = Format(endDate2, "mmm" & "-" & "yyyy")
     frmEndDate = Format(fnlEndDate, "mmm" & "-" & "yyyy")
-    Range("M1").Select
+    Range("L1").Select
     ActiveCell.value = "Last Year"
-    Range("I1").Select
-    ActiveCell.value = "Avg. MTTR / Call (Current Month)"
-    Range("R2").Select
+    Range("H1").Select
+    ActiveCell.value = "Avg. MTTR / Call (Current Year)"
+    Range("Q2").Select
     Do Until frmEndDate = frmtData
-    ActiveCell.value = frmEndDate
-    ActiveCell.Offset(0, 1).Select
-    frmEndDate = Format(DateAdd("m", 1, frmEndDate), "mmm" & "-" & "yyyy")
+        ActiveCell.value = frmEndDate
+        ActiveCell.Offset(0, 1).Select
+        frmEndDate = Format(DateAdd("m", 1, frmEndDate), "mmm" & "-" & "yyyy")
     Loop
 
     Range("A1").Select
@@ -3186,7 +3035,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     
     ActiveSheet.UsedRange.Select
     Selection.RowHeight = 15
-    Range("I1:Q2").Select
+    Range("H1:P2").Select
     Selection.Columns.Group
     With ActiveSheet.Outline
         .AutomaticStyles = False
@@ -3195,7 +3044,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     End With
     
     Cells(2, 1).Select
-    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Sys/Yr", lookat:=xlWhole).Select
+    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Yr", lookat:=xlWhole).Select
     Sheets("MTTR").UsedRange.Find(what:="ITM", After:=ActiveCell, lookat:=xlWhole).Select
     Range(Selection, Selection.End(xlToRight)).Select
     Selection.EntireColumn.Select
@@ -3205,71 +3054,458 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Set pvtTbl = Worksheets("MTTR").PivotTables("pvtMTTR")
     fixedDate = Sheet1.combYear.value
 
-'Calculate ITM i.e. MTTR Value for the same motnh in the same year as inPut given from user
-    endDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+'enter values in 4th Row for All sub systems and All Buildingblocks
 
+    With ActiveSheet.PivotTables("pvtMTTR").PivotFields("System")
+        .Orientation = xlPageField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("pvtMTTR").PivotFields("Period")
+        .Orientation = xlColumnField
+        .Position = 2
+    End With
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("Part12NC").Orientation = _
+        xlHidden
+   
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("System").ClearAllFilters
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("System"). _
+        EnableMultiplePageItems = False
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("System").CurrentPage = "(All)"
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("System").ClearAllFilters
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("System").CurrentPage = _
+        "System level"
+
+    fixedDate = Sheet1.combYear.value
+    endDate1 = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
+    Set pf = pvtTbl.PivotFields("Period")
+    pf.ClearAllFilters
+    With ActiveSheet.PivotTables("pvtMTTR")
+        .ColumnGrand = True
+        .RowGrand = False
+    End With
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > fixedDate Then
+            pvtItm.Visible = False
+        Else
+            pvtItm.Visible = True
+        End If
+    Next pvtItm
+    startDate = Format(endDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    fstAdd = ActiveCell.Offset(1, 0).Address
+    Sheets("MTTR").UsedRange.Find(what:="System Level", lookat:=xlWhole).Select
+    ActiveCell.Offset(4, 1).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.Copy
+    Range(fstAdd).PasteSpecial
+    Application.CutCopyMode = False
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("System").Orientation = xlHidden
+    With ActiveSheet.PivotTables("pvtMTTR").PivotFields("Period")
+        .Orientation = xlPageField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("pvtMTTR").PivotFields("Part12NC")
+        .Orientation = xlColumnField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("pvtMTTR")
+        .ColumnGrand = True
+        .RowGrand = True
+    End With
+    
+'Enter 12 months Data in the column "Avg of Avg MTTR/Month" after Crossover Trigger
+    fixedDate = Sheet1.combYear.value
+    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    endDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
     Set pvtTbl = ActiveSheet.PivotTables("pvtMTTR")
     Set pf = pvtTbl.PivotFields("Period")
     pf.ClearAllFilters
     pf.CurrentPage = "(All)"
-        
+    Cells(3, 18).Select
+    i = 18
     For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm.value = fixedDate Then
-            pf.CurrentPage = pvtItm.Caption
-        End If
-    Next
-      
-    Dim X As Long
-    lr = Worksheets("MTTR").Cells(rows.Count, "D").End(xlUp).Row
-    Range("AE3").Select
-    fstAdd = ActiveCell.Address(False, False)
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 5).Select
-    lstAdd = ActiveCell.Address(False, False)
-    Range(fstAdd, lstAdd).Select
-    rng = Range(fstAdd, lstAdd)
-            
-    For X = 3 To lr
-        On Error Resume Next
-        Cells(X, 9).value = Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)
-        Cells(X, 9).NumberFormat = "0.00"
-    Next X
-             
-'Calculate IMQ i.e. MTTR data for the quarter in the current year's Month (3 months before the input Date provided by user)
-
-    Set pvtTbl = Worksheets("MTTR").PivotTables("pvtMTTR")
-    pvtTbl.PivotFields("Period").ClearAllFilters
-    previousMonth = Format(DateAdd("m", -1, fixedDate), "yyyy" & "-" & "mm")
-    qMnth = Format(DateAdd("m", -2, fixedDate), "yyyy" & "-" & "mm")
-
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm.value = fixedDate Or pvtItm.value = previousMonth Or pvtItm.value = qMnth Then
-            pvtItm.Visible = True
+        If pvtItm < endDate Or pvtItm > startDate Then
         Else
-            pvtItm.Visible = False
- 
-        End If
- 
-    Next
-
-    lr = Worksheets("MTTR").Cells(rows.Count, "C").End(xlUp).Row
-    Range("AE3").Select
-    fstAdd = ActiveCell.Address(False, False)
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 5).Select
-    lstAdd = ActiveCell.Address(False, False)
-    Range(fstAdd, lstAdd).Select
-    rng = Range(fstAdd, lstAdd)
+            pvtMonth = Format(pvtItm, "m" & "/" & "d" & "/" & "yyyy")
+            Sheets("MTTR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
+            ActiveCell.Offset(1, 0).Select
+            myRow = ActiveCell.Row
+            MyCol = ActiveCell.Column
+            pf.CurrentPage = pvtItm.Caption
+            lr = Worksheets("MTTR").Cells(rows.Count, "C").End(xlUp).Row
+            Range("AE3").Select
+            fstAdd = ActiveCell.Address(False, False)
+            ActiveCell.End(xlDown).Select
+            ActiveCell.Offset(0, 5).Select
+            lstAdd = ActiveCell.Address(False, False)
+            rng = Range(fstAdd, lstAdd)
+            'rng = Range("AE3:AJ91")
             
-    For X = 3 To lr
-        On Error Resume Next
-        Cells(X, 10).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / 3
-        Cells(X, 10).NumberFormat = "0.00"
+            If i <= 29 Then
+                For X = myRow To lr
+                    On Error Resume Next
+                    Cells(X, MyCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
+                    Cells(X, MyCol).NumberFormat = "0.00"
+                Next X
+             
+            End If
+                i = i + 1
+        End If
+    Next pvtItm
+
+    Range("C3").Select
+    ActiveCell.Offset(1, 3).Select
+    sumAdd = ActiveCell.Address(False, False)
+    sumMidAdd = Mid(sumAdd, 2)
+    ActiveCell.Offset(0, -3).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 3).Select
+    sumAdd1 = ActiveCell.Address(False, False)
+    sumMidAdd1 = Mid(sumAdd1, 2)
+    Range("F3").Select
+    sumAdd2 = ActiveCell.Address(False, False)
+    sumMidAdd2 = Mid(sumAdd2, 2)
+    Range("" & "Q" & sumMidAdd - 1 & ":" & "AB" & sumMidAdd1 & "").Select
+    Selection.Replace what:="", Replacement:="0.00", lookat:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Selection.NumberFormat = "0.0000"
     
-    Next X
+'==================================================================================
 
-'Calculate MAT i.e. MTTR data for the last 12 months from the input date provided by user
+'Enter 12 months data for the last year from the selected date for Last year YTD and MTD calculations
 
+    fixedDate1 = Sheet1.combYear.value
+    frmtfixedDate1 = Format(fixedDate1, "mmm" & "-" & "yyyy")
+    prvsYrDate1 = Format(DateAdd("yyyy", -1, frmtfixedDate1), "mmm" & "-" & "yyyy")
+    prvsYrDate = Format(DateAdd("m", 1, prvsYrDate1), "mmm" & "-" & "yyyy")
+
+    prvs2YrDate = Format(DateAdd("yyyy", -1, prvsYrDate), "mmm" & "-" & "yyyy")
+
+    Range("AQ2").Select
+    Do Until prvs2YrDate = prvsYrDate
+        ActiveCell.value = prvs2YrDate
+        ActiveCell.Offset(0, 1).Select
+        prvs2YrDate = Format(DateAdd("m", 1, prvs2YrDate), "mmm" & "-" & "yyyy")
+    Loop
+    
+'Enter 12 months Data for the last year to calculate last years ITM, IMQ, YTD and MAT
+    fixedDate = Sheet1.combYear.value
+    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
+    prvsYrDate1 = Format(DateAdd("yyyy", -1, startDate), "mmm" & "-" & "yyyy")
+    startDate = Format(prvsYrDate1, "yyyy" & "-" & "mm")
+    endDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
+    Set pvtTbl = ActiveSheet.PivotTables("pvtMTTR")
+    Set pf = pvtTbl.PivotFields("Period")
+    pf.ClearAllFilters
+    pf.CurrentPage = "(All)"
+    Cells(3, 43).Select
+    i = 18
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > startDate Then
+        Else
+            pvtMonth = Format(pvtItm, "m" & "/" & "d" & "/" & "yyyy")
+            Sheets("MTTR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
+            ActiveCell.Offset(1, 0).Select
+            myRow = ActiveCell.Row
+            MyCol = ActiveCell.Column
+            pf.CurrentPage = pvtItm.Caption
+            lr = Worksheets("MTTR").Cells(rows.Count, "C").End(xlUp).Row
+            Range("AE3").Select
+            fstAdd = ActiveCell.Address(False, False)
+            ActiveCell.End(xlDown).Select
+            ActiveCell.Offset(0, 6).Select
+            lstAdd = ActiveCell.Address(False, False)
+            rng = Range(fstAdd, lstAdd)
+            'rng = Range("AE3:AJ91")
+            
+            If i <= 29 Then
+                For X = myRow To lr
+                    On Error Resume Next
+                    Cells(X, MyCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
+                    Cells(X, MyCol).NumberFormat = "0.00"
+                Next X
+             
+            End If
+                i = i + 1
+        End If
+    Next pvtItm
+
+    Range("C3").Select
+    ActiveCell.Offset(1, 3).Select
+    sumAdd = ActiveCell.Address(False, False)
+    sumMidAdd = Mid(sumAdd, 2)
+    ActiveCell.Offset(0, -3).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 3).Select
+    sumAdd1 = ActiveCell.Address(False, False)
+    sumMidAdd1 = Mid(sumAdd1, 2)
+    Range("F3").Select
+    sumAdd2 = ActiveCell.Address(False, False)
+    sumMidAdd2 = Mid(sumAdd2, 2)
+    Range("" & "AQ" & sumMidAdd - 1 & ":" & "BB" & sumMidAdd1 & "").Select
+    Selection.Replace what:="", Replacement:="0.00", lookat:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Selection.NumberFormat = "0.0000"
+    
+'Enter ITM values for current year month
+    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Yr", lookat:=xlWhole).Select
+    Sheets("MTTR").UsedRange.Find(what:="ITM", After:=ActiveCell, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    ITMDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    endDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:=endDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    ITMMonth = ActiveCell.Address
+    Do While ActiveCell.value <> ""
+        Range(ITMDatacellAdd).value = ActiveCell.value
+        ITMDatacellAdd = Range(ITMDatacellAdd).Offset(1, 0).Address
+        ActiveCell.Offset(1, 0).Select
+    Loop
+
+'Enter IMQ values for current year
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    startDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(fixedDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -3, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Yr", lookat:=xlWhole).Select
+    Sheets("MTTR").UsedRange.Find(what:="IMQ", After:=ActiveCell, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    IMQDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    IMQStrtMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    IMQEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+
+        Range(IMQDatacellAdd).value = "=IFERROR(AVERAGE(" & IMQStrtMonth & ":" & IMQEndMonth & ")," & "NA" & ")"
+        IMQDatacellAdd = Range(IMQDatacellAdd).Offset(1, 0).Address
+        IMQStrtMonth = Range(IMQStrtMonth).Offset(1, 0).Address
+        IMQEndMonth = Range(IMQEndMonth).Offset(1, 0).Address
+        ActiveCell.Offset(1, 0).Select
+    Loop
+    
+ 'Enter YTD values for current year
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    startDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(fixedDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -EndDateMonth, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Yr", lookat:=xlWhole).Select
+    Sheets("MTTR").UsedRange.Find(what:="YTD", After:=ActiveCell, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    YTDDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    YDTStrtMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    YDTEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+
+        Range(YTDDatacellAdd).value = "=IFERROR(AVERAGE(" & YDTStrtMonth & ":" & YDTEndMonth & ")," & "NA" & ")"
+        YTDDatacellAdd = Range(YTDDatacellAdd).Offset(1, 0).Address
+        YDTStrtMonth = Range(YDTStrtMonth).Offset(1, 0).Address
+        YDTEndMonth = Range(YDTEndMonth).Offset(1, 0).Address
+        ActiveCell.Offset(1, 0).Select
+    Loop
+
+'Enter MAT values for current year
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    startDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(fixedDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -12, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Yr", lookat:=xlWhole).Select
+    Sheets("MTTR").UsedRange.Find(what:="MAT", After:=ActiveCell, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    MATDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    MATStrtMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    MATEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+
+        Range(MATDatacellAdd).value = "=IFERROR(AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")," & "NA" & ")"
+        MATDatacellAdd = Range(MATDatacellAdd).Offset(1, 0).Address
+        MATStrtMonth = Range(MATStrtMonth).Offset(1, 0).Address
+        MATEndMonth = Range(MATEndMonth).Offset(1, 0).Address
+        ActiveCell.Offset(1, 0).Select
+    Loop
+    
+'=============================================================================================
+
+'==================================================================================================
+
+'Enter ITM values for Last year month
+    fixedDate = Sheet1.combYear.value
+    findDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    endDate = Format(findDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(3, 0).Select
+    ITMLstYrAdd = ActiveCell.Address
+    Sheets("MTTR").UsedRange.Find(what:=endDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    ITMLstYrMonth = ActiveCell.Address
+    Do While ActiveCell.value <> ""
+        Range(ITMLstYrAdd).value = ActiveCell.value
+        ITMLstYrAdd = Range(ITMLstYrAdd).Offset(1, 0).Address
+        ITMLstYrMonth = Range(ITMLstYrMonth).Offset(1, 0).Address
+        ActiveCell.Offset(1, 0).Select
+    Loop
+
+'Enter IMQ values for Last year
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    IMDDate = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
+    startDate = Format(IMDDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(fixedDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -3, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.Offset(0, 1).Select
+    IMQDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Sheets("MTTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    IMQStrtMonth = ActiveCell.Address(False, False)
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    IMQEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+
+        Range(IMQDatacellAdd).value = "=IFERROR(AVERAGE(" & IMQStrtMonth & ":" & IMQEndMonth & ")," & "NA" & ")"
+        IMQDatacellAdd = Range(IMQDatacellAdd).Offset(1, 0).Address
+        IMQStrtMonth = Range(IMQStrtMonth).Offset(1, 0).Address
+        IMQEndMonth = Range(IMQEndMonth).Offset(1, 0).Address
+        ActiveCell.Offset(1, 0).Select
+    Loop
+    
+ 'Enter YTD values for Last year
+    fixedDate = Sheet1.combYear.value
+    YTDDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    startDate = Format(YTDDate, "yyyy" & "-" & "mm")
+    startDate = Format(YTDDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(YTDDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -EndDateMonth, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.Offset(0, 2).Select
+    YTDDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    YDTStrtMonth = ActiveCell.Address(False, False)
+    
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    YDTEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+
+        Range(YTDDatacellAdd).value = "=IFERROR(AVERAGE(" & YDTStrtMonth & ":" & YDTEndMonth & ")," & "NA" & ")"
+        YTDDatacellAdd = Range(YTDDatacellAdd).Offset(1, 0).Address
+        YDTStrtMonth = Range(YDTStrtMonth).Offset(1, 0).Address
+        YDTEndMonth = Range(YDTEndMonth).Offset(1, 0).Address
+        ActiveCell.Offset(1, 0).Select
+    Loop
+
+'Enter MAT values for Last year
+    fixedDate = Sheet1.combYear.value
+    MATDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+
+    startDate = Format(MATDate, "yyyy" & "-" & "mm")
+    startDate = Format(MATDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(MATDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -12, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.Offset(0, 3).Select
+    MATDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    MATStrtMonth = ActiveCell.Address(False, False)
+    
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    MATEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+
+         Range(MATDatacellAdd).value = "=IFERROR(AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")," & "NA" & ")"
+         MATDatacellAdd = Range(MATDatacellAdd).Offset(1, 0).Address
+         MATStrtMonth = Range(MATStrtMonth).Offset(1, 0).Address
+         MATEndMonth = Range(MATEndMonth).Offset(1, 0).Address
+         ActiveCell.Offset(1, 0).Select
+    Loop
+
+'Enter values of Avg. MTTR/Yr
+    fixedDate = Sheet1.combYear.value
     endDate1 = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
     endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
     Set pvtTbl = ActiveSheet.PivotTables("pvtMTTR")
@@ -3295,246 +3531,33 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             
     For X = 3 To lr
         On Error Resume Next
-        Cells(X, 12).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / 12
-        Cells(X, 12).NumberFormat = "0.00"
+        Cells(X, 7).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
+        Cells(X, 7).NumberFormat = "0.00"
     Next X
 
-'calculate ITM for the same month in the previous year of of the input year provided by the user
-    currentdate = Format(Now(), "yyyymm")
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(startDate, "yyyy" & "-" & "mm")
-    endDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+'Enter values in 4th row for All Sub systems and All Building blocks
 
-    Set pvtTbl = ActiveSheet.PivotTables("pvtMTTR")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-    pf.CurrentPage = "(All)"
-        
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm.value = endDate Then
-            pf.CurrentPage = pvtItm.Caption
-            pvtItmName = pvtItm.Caption
-        Else
-            pvtItm.Visible = False
-        End If
-        'pvtItmName = pvtItm.value
-    Next
-    If pvtItmName = endDate Then
-        lr = Worksheets("MTTR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
-            
-        For X = 3 To lr
-            On Error Resume Next
-            Cells(X, 13).value = Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)
-            Cells(X, 13).NumberFormat = "0.00"
-        Next X
-      Else
-      End If
-'Calculate IMQ i.e. previous 3 months in the previous year
-    currentdate = Format(Now(), "yyyymm")
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
-    prvsIMQ = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
-
-    Set pvtTbl = Worksheets("MTTR").PivotTables("pvtMTTR")
-    pvtTbl.PivotFields("Period").ClearAllFilters
-    previousMonth = Format(DateAdd("m", -1, prvsIMQ), "yyyy" & "-" & "mm")
-    qMnth = Format(DateAdd("m", -2, prvsIMQ), "yyyy" & "-" & "mm")
-
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm.value = prvsIMQ Or pvtItm.value = previousMonth Or pvtItm.value = qMnth Then
-            pvtItm.Visible = True
-            pvtItmName = pvtItm.value
-        Else
-            pvtItm.Visible = False
- 
-        End If
-           'pvtItmName = pvtItm.value
-    Next
-    If pvtItmName = prvsIMQ Or pvtItmName = previousMonth Or pvtItmName = qMnth Then
-
-        lr = Worksheets("MTTR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
-        
-        For X = 3 To lr
-            On Error Resume Next
-            Cells(X, 14).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / 3
-            Cells(X, 14).NumberFormat = "0.00"
-        Next X
-    Else
-    End If
-'Calculate MAT for the Previous year
-
-    currentdate = Format(Now(), "yyyymm")
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
-    endDate1 = Format(DateAdd("yyyy", -2, fixedDate), "yyyy" & "-" & "mm")
-    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
-
-    Set pvtTbl = ActiveSheet.PivotTables("pvtMTTR")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm < endDate Or pvtItm > startDate Then
-            pvtItm.Visible = False
-        Else
-            pvtItm.Visible = True
-            pvtItmName = pvtItm.value
-        End If
-            'pvtItmName = pvtItm.value
-    Next pvtItm
-    If pvtItmName = endDate Or pvtItmName = startDate Then
-
-        lr = Worksheets("MTTR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
-            
-        For X = 3 To lr
-            On Error Resume Next
-            Cells(X, 16).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / 12
-            Cells(X, 16).NumberFormat = "0.00"
-        Next X
-    Else
-    End If
-'Calculate YTD for the selected year i.e. from January to the selected month for the year
-
-    currentdate = Format(Now(), "yyyymm")
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
-    EndDateMonth = Mid(fixedDate, 6, 2)
-
-    endDate = Format(DateAdd("m", -EndDateMonth, fixedDate), "yyyy" & "-" & "mm")
-   
-    Set pvtTbl = ActiveSheet.PivotTables("pvtMTTR")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm <= endDate Or pvtItm > startDate Then
-            pvtItm.Visible = False
-        Else
-            pvtItm.Visible = True
-            pvtItmName = pvtItm.Caption
-        End If
-           'pvtItmName = pvtItm.Caption
-    Next pvtItm
-    If pvtItmName = endDate Or pvtItmName = startDate Then
-
-        lr = Worksheets("MTTR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
-            
-        For X = 3 To lr
-            On Error Resume Next
-            Cells(X, 11).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / EndDateMonth
-            Cells(X, 11).NumberFormat = "0.00"
-        Next X
-    Else
-    End If
-
-'Calculate YTD for the previous year i.e. MTTR data from January to the month in the previous year
-
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
-    startDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
-    EndDateMonth = Mid(fixedDate, 6, 2)
-
-    endDate = Format(DateAdd("m", -EndDateMonth, startDate1), "yyyy" & "-" & "mm")
-    Set pvtTbl = ActiveSheet.PivotTables("pvtMTTR")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm <= endDate Or pvtItm > startDate1 Then
-            pvtItm.Visible = False
-        Else
-            pvtItm.Visible = True
-            pvtItmName = pvtItm.Caption
-        End If
-    Next pvtItm
-    If pvtItmName = endDate Or pvtItmName = startDate1 Then
-
-        lr = Worksheets("MTTR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
-            
-        For X = 3 To lr
-            On Error Resume Next
-            Cells(X, 15).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / EndDateMonth
-            Cells(X, 15).NumberFormat = "0.00"
-        Next X
-
-    Else
-    End If
-
-'Enter 12 months Data in the column "Avg of Avg MTTR/Month" after Crossover Trigger
-    fixedDate = Sheet1.combYear.value
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
-    endDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
-    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
-    Set pvtTbl = ActiveSheet.PivotTables("pvtMTTR")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-    pf.CurrentPage = "(All)"
-    Cells(3, 18).Select
-    i = 18
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm < endDate Or pvtItm > startDate Then
-        Else
-            pvtMonth = Format(pvtItm, "m" & "/" & "d" & "/" & "yyyy")
-            Sheets("MTTR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
-            ActiveCell.Offset(1, 0).Select
-            myRow = ActiveCell.Row
-            MyCol = ActiveCell.Column
-            pf.CurrentPage = pvtItm.Caption
-            lr = Worksheets("MTTR").Cells(rows.Count, "D").End(xlUp).Row
-            Range("AE3").Select
-            fstAdd = ActiveCell.Address(False, False)
-            ActiveCell.End(xlDown).Select
-            ActiveCell.Offset(0, 6).Select
-            lstAdd = ActiveCell.Address(False, False)
-            rng = Range(fstAdd, lstAdd)
-            'rng = Range("AE3:AJ91")
-            
-            If i <= 29 Then
-                For X = myRow To lr
-                    On Error Resume Next
-                    Cells(X, MyCol).value = Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)
-                    Cells(X, MyCol).NumberFormat = "0.00"
-                Next X
-             
-            End If
-                i = i + 1
-        End If
-    Next pvtItm
-    Range("D3").Select
+    With ActiveSheet.PivotTables("pvtMTTR").PivotFields("System")
+        .Orientation = xlPageField
+        .Position = 2
+    End With
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("System").CurrentPage = "(All)"
+    With ActiveSheet.PivotTables("pvtMTTR").PivotFields("System")
+        .PivotItems("").Visible = False
+        .PivotItems(" ").Visible = False
+    End With
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("System"). _
+        EnableMultiplePageItems = True
+    ActiveSheet.PivotTables("pvtMTTR").ColumnGrand = False
+    
+    Sheets("MTTR").UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
+    MTTRperYrVal = ActiveCell.Offset(1, 0).value
+    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Yr", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.value = MTTRperYrVal
+    
+'==================================================================================================
+    Range("C3").Select
     ActiveCell.Offset(1, 2).Select
     sumAdd = ActiveCell.Address(False, False)
     sumMidAdd = Mid(sumAdd, 2)
@@ -3546,71 +3569,26 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Range("F3").Select
     sumAdd2 = ActiveCell.Address(False, False)
     sumMidAdd2 = Mid(sumAdd2, 2)
-    Range("F3").Select
-    ActiveCell.Formula = "=SUM(" & sumAdd & ":" & sumAdd1 & ")"
-    Range("G3").Select
-    ActiveCell.Formula = "=SUM(" & "G" & sumMidAdd & ":" & "G" & sumMidAdd1 & ")"
-    Range("H3").Select
-    ActiveCell.Formula = "=SUM(" & "H" & sumMidAdd & ":" & "H" & sumMidAdd1 & ")"
-    Range("I3").Select
-    ActiveCell.Formula = "=SUM(" & "I" & sumMidAdd & ":" & "I" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("J3").Select
-    ActiveCell.Formula = "=SUM(" & "J" & sumMidAdd & ":" & "J" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("K3").Select
-    ActiveCell.Formula = "=SUM(" & "K" & sumMidAdd & ":" & "K" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("L3").Select
-    ActiveCell.Formula = "=SUM(" & "L" & sumMidAdd & ":" & "L" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("M3").Select
-    ActiveCell.Formula = "=SUM(" & "M" & sumMidAdd & ":" & "M" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("N3").Select
-    ActiveCell.Formula = "=SUM(" & "N" & sumMidAdd & ":" & "N" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("O3").Select
-    ActiveCell.Formula = "=SUM(" & "O" & sumMidAdd & ":" & "O" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("P3").Select
-    ActiveCell.Formula = "=SUM(" & "P" & sumMidAdd & ":" & "P" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("R3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "R" & sumMidAdd & ":" & "R" & sumMidAdd1 & ")"
-    Range("S3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "S" & sumMidAdd & ":" & "S" & sumMidAdd1 & ")"
-    Range("T3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "T" & sumMidAdd & ":" & "T" & sumMidAdd1 & ")"
-    Range("U3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "U" & sumMidAdd & ":" & "U" & sumMidAdd1 & ")"
-    Range("V3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "V" & sumMidAdd & ":" & "V" & sumMidAdd1 & ")"
-    Range("W3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "W" & sumMidAdd & ":" & "W" & sumMidAdd1 & ")"
-    Range("X3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "X" & sumMidAdd & ":" & "X" & sumMidAdd1 & ")"
-    Range("Y3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "Y" & sumMidAdd & ":" & "Y" & sumMidAdd1 & ")"
-    Range("Z3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "Z" & sumMidAdd & ":" & "Z" & sumMidAdd1 & ")"
-    Range("AA3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "AA" & sumMidAdd & ":" & "AA" & sumMidAdd1 & ")"
-    Range("AB3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "AB" & sumMidAdd & ":" & "AB" & sumMidAdd1 & ")"
-    Range("AC3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "AC" & sumMidAdd & ":" & "AC" & sumMidAdd1 & ")"
+   
     Sheets("MTTR").Select
-    Range("Q3").Select
-    ActiveCell.FormulaR1C1 = "=RC[-7]>RC[-3]"
-    Range("Q3").Select
-    Selection.AutoFill Destination:=Range("" & "Q" & sumMidAdd - 1 & ":" & "Q" & sumMidAdd1 & "")
-    Range("" & "Q" & sumMidAdd - 1 & ":" & "Q" & sumMidAdd1 & "").Select
+    Sheets("MTTR").UsedRange.Find(what:="Trigger", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.FormulaR1C1 = "=AND(RC[-7]>RC[-6],RC[-12]<RC[-9])"
+    Selection.AutoFill Destination:=Range("" & "P" & sumMidAdd - 1 & ":" & "P" & sumMidAdd1 & "")
+    Range("" & "P" & sumMidAdd - 1 & ":" & "P" & sumMidAdd1 & "").Select
     Calculate
-    Range("" & "R" & sumMidAdd - 1 & ":" & "AC" & sumMidAdd1 & "").Select
+    Range("" & "Q" & sumMidAdd - 1 & ":" & "AB" & sumMidAdd1 & "").Select
     Selection.Replace what:="", Replacement:="0.00", lookat:=xlPart, _
         SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
         ReplaceFormat:=False
     Selection.NumberFormat = "0.00"
     Application.CutCopyMode = False
-    Range("AD1").Select
+    Range("AC1").Select
     Selection.EntireColumn.Select
      Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-     Range("" & "AD" & sumMidAdd - 1 & ":" & "AD" & sumMidAdd1 & "").Select
+     Range("" & "AC" & sumMidAdd - 1 & ":" & "AC" & sumMidAdd1 & "").Select
     Selection.SparklineGroups.Add Type:=xlSparkLine, SourceData:= _
-        "" & "R" & sumMidAdd - 1 & ":" & "AC" & sumMidAdd1 & ""
+        "" & "Q" & sumMidAdd - 1 & ":" & "AB" & sumMidAdd1 & ""
     Selection.SparklineGroups.Item(1).SeriesColor.Color = 9592887
     Selection.SparklineGroups.Item(1).SeriesColor.TintAndShade = 0
     Selection.SparklineGroups.Item(1).Points.Negative.Color.Color = 208
@@ -3625,86 +3603,363 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Selection.SparklineGroups.Item(1).Points.Firstpoint.Color.TintAndShade = 0
     Selection.SparklineGroups.Item(1).Points.Lastpoint.Color.Color = 208
     Selection.SparklineGroups.Item(1).Points.Lastpoint.Color.TintAndShade = 0
-    
-    Range("AD2").Select
+    Range("" & "G" & sumMidAdd - 1 & ":" & "O" & sumMidAdd1 & "").Select
+    Selection.Copy
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Selection.Replace what:="", Replacement:="0.00", lookat:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Selection.NumberFormat = "0.00"
+    Application.CutCopyMode = False
+    Range("AC2").Select
     ActiveCell.FormulaR1C1 = "Trend"
     Application.CutCopyMode = False
-    Range("H4").Select
-    Range(Selection, Selection.End(xlDown)).Select
-    Selection.FormatConditions.AddTop10
+    Range("G4").Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.Offset(0, -1).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 1).Select
+    
+    lstAdd = ActiveCell.Address
+    Range(fstAdd, lstAdd).Select
+
+    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, _
+    Formula1:="=LARGE(" & fstAdd & ":" & lstAdd & ",10)"
+    'Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, _
+    'Formula1:="=G4/100*10"
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1)
-        .TopBottom = xlTop10Top
-        .Rank = 10
-        .Percent = False
-    End With
+    
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
         .Color = 13551615
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    Range("Q3").Select
-    Range(Selection, Selection.End(xlDown)).Select
-    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
-        Formula1:="=TRUE"
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Interior
+    
+
+'Highlight MTTR Crossover Trigger in Red or Orange for true values depending upon 20% largest values
+    Sheets("MTTR").Select
+    Sheets("MTTR").UsedRange.Find(what:="BuildingBlock", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 3).Select
+    fstAdd = ActiveCell.Address(False, False)
+    fstMidAdd = Mid(fstAdd, 2)
+    
+    Sheets("MTTR").UsedRange.Find(what:="BuildingBlock", lookat:=xlWhole).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 4).Select
+    lstAdd = ActiveCell.Address(False, False)
+    lstMidAdd = Mid(lstAdd, 2)
+    ActiveCell.Offset(1, 0).Select
+   
+    ActiveCell.Formula = "=LARGE(" & "E" & fstMidAdd & ":" & "F" & lstMidAdd & ",20)"
+    topTwentyVal = ActiveCell.value
+    
+    Sheets("MTTR").UsedRange.Find(what:="Trigger", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    Do While ActiveCell.value <> ""
+    If ActiveCell.value = "True" Then
+        If Range("E" & fstMidAdd).value >= topTwentyVal Or Range("F" & fstMidAdd).value >= topTwentyVal Then
+        With Selection.Interior
+        .Pattern = xlSolid
         .PatternColorIndex = xlAutomatic
-        .Color = 240
+        .Color = 255
         .TintAndShade = 0
+        .PatternTintAndShade = 0
     End With
-    Selection.FormatConditions(1).StopIfTrue = False
-    Range("A1").Select
-    Selection.EntireColumn.Delete
+        Else
+        With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 1484526
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+        End If
+        
+    End If
+    fstMidAdd = fstMidAdd + 1
+    ActiveCell.Offset(1, 0).Select
+    
+    Loop
+    Range(lstAdd).Offset(1, 0).Select
+    Selection.ClearContents
+
     Range("C1").Select
     Selection.EntireColumn.Delete
-    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Sys/Yr", lookat:=xlWhole).Select
-    ActiveCell.Offset(0, 1).Select
-    fstAdd = ActiveCell.Address
+    Range("AE10").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.EntireColumn.Delete
+    Selection.End(xlToRight).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.EntireColumn.Delete
+    
+    Sheets("MTTR").UsedRange.Find(what:="Trend", lookat:=xlWhole).Select
     ActiveCell.Offset(0, -1).Select
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 8).Select
-    lstAdd = ActiveCell.Address
-    ActiveCell.Offset(1, 1).Select
-    deleteFnlAdd = ActiveCell.Address
-    ActiveCell.Offset(0, 13).Select
-    deleteFnlCAdd = ActiveCell.Address
-    ActiveCell.End(xlDown).Select
-    deleteFnlRAdd = ActiveCell.Address
-    Sheets("MTTR").UsedRange.Find(what:="Trigger", lookat:=xlWhole).Select
-    ActiveCell.Offset(0, -1).Select
-    fstRwAdd = ActiveCell.Address
-    Range(fstAdd & ":" & fstRwAdd, lstAdd).Select
-    Selection.Replace what:="", Replacement:="0.00", lookat:=xlPart, _
-        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-        ReplaceFormat:=False
-    Selection.NumberFormat = "0.00"
-    Range(deleteFnlAdd & ":" & deleteFnlCAdd, deleteFnlRAdd).Select
-    Selection.ClearContents
-    ActiveWindow.Zoom = 85
-    Sheets("MTTR").UsedRange.Find(what:="SubSystem", lookat:=xlWhole).Select
     ActiveCell.Offset(1, 0).Select
-    fstAdd = ActiveCell.Address
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 1).Select
-    lstAdd = ActiveCell.Address
-    Range(fstAdd, lstAdd).Select
-    Selection.Replace what:="0", Replacement:="", lookat:=xlPart, _
-    SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-    ReplaceFormat:=False
-    Sheets("MTTR").UsedRange.Find(what:="DataFill", lookat:=xlWhole).Select
-   ' Range("AE3").Select
-    fstAdd = ActiveCell.Address(False, False)
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 6).Select
-    lstAdd = ActiveCell.Address(False, False)
-    Range(fstAdd, lstAdd).Select
-    Selection.ClearContents
-    Sheets("MTTR").Select
+    ITMfrtRowVal = ActiveCell.value
+    ITMfrtRowAdd = ActiveCell.Address
+    IMQfrtRowAdd = ActiveCell.Offset(0, -2).Address
+
+    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Yr", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 1).value = ITMfrtRowVal
+    ActiveCell.Offset(1, 2) = "=IFERROR(AVERAGE(" & ITMfrtRowAdd & ":" & IMQfrtRowAdd & ")," & "NA" & ")"
+
+'Enter YTD value in 4th Row
+    
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    startDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(fixedDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -EndDateMonth, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Yr", lookat:=xlWhole).Select
+    Sheets("MTTR").UsedRange.Find(what:="YTD", After:=ActiveCell, lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    YTDDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    YDTStrtMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    YDTEndMonth = ActiveCell.Address(False, False)
+    'Range(MATDatacellAdd).value = "=IFERROR(AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")," & "NA" & ")"
+
+    Range(YTDDatacellAdd).value = "=IFERROR(AVERAGE(" & YDTStrtMonth & ":" & YDTEndMonth & ")," & "NA" & ")"
+
+'Enter MAT value in 4th Row
+    fixedDate = Sheet1.combYear.value
+    MATDate = Format(fixedDate, "yyyy" & "-" & "mm")
+
+    startDate = Format(MATDate, "yyyy" & "-" & "mm")
+    startDate = Format(MATDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(MATDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -12, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR / Call (Current Year)", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    ActiveCell.Offset(0, 3).Select
+    MATDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    MATStrtMonth = ActiveCell.Address(False, False)
+    
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    MATEndMonth = ActiveCell.Address(False, False)
+    Range(MATDatacellAdd).value = "=IFERROR(AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")," & "NA" & ")"
+   
+'Enter values in 4th row for last years, ITM,IMQ, YTD and MAT
+    
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("Part12NC").Orientation = _
+        xlHidden
+    With ActiveSheet.PivotTables("pvtMTTR").PivotFields("Period")
+        .Orientation = xlColumnField
+        .Position = 1
+    End With
+    
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+
+    endDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
     Set pvtTbl = ActiveSheet.PivotTables("pvtMTTR")
-    pvtTbl.TableRange1.Select
+    Set pf = pvtTbl.PivotFields("Period")
+    pf.ClearAllFilters
+    With ActiveSheet.PivotTables("pvtMTTR")
+        .ColumnGrand = True
+        .RowGrand = False
+    End With
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > startDate Then
+            pvtItm.Visible = False
+        Else
+            pvtItm.Visible = True
+        End If
+    Next pvtItm
+    
+    fixedDate1 = Sheet1.combYear.value
+    fixDte = Format(fixedDate1, "mmm" & "-" & "yyyy")
+    fixDate2 = Format(DateAdd("yyyy", -1, fixedDate1), "mmm" & "-" & "yyyy")
+    frmtData = Format(DateAdd("m", 1, fixDate2), "mmm" & "-" & "yyyy")
+
+    endDate1 = Format(DateAdd("mmm", -12, frmtData), "mmm" & "-" & "yyyy")
+    endDate2 = Format(DateAdd("m", -24, frmtData), "mmm" & "-" & "yyyy")
+
+    fnlEndDate = Format(DateAdd("m", 1, endDate1), "mmm" & "-" & "yyyy")
+    fnlEndDate1 = Format(endDate2, "mmm" & "-" & "yyyy")
+    frmEndDate = Format(fnlEndDate, "mmm" & "-" & "yyyy")
+   
+    Range("AE10").Select
+    fstadd1 = ActiveCell.Address
+    Sheets("MTTR").UsedRange.Find(what:="Buildingblocks Aggregated", lookat:=xlWhole).Select
+    ActiveCell.Offset(-1, 1).Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.End(xlToRight).Select
+    lstAdd = ActiveCell.Address
+    Range(fstAdd, lstAdd).Copy
+    Range(fstadd1).PasteSpecial xlPasteAll
+    Do While ActiveCell.value <> ""
+    fixedDate = ActiveCell.value
+    frmtDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    startDate = Format(frmtDate, "mmm" & "-" & "yyyy")
+    ActiveCell.value = startDate
+    ActiveCell.Offset(0, 1).Select
+    
+    Loop
+    pvtTbl.TableRange2.Select
     pvtTbl.TableRange2.Clear
+    ActiveCell.End(xlDown).Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.End(xlToRight).Offset(1, 0).Select
+    lstAdd = ActiveCell.Address
+    Range(fstAdd, lstAdd).Copy
+    Range("AE2").PasteSpecial xlPasteAll
+    Range(fstAdd, lstAdd).ClearContents
+    
+'Enter ITM values for current year month
+    fixedDate = Sheet1.combYear.value
+    Sheets("MTTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    ITMDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Selection.EntireRow.Select
+    startDate = Format(DateAdd("yyyy", -1, fixedDate), "mmm" & "-" & "yyyy")
+    startDate1 = Format(startDate, "m" & "/" & "d" & "/" & "yyyy")
+    endDate = Format(DateAdd("yyyy", -2, fixedDate), "mmm" & "-" & "yyyy")
+
+    endDate1 = Format(DateAdd("m", 1, endDate), "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:=startDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    ITMMonth = ActiveCell.Address
+    Range(ITMDatacellAdd).value = Range(ITMMonth).value
+
+'Enter IMQ values for current year
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    startDate1 = Format(startDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(startDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -3, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    IMQDatacellAdd = Range(ITMDatacellAdd).Offset(0, 1).Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    IMQStrtMonth = ActiveCell.Address(False, False)
+    Sheets("MTTR").UsedRange.Find(what:=startDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    IMQEndMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+   ' Range(MATDatacellAdd).value = "=IFERROR(AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")," & "NA" & ")"
+
+    Range(IMQDatacellAdd).value = "=IFERROR(AVERAGE(" & IMQStrtMonth & ":" & IMQEndMonth & ")," & "" & "NA" & "" & ")"
+ 
+ 'Enter YTD value in 4th Row
+    
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    startDate1 = Format(startDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(startDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -EndDateMonth, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("MTTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    YTDDatacellAdd = Range(ITMDatacellAdd).Offset(0, 2).Address
+    Range("A2").Select
+    
+    Selection.EntireRow.Select
+    Sheets("MTTR").UsedRange.Find(what:=startDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    YDTStrtMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Selection.EntireRow.Select
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    YDTEndMonth = ActiveCell.Address(False, False)
+    Range(YTDDatacellAdd).value = "=IFERROR(AVERAGE(" & YDTStrtMonth & ":" & YDTEndMonth & ")," & "" & "NA" & "" & ")"
+
+'Enter MAT value in 4th Row
+    fixedDate = Sheet1.combYear.value
+    MATDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+
+    startDate = Format(MATDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(MATDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -12, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    MATDatacellAdd = Range(ITMDatacellAdd).Offset(0, 3).Address
+    Range("A2").Select
+    
+    Selection.EntireRow.Select
+    Sheets("MTTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    MATStrtMonth = ActiveCell.Address(False, False)
+    
+    If Not Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole) Is Nothing Then
+    ActiveCell.Offset(1, 0).Select
+    MATEndMonth = ActiveCell.Address(False, False)
+    Range(MATDatacellAdd).value = "=IFERROR(AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")," & "NA" & ")"
+    
+    Else
+    Range(MATDatacellAdd).value = "NA"
+    
+    End If
+    Sheets("MTTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    MATEndMonth = ActiveCell.Address(False, False)
+    Range(MATDatacellAdd).value = "=IFERROR(AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")," & "NA" & ")"
+    Sheets("MTTR").UsedRange.Find(what:="Avg. MTTR/Yr", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.Copy
+    Selection.PasteSpecial xlPasteValues
+    Range(MATEndMonth).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.EntireColumn.Delete
+    Range("A1").Select
+    ActiveWindow.Zoom = 85
+    Sheets("MTTR").UsedRange.Find(what:="Trigger", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    If ActiveCell.value = "True" Then
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 255
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+        End With
+    End If
     Cells(1, 1).Select
     fstAdd = ActiveCell.Address
     ActiveCell.Offset(1, 0).Select
@@ -3727,11 +3982,11 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     End With
     Selection.EntireColumn.Select
     
-    'Add Heading to DashBoard
- Sheets("MTTR").Select
-rows("1:1").Select
-Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
-Range("A1").Select
+'Add Heading to DashBoard
+    Sheets("MTTR").Select
+    rows("1:1").Select
+    Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
+    Range("A1").Select
     ActiveCell.FormulaR1C1 = "MTTR Dash Board for " & KPISheetName
     Range("A1:AB1").Select
     With Selection
@@ -3784,10 +4039,11 @@ Range("A1").Select
     Selection.RowHeight = 25
     Range("A2").Select
     Workbooks(myPvtWorkBook).Close
-    Workbooks(myWorkBook).Save
+    Application.Workbooks(myWorkBook).Save
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
-   End Sub
+
+End Sub
 Public Function MTTRPivotTableNew()
 Dim pt As PivotTable
 Dim pf As PivotField
@@ -3866,11 +4122,9 @@ Dim lastRow As Integer
 
     CTSProductName = Sheet1.comb6NC1.value
     dateValue = Sheet1.combYear.value
-    'prdNameFile = KPISheetName & "_" & dateValue
     prdFileName = KPISheetName
 
-'Open Aggregated Data File
-    'Open input file-Aggregated Data File
+'Open input file-Aggregated Data File
 
     inputFileGlobal = prdFileName & ".xlsx"
     If Sheet1.rdbLocalDrive.value = True Then
@@ -3889,7 +4143,8 @@ Dim lastRow As Integer
     myPvtWorkBook = ActiveWorkbook.name
     
     Workbooks(myPvtWorkBook).Activate
-    ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
     Cells(1, 1).Select
     ActiveCell.EntireRow.Select
     Selection.Delete
@@ -3940,31 +4195,18 @@ Dim lastRow As Integer
     Next sh
 
 'Filter the Buildingblocks Aggregated data and delete the Buildingblocks Aggregated data
-    Sheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
+    Sheets(AggrDataShtName).Activate
     Cells(1, 1).Select
     fstCellAdd = ActiveCell.Address
     ActiveCell.End(xlToRight).Select
     lastCellAdd = ActiveCell.Address
     ActiveSheet.Range(fstCellAdd, lastCellAdd).Select
-    If ActiveSheet.AutoFilterMode = True Then
-         ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter
-         End If
-    Dim l As Long
-    l = Application.WorksheetFunction.Match("BuildingBlock", Range("1:1"), 0)
-    ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter Field:=l, Criteria1:="=Buildingblocks Aggregated"
-    Range("A1").Offset(1, 0).Select
-    fstFiltCellAdd = ActiveCell.Address
-    Range("A1").Offset(1, 0).End(xlDown).Select
-    fstFiltCellAdd1 = ActiveCell.Address
-    Range(fstFiltCellAdd1).End(xlToRight).Select
-    fstFiltCellAdd2 = ActiveCell.Address
-   ' lastFiltCellAdd = ActiveCell.Address
-    Range(fstFiltCellAdd, fstFiltCellAdd2).Select
-    Range(fstFiltCellAdd, fstFiltCellAdd2).EntireRow.Delete
-    ActiveSheet.ShowAllData
-    
-'Remove the values which are less then 10% of the top value in the Total Calls(#) column
-    
+        If ActiveSheet.AutoFilterMode = True Then
+            ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter
+        End If
+     
 'Add a new sheet to create a Pivot Table
     Sheets.Add After:=Worksheets(Worksheets.Count)
     Set wsPtTable = Worksheets(Sheets.Count)
@@ -3973,9 +4215,9 @@ Dim lastRow As Integer
     Sheets(wsptName).Activate
     ActiveSheet.Cells(1, 1).Select
     fstadd1 = ActiveCell.Address(ReferenceStyle:=xlR1C1)
-    ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
-    Set wsData = Worksheets("Aggr. SWO Data CV")
-    Worksheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(AggrDataShtName).Activate
+    Set wsData = Worksheets(AggrDataShtName)
+    Worksheets(AggrDataShtName).Activate
     sourceSheet = ActiveSheet.name
     ActiveSheet.Cells(1, 1).Select
     fstAdd = ActiveCell.Address(ReferenceStyle:=xlR1C1)
@@ -4011,7 +4253,7 @@ Dim lastRow As Integer
         .Position = 1
     End With
     ActiveSheet.PivotTables("pvtMTTR").AddDataField ActiveSheet.PivotTables( _
-    "pvtMTTR").PivotFields("Avg. MTTR/Call (hrs)"), "#MTTR/Call (hrs)", xlSum
+    "pvtMTTR").PivotFields("Avg. MTTR/Call (hrs)"), "#MTTR/Call (hrs)", xlAverage
         
     ActiveSheet.PivotTables("pvtMTTR").PivotFields("Part12NC").PivotItems( _
     "Non-Parts Aggregated").Caption = "Non-Parts"
@@ -4041,6 +4283,10 @@ Dim lastRow As Integer
         .ColumnGrand = True
         .RowGrand = True
     End With
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("SubSystem").RepeatLabels = _
+    True
+    ActiveSheet.PivotTables("pvtMTTR").PivotFields("BuildingBlock").RepeatLabels _
+    = True
     pvtTbl.RefreshTable
     
     Columns("A:E").EntireColumn.AutoFit
@@ -4058,16 +4304,10 @@ Dim lastRow As Integer
     Range("AF3,AF91").Select
     Range("AF3,AF3:AJ91").Select
     ActiveSheet.Paste
-    Range("AD2").Select
-    ActiveCell.value = "DataFill"
-    Range("AD3").Select
-    ActiveCell.FormulaR1C1 = "=IF(RC[2]=0,R[-1]C,RC[2])"
-    Application.CutCopyMode = False
-    Selection.AutoFill Destination:=Range("AD3:AD91")
     Range("AE2").Select
     ActiveCell.value = "SS&BB"
     Range("AE3").Select
-    ActiveCell.FormulaR1C1 = "=CONCATENATE(RC[-1],RC[2])"
+    ActiveCell.FormulaR1C1 = "=CONCATENATE(RC[1],RC[2])"
     Range("AE3").Select
     Selection.AutoFill Destination:=Range("AE3:AE91")
     
@@ -4144,38 +4384,22 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     myPvtWorkBook = ActiveWorkbook.name
     
     Workbooks(myPvtWorkBook).Activate
-   
-   
-   
+    
 'Delete Pivot tables from aggregated Data file if any
     For Each xWs In Application.ActiveWorkbook.Worksheets
         For Each xpvt In xWs.PivotTables
             xWs.Range(xpvt.TableRange2.Address).Delete Shift:=xlUp
         Next
     Next
-        fixedDate = Sheet1.combYear.value
-    
-    Workbooks("CTS_KPI_Summary.xlsx").Activate
-    OutPutFileWB = ActiveWorkbook.name
-    Workbooks(OutPutFileWB).Activate
-    endDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
-    Sheets("IB").Select
-    Set pvtTbl = ActiveSheet.PivotTables("pvtIB")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-    pf.CurrentPage = "(All)"
-            Sheets("IB").PivotTables("pvtIB").PivotFields("Period").CurrentPage = fixedDate
-            ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
-        
-            IBVal = ActiveCell.Offset(0, 1).value
+      
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
 
     CTSProductName = KPISheetName
-   
     
     Workbooks(myPvtWorkBook).Activate
-    ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
     Cells(1, 1).Select
     ActiveCell.EntireRow.Select
     Selection.Delete
@@ -4208,13 +4432,9 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Application.CutCopyMode = False
     Range("B1").Select
     ActiveCell.FormulaR1C1 = "Period1"
-    'outPutFilePath = ThisWorkbook.Path & "\"
-    'installFlName = outPutFilePath & "CTS_KPI_Summary.xlsx"
-    'Application.Workbooks.Open (installFlName), False 'false to disable link update message
-    Workbooks(OutPutFileWB).Activate
-'    myWorkBook = ActiveWorkbook.name
+    Workbooks("CTS_KPI_Summary.xlsx").Activate
+    myWorkBook = ActiveWorkbook.name
     Sheets("KPI-All").Select
-    
     
     fixedDate = Sheet1.combYear.value
     endDate1 = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
@@ -4243,27 +4463,29 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     rows("1:1").Select
         
     Sheets("KPI-All").Select
-    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("SubSystem").RepeatLabels = _
-    False
-    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").RepeatLabels _
-    = False
+    ActiveSheet.PivotTables("pvtKPIALL").ClearAllFilters
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").ShowDetail = _
     False
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > fixedDate Then
+            pvtItm.Visible = False
+        Else
+            pvtItm.Visible = True
+        End If
+    Next pvtItm
     pvtTbl.TableRange1.Select
     pvtTbl.TableRange1.Copy
-        
     Sheets("ETTR").Select
     Range("a1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
     :=False, Transpose:=False
-        
     Sheets("KPI-All").Select
-    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("SubSystem").RepeatLabels = _
-    True
-    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").RepeatLabels _
-    = True
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("BuildingBlock").ShowDetail = _
     True
+    ActiveSheet.PivotTables("pvtKPIALL").ClearAllFilters
+    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("Part12NC-Sub Parts").PivotFilters.Add Type:=xlCaptionEquals, Value1:="-"
+    ActiveSheet.PivotTables("pvtKPIALL").PivotFields("Part12NC-Sub Parts").EnableMultiplePageItems _
+        = True
     Sheets("ETTR").Select
     Range("1:1").Select
     Selection.EntireRow.Delete
@@ -4285,7 +4507,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Range(deleteClmnsAdd, deleteLstClmnsAdd).Select
     Selection.EntireColumn.Select
     Selection.EntireColumn.Delete
-    
+       
     Columns("C:C").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     rows("3:3").Select
@@ -4295,13 +4517,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Range("B3").Select
     ActiveCell.FormulaR1C1 = "All Blocks"
     Sheets("Designed Data").Select
-   ' myPath = ThisWorkbook.Path
-    'CTSExcel = myPath & "\" & Dir(myPath & "\" & "CTS_Guidelines.xlsx")  'input file path
-    'Application.Workbooks.Open (CTSExcel), False
-    
-    'CTSWorkBook = ActiveWorkbook.name
-    'Workbooks(CTSWorkBook).Activate
-    'Sheets("Shhet2").Activate
+    Range("A1").Select
     Sheets("Designed Data").UsedRange.Find(what:="ETTR / Sys / Yr", lookat:=xlWhole).Select
 
     Selection.EntireColumn.Select
@@ -4311,37 +4527,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Range("C1").Select
     ActiveSheet.Paste
     Application.CutCopyMode = False
-   ' Workbooks(CTSWorkBook).Close
-    Windows(OutPutFileWB).Activate
     Sheets("ETTR").Activate
-    Columns("A:A").Select
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    Range("A2").Select
-    Selection.value = "DataFill"
-    Range("A3").Select
-    
-    ActiveCell.FormulaR1C1 = "=IF(RC[1]="""",R[-1]C,RC[1])"
-    fstAdd = ActiveCell.Address
-    Sheets("ETTR").UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
-    ActiveCell.Offset(0, -1).Select
-    lstAdd = ActiveCell.Address
-    Range(fstAdd).Select
-    
-    Selection.AutoFill Destination:=Range(fstAdd, lstAdd)
-    Range(fstAdd, lstAdd).Select
-    Selection.Copy
-    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
-        :=False, Transpose:=False
-    Sheets("ETTR").UsedRange.Find(what:="SubSystem", lookat:=xlWhole).Select
-    ActiveCell.Offset(1, 0).Select
-    fstAdd = ActiveCell.Address
-    Sheets("ETTR").UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
-    ActiveCell.Offset(0, 2).Select
-    lstAdd = ActiveCell.Address
-    Range(fstAdd, lstAdd).Select
-    Selection.Replace what:="", Replacement:="0", lookat:=xlPart, _
-    SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-    ReplaceFormat:=False
     
     Sheets("ETTR").UsedRange.Find(what:="Designed", lookat:=xlWhole).Select
     ActiveCell.EntireColumn.Select
@@ -4349,29 +4535,14 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     ActiveCell.Offset(2, 0).Select
     fstAdd = ActiveCell.Address
     Sheets("ETTR").UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
-    ActiveCell.Offset(0, 3).Select
+    ActiveCell.Offset(0, 2).Select
     lstAdd = ActiveCell.Address
     Range(fstAdd).Select
-    ActiveCell.FormulaR1C1 = "=RC[-3]&RC[-1]"
+    ActiveCell.FormulaR1C1 = "=RC[-2]&RC[-1]"
     Selection.AutoFill Destination:=ActiveSheet.Range(fstAdd, lstAdd)
     Range(fstAdd, lstAdd).Select
     Calculate
-    Cells(2, 4).value = "SS&BB"
-    Sheets("ETTR").UsedRange.Find(what:="Parts", lookat:=xlWhole).Select
-    ActiveCell.Offset(1, 1).Select
-    CRSysYrFstAdd = ActiveCell.Address
-    ActiveCell.Offset(0, -4).Select
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 4).Select
-    CRSysYrLstAdd = ActiveCell.Address
-    Range(CRSysYrFstAdd).Select
-    ActiveCell.FormulaR1C1 = "=(RC[-1]+RC[-2])/" & IBVal
-    Range(CRSysYrFstAdd).Select
-    Selection.AutoFill Destination:=Range(CRSysYrFstAdd, CRSysYrLstAdd)
-    Range(CRSysYrFstAdd, CRSysYrLstAdd).Select
-    Range(CRSysYrFstAdd, CRSysYrLstAdd).NumberFormat = "0.0000"
-    Calculate
-    Application.CutCopyMode = False
+    Cells(2, 3).value = "SS&BB"
     Sheets("ETTR").UsedRange.Find(what:="Non-Parts", lookat:=xlWhole).Select
     ActiveCell.Offset(2, 0).Select
     nonPartsFstAdd = ActiveCell.Address
@@ -4492,7 +4663,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Sheets("ETTR").UsedRange.Find(what:="Non-Parts", lookat:=xlWhole).Select
     ActiveCell.Offset(-1, 0).Select
     ActiveCell.value = "MAT # of ETTR profiles"
-    Range("F1:H1").Select
+    Range("E1:G1").Select
     With Selection
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlBottom
@@ -4511,30 +4682,17 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     ActiveCell.Offset(0, 1).Select
     ActiveCell.value = "Parts"
     ActiveCell.Offset(0, 1).Select
-    ActiveCell.value = "Avg. ETTR/Sys/Yr"
-    ActiveCell.Offset(1, 0).Select
-    Range(Selection, Selection.End(xlDown)).Select
-    With Selection
-        .HorizontalAlignment = xlCenter
-        .VerticalAlignment = xlBottom
-        .WrapText = True
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
+    ActiveCell.value = "Avg. ETTR/Yr"
     
-    Range("I2").Select
+    Range("H2").Select
     ActiveCell.value = "ITM"
-    Range("J2").Select
+    Range("I2").Select
     ActiveCell.value = "IMQ"
-    Range("K2").Select
+    Range("J2").Select
     ActiveCell.value = "YTD"
-    Range("L2").Select
+    Range("K2").Select
     ActiveCell.value = "MAT"
-    Range("I1:L1").Select
+    Range("H1:K1").Select
     With Selection
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlBottom
@@ -4548,15 +4706,15 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     End With
     Selection.Merge
    
-    Range("M2").Select
+    Range("L2").Select
     ActiveCell.value = "ITM"
-    Range("N2").Select
+    Range("M2").Select
     ActiveCell.value = "IMQ"
-    Range("O2").Select
+    Range("N2").Select
     ActiveCell.value = "YTD"
-    Range("P2").Select
+    Range("O2").Select
     ActiveCell.value = "MAT"
-    Range("M1:P1").Select
+    Range("L1:O1").Select
     With Selection
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlBottom
@@ -4569,11 +4727,11 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
         .MergeCells = False
     End With
     Selection.Merge
-    Range("Q1").Select
+    Range("P1").Select
     ActiveCell.value = "Crossover"
-    Range("Q2").Select
+    Range("P2").Select
     ActiveCell.value = "Trigger"
-    Range("R2").Select
+    Range("Q2").Select
       
     fixedDate1 = Sheet1.combYear.value
     fixDte = Format(fixedDate1, "mmm" & "-" & "yyyy")
@@ -4586,15 +4744,15 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     fnlEndDate = Format(DateAdd("m", 1, endDate1), "mmm" & "-" & "yyyy")
     fnlEndDate1 = Format(endDate2, "mmm" & "-" & "yyyy")
     frmEndDate = Format(fnlEndDate, "mmm" & "-" & "yyyy")
-    Range("M1").Select
+    Range("L1").Select
     ActiveCell.value = "Last Year"
-    Range("I1").Select
-    ActiveCell.value = "Avg. ETTR / Sys (Current Month)"
-    Range("R2").Select
+    Range("H1").Select
+    ActiveCell.value = "Avg. ETTR (days) (Current Year)"
+    Range("Q2").Select
     Do Until frmEndDate = frmtData
-    ActiveCell.value = frmEndDate
-    ActiveCell.Offset(0, 1).Select
-    frmEndDate = Format(DateAdd("m", 1, frmEndDate), "mmm" & "-" & "yyyy")
+        ActiveCell.value = frmEndDate
+        ActiveCell.Offset(0, 1).Select
+        frmEndDate = Format(DateAdd("m", 1, frmEndDate), "mmm" & "-" & "yyyy")
     Loop
 
     Range("A1").Select
@@ -4647,7 +4805,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     
     ActiveSheet.UsedRange.Select
     Selection.RowHeight = 15
-    Range("I1:Q2").Select
+    Range("H1:P2").Select
     Selection.Columns.Group
     With ActiveSheet.Outline
         .AutomaticStyles = False
@@ -4656,7 +4814,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     End With
     
     Cells(2, 1).Select
-    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Sys/Yr", lookat:=xlWhole).Select
+    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Yr", lookat:=xlWhole).Select
     Sheets("ETTR").UsedRange.Find(what:="ITM", After:=ActiveCell, lookat:=xlWhole).Select
     Range(Selection, Selection.End(xlToRight)).Select
     Selection.EntireColumn.Select
@@ -4666,71 +4824,459 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Set pvtTbl = Worksheets("ETTR").PivotTables("pvtETTR")
     fixedDate = Sheet1.combYear.value
 
-'Calculate ITM i.e. ETTR Value for the same motnh in the same year as inPut given from user
-    endDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+'enter values in 4th Row for All sub systems and All Buildingblocks
 
+    With ActiveSheet.PivotTables("pvtETTR").PivotFields("System")
+        .Orientation = xlPageField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("pvtETTR").PivotFields("Period")
+        .Orientation = xlColumnField
+        .Position = 2
+    End With
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("Part12NC").Orientation = _
+        xlHidden
+   
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("System").ClearAllFilters
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("System"). _
+        EnableMultiplePageItems = False
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("System").CurrentPage = "(All)"
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("System").ClearAllFilters
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("System").CurrentPage = _
+        "System level"
+
+    fixedDate = Sheet1.combYear.value
+    endDate1 = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
+    Set pf = pvtTbl.PivotFields("Period")
+    pf.ClearAllFilters
+    With ActiveSheet.PivotTables("pvtETTR")
+        .ColumnGrand = True
+        .RowGrand = False
+    End With
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > fixedDate Then
+            pvtItm.Visible = False
+        Else
+            pvtItm.Visible = True
+        End If
+    Next pvtItm
+    startDate = Format(endDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    fstAdd = ActiveCell.Offset(1, 0).Address
+    Sheets("ETTR").UsedRange.Find(what:="System Level", lookat:=xlWhole).Select
+    ActiveCell.Offset(4, 1).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.Copy
+    Range(fstAdd).PasteSpecial
+    Application.CutCopyMode = False
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("System").Orientation = xlHidden
+    With ActiveSheet.PivotTables("pvtETTR").PivotFields("Period")
+        .Orientation = xlPageField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("pvtETTR").PivotFields("Part12NC")
+        .Orientation = xlColumnField
+        .Position = 1
+    End With
+    With ActiveSheet.PivotTables("pvtETTR")
+        .ColumnGrand = True
+        .RowGrand = True
+    End With
+    
+'Enter 12 months Data in the column "Avg of Avg ETTR/Month" after Crossover Trigger
+    fixedDate = Sheet1.combYear.value
+    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    endDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
     Set pvtTbl = ActiveSheet.PivotTables("pvtETTR")
     Set pf = pvtTbl.PivotFields("Period")
     pf.ClearAllFilters
     pf.CurrentPage = "(All)"
-        
+    Cells(3, 18).Select
+    i = 18
     For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm.value = fixedDate Then
-            pf.CurrentPage = pvtItm.Caption
-        End If
-    Next
-      
-    Dim X As Long
-    lr = Worksheets("ETTR").Cells(rows.Count, "D").End(xlUp).Row
-    Range("AE3").Select
-    fstAdd = ActiveCell.Address(False, False)
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 5).Select
-    lstAdd = ActiveCell.Address(False, False)
-    Range(fstAdd, lstAdd).Select
-    rng = Range(fstAdd, lstAdd)
-            
-    For X = 3 To lr
-        On Error Resume Next
-        Cells(X, 9).value = Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)
-        Cells(X, 9).NumberFormat = "0.00"
-    Next X
-             
-'Calculate IMQ i.e. ETTR data for the quarter in the current year's Month (3 months before the input Date provided by user)
-
-    Set pvtTbl = Worksheets("ETTR").PivotTables("pvtETTR")
-    pvtTbl.PivotFields("Period").ClearAllFilters
-    previousMonth = Format(DateAdd("m", -1, fixedDate), "yyyy" & "-" & "mm")
-    qMnth = Format(DateAdd("m", -2, fixedDate), "yyyy" & "-" & "mm")
-
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm.value = fixedDate Or pvtItm.value = previousMonth Or pvtItm.value = qMnth Then
-            pvtItm.Visible = True
+        If pvtItm < endDate Or pvtItm > startDate Then
         Else
-            pvtItm.Visible = False
- 
-        End If
- 
-    Next
-
-    lr = Worksheets("ETTR").Cells(rows.Count, "C").End(xlUp).Row
-    Range("AE3").Select
-    fstAdd = ActiveCell.Address(False, False)
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 5).Select
-    lstAdd = ActiveCell.Address(False, False)
-    Range(fstAdd, lstAdd).Select
-    rng = Range(fstAdd, lstAdd)
+            pvtMonth = Format(pvtItm, "m" & "/" & "d" & "/" & "yyyy")
+            Sheets("ETTR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
+            ActiveCell.Offset(1, 0).Select
+            myRow = ActiveCell.Row
+            MyCol = ActiveCell.Column
+            pf.CurrentPage = pvtItm.Caption
+            lr = Worksheets("ETTR").Cells(rows.Count, "C").End(xlUp).Row
+            Range("AE3").Select
+            fstAdd = ActiveCell.Address(False, False)
+            ActiveCell.End(xlDown).Select
+            ActiveCell.Offset(0, 5).Select
+            lstAdd = ActiveCell.Address(False, False)
+            rng = Range(fstAdd, lstAdd)
+            'rng = Range("AE3:AJ91")
             
-    For X = 3 To lr
-        On Error Resume Next
-        Cells(X, 10).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / 3
-        Cells(X, 10).NumberFormat = "0.00"
+            If i <= 29 Then
+                For X = myRow To lr
+                    On Error Resume Next
+                    Cells(X, MyCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
+                    Cells(X, MyCol).NumberFormat = "0.00"
+                Next X
+             
+            End If
+                i = i + 1
+        End If
+    Next pvtItm
+
+    Range("C3").Select
+    ActiveCell.Offset(1, 3).Select
+    sumAdd = ActiveCell.Address(False, False)
+    sumMidAdd = Mid(sumAdd, 2)
+    ActiveCell.Offset(0, -3).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 3).Select
+    sumAdd1 = ActiveCell.Address(False, False)
+    sumMidAdd1 = Mid(sumAdd1, 2)
+    Range("F3").Select
+    sumAdd2 = ActiveCell.Address(False, False)
+    sumMidAdd2 = Mid(sumAdd2, 2)
+    Range("" & "Q" & sumMidAdd - 1 & ":" & "AB" & sumMidAdd1 & "").Select
+    Selection.Replace what:="", Replacement:="0.00", lookat:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Selection.NumberFormat = "0.0000"
     
-    Next X
+'==================================================================================
 
-'Calculate MAT i.e. ETTR data for the last 12 months from the input date provided by user
+'Enter 12 months data for the last year from the selected date for Last year YTD and MTD calculations
 
+    fixedDate1 = Sheet1.combYear.value
+    frmtfixedDate1 = Format(fixedDate1, "mmm" & "-" & "yyyy")
+    prvsYrDate1 = Format(DateAdd("yyyy", -1, frmtfixedDate1), "mmm" & "-" & "yyyy")
+    prvsYrDate = Format(DateAdd("m", 1, prvsYrDate1), "mmm" & "-" & "yyyy")
+
+    prvs2YrDate = Format(DateAdd("yyyy", -1, prvsYrDate), "mmm" & "-" & "yyyy")
+
+    Range("AQ2").Select
+    Do Until prvs2YrDate = prvsYrDate
+        ActiveCell.value = prvs2YrDate
+        ActiveCell.Offset(0, 1).Select
+        prvs2YrDate = Format(DateAdd("m", 1, prvs2YrDate), "mmm" & "-" & "yyyy")
+    Loop
+    
+'Enter 12 months Data for the last year to calculate last years ITM, IMQ, YTD and MAT
+    fixedDate = Sheet1.combYear.value
+    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
+    prvsYrDate1 = Format(DateAdd("yyyy", -1, startDate), "mmm" & "-" & "yyyy")
+    startDate = Format(prvsYrDate1, "yyyy" & "-" & "mm")
+    endDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
+    Set pvtTbl = ActiveSheet.PivotTables("pvtETTR")
+    Set pf = pvtTbl.PivotFields("Period")
+    pf.ClearAllFilters
+    pf.CurrentPage = "(All)"
+    Cells(3, 43).Select
+    i = 18
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > startDate Then
+        Else
+            pvtMonth = Format(pvtItm, "m" & "/" & "d" & "/" & "yyyy")
+            Sheets("ETTR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
+            ActiveCell.Offset(1, 0).Select
+            myRow = ActiveCell.Row
+            MyCol = ActiveCell.Column
+            pf.CurrentPage = pvtItm.Caption
+            lr = Worksheets("ETTR").Cells(rows.Count, "C").End(xlUp).Row
+            Range("AE3").Select
+            fstAdd = ActiveCell.Address(False, False)
+            ActiveCell.End(xlDown).Select
+            ActiveCell.Offset(0, 6).Select
+            lstAdd = ActiveCell.Address(False, False)
+            rng = Range(fstAdd, lstAdd)
+            'rng = Range("AE3:AJ91")
+            
+            If i <= 29 Then
+                For X = myRow To lr
+                    On Error Resume Next
+                    Cells(X, MyCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
+                    Cells(X, MyCol).NumberFormat = "0.00"
+                Next X
+             
+            End If
+                i = i + 1
+        End If
+    Next pvtItm
+
+    Range("C3").Select
+    ActiveCell.Offset(1, 3).Select
+    sumAdd = ActiveCell.Address(False, False)
+    sumMidAdd = Mid(sumAdd, 2)
+    ActiveCell.Offset(0, -3).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 3).Select
+    sumAdd1 = ActiveCell.Address(False, False)
+    sumMidAdd1 = Mid(sumAdd1, 2)
+    Range("F3").Select
+    sumAdd2 = ActiveCell.Address(False, False)
+    sumMidAdd2 = Mid(sumAdd2, 2)
+    Range("" & "AQ" & sumMidAdd - 1 & ":" & "BB" & sumMidAdd1 & "").Select
+    Selection.Replace what:="", Replacement:="0.00", lookat:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Selection.NumberFormat = "0.0000"
+    
+'Enter ITM values for current year month
+    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Yr", lookat:=xlWhole).Select
+    Sheets("ETTR").UsedRange.Find(what:="ITM", After:=ActiveCell, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    ITMDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    endDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:=endDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    ITMMonth = ActiveCell.Address
+    Do While ActiveCell.value <> ""
+    Range(ITMDatacellAdd).value = ActiveCell.value
+    ITMDatacellAdd = Range(ITMDatacellAdd).Offset(1, 0).Address
+    ActiveCell.Offset(1, 0).Select
+    Loop
+
+'Enter IMQ values for current year
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    startDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(fixedDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -3, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Yr", lookat:=xlWhole).Select
+    Sheets("ETTR").UsedRange.Find(what:="IMQ", After:=ActiveCell, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    IMQDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    IMQStrtMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    IMQEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+    Range(IMQDatacellAdd).value = "=AVERAGE(" & IMQStrtMonth & ":" & IMQEndMonth & ")"
+
+    IMQDatacellAdd = Range(IMQDatacellAdd).Offset(1, 0).Address
+    IMQStrtMonth = Range(IMQStrtMonth).Offset(1, 0).Address
+    IMQEndMonth = Range(IMQEndMonth).Offset(1, 0).Address
+    ActiveCell.Offset(1, 0).Select
+    Loop
+    
+ 'Enter YTD values for current year
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    startDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(fixedDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -EndDateMonth, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Yr", lookat:=xlWhole).Select
+    Sheets("ETTR").UsedRange.Find(what:="YTD", After:=ActiveCell, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    YTDDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    YDTStrtMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    YDTEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+    Range(YTDDatacellAdd).value = "=AVERAGE(" & YDTStrtMonth & ":" & YDTEndMonth & ")"
+
+    YTDDatacellAdd = Range(YTDDatacellAdd).Offset(1, 0).Address
+    YDTStrtMonth = Range(YDTStrtMonth).Offset(1, 0).Address
+    YDTEndMonth = Range(YDTEndMonth).Offset(1, 0).Address
+    ActiveCell.Offset(1, 0).Select
+    Loop
+
+'Enter MAT values for current year
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    startDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(fixedDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -12, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Yr", lookat:=xlWhole).Select
+    Sheets("ETTR").UsedRange.Find(what:="MAT", After:=ActiveCell, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    MATDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    MATStrtMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    MATEndMonth = ActiveCell.Address(False, False)
+   ' Range(YTDDatacellAdd).Select
+    Do While ActiveCell.value <> ""
+    Range(MATDatacellAdd).value = "=AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")"
+
+    MATDatacellAdd = Range(MATDatacellAdd).Offset(1, 0).Address
+    MATStrtMonth = Range(MATStrtMonth).Offset(1, 0).Address
+    MATEndMonth = Range(MATEndMonth).Offset(1, 0).Address
+    ActiveCell.Offset(1, 0).Select
+    Loop
+    
+'=============================================================================================
+
+'==================================================================================================
+
+'Enter ITM values for Last year month
+    fixedDate = Sheet1.combYear.value
+    findDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    endDate = Format(findDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(3, 0).Select
+    ITMLstYrAdd = ActiveCell.Address
+    Sheets("ETTR").UsedRange.Find(what:=endDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    ITMLstYrMonth = ActiveCell.Address
+    Do While ActiveCell.value <> ""
+    Range(ITMLstYrAdd).value = ActiveCell.value
+    ITMLstYrAdd = Range(ITMLstYrAdd).Offset(1, 0).Address
+    ITMLstYrMonth = Range(ITMLstYrMonth).Offset(1, 0).Address
+    ActiveCell.Offset(1, 0).Select
+    Loop
+
+'Enter IMQ values for Last year
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    IMDDate = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
+    startDate = Format(IMDDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(fixedDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -3, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.Offset(0, 1).Select
+    IMQDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Sheets("ETTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    IMQStrtMonth = ActiveCell.Address(False, False)
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    IMQEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+    Range(IMQDatacellAdd).value = "=AVERAGE(" & IMQStrtMonth & ":" & IMQEndMonth & ")"
+
+    IMQDatacellAdd = Range(IMQDatacellAdd).Offset(1, 0).Address
+    IMQStrtMonth = Range(IMQStrtMonth).Offset(1, 0).Address
+    IMQEndMonth = Range(IMQEndMonth).Offset(1, 0).Address
+    ActiveCell.Offset(1, 0).Select
+    Loop
+    
+ 'Enter YTD values for Last year
+    fixedDate = Sheet1.combYear.value
+    YTDDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    startDate = Format(YTDDate, "yyyy" & "-" & "mm")
+    startDate = Format(YTDDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(YTDDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -EndDateMonth, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.Offset(0, 2).Select
+    YTDDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    YDTStrtMonth = ActiveCell.Address(False, False)
+    
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    YDTEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+    Range(YTDDatacellAdd).value = "=AVERAGE(" & YDTStrtMonth & ":" & YDTEndMonth & ")"
+
+    YTDDatacellAdd = Range(YTDDatacellAdd).Offset(1, 0).Address
+    YDTStrtMonth = Range(YDTStrtMonth).Offset(1, 0).Address
+    YDTEndMonth = Range(YDTEndMonth).Offset(1, 0).Address
+    ActiveCell.Offset(1, 0).Select
+    Loop
+
+'Enter MAT values for Last year
+    fixedDate = Sheet1.combYear.value
+    MATDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+
+    startDate = Format(MATDate, "yyyy" & "-" & "mm")
+    startDate = Format(MATDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(MATDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -12, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.Offset(0, 3).Select
+    MATDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(2, 0).Select
+    MATStrtMonth = ActiveCell.Address(False, False)
+    
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    MATEndMonth = ActiveCell.Address(False, False)
+    Do While ActiveCell.value <> ""
+    Range(MATDatacellAdd).value = "=AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")"
+
+    MATDatacellAdd = Range(MATDatacellAdd).Offset(1, 0).Address
+    MATStrtMonth = Range(MATStrtMonth).Offset(1, 0).Address
+    MATEndMonth = Range(MATEndMonth).Offset(1, 0).Address
+    ActiveCell.Offset(1, 0).Select
+    Loop
+
+'Enter values of Avg. ETTR/Yr
+    fixedDate = Sheet1.combYear.value
     endDate1 = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
     endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
     Set pvtTbl = ActiveSheet.PivotTables("pvtETTR")
@@ -4756,245 +5302,33 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             
     For X = 3 To lr
         On Error Resume Next
-        Cells(X, 12).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / 12
-        Cells(X, 12).NumberFormat = "0.00"
+        Cells(X, 7).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
+        Cells(X, 7).NumberFormat = "0.00"
     Next X
 
-'calculate ITM for the same month in the previous year of of the input year provided by the user
-    currentdate = Format(Now(), "yyyymm")
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(startDate, "yyyy" & "-" & "mm")
-    endDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+'Enter values in 4th row for All Sub systems and All Building blocks
 
-    Set pvtTbl = ActiveSheet.PivotTables("pvtETTR")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-    pf.CurrentPage = "(All)"
-        
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm.value = endDate Then
-            pf.CurrentPage = pvtItm.Caption
-            pvtItmName = pvtItm.Caption
-        Else
-            pvtItm.Visible = False
-        End If
-        'pvtItmName = pvtItm.value
-    Next
-    If pvtItmName = endDate Then
-        lr = Worksheets("ETTR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
-            
-        For X = 3 To lr
-            On Error Resume Next
-            Cells(X, 13).value = Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)
-            Cells(X, 13).NumberFormat = "0.00"
-        Next X
-      Else
-      End If
-'Calculate IMQ i.e. previous 3 months in the previous year
-    currentdate = Format(Now(), "yyyymm")
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
-    prvsIMQ = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
-
-    Set pvtTbl = Worksheets("ETTR").PivotTables("pvtETTR")
-    pvtTbl.PivotFields("Period").ClearAllFilters
-    previousMonth = Format(DateAdd("m", -1, prvsIMQ), "yyyy" & "-" & "mm")
-    qMnth = Format(DateAdd("m", -2, prvsIMQ), "yyyy" & "-" & "mm")
-
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm.value = prvsIMQ Or pvtItm.value = previousMonth Or pvtItm.value = qMnth Then
-            pvtItm.Visible = True
-            pvtItmName = pvtItm.value
-        Else
-            pvtItm.Visible = False
- 
-        End If
-           'pvtItmName = pvtItm.value
-    Next
-    If pvtItmName = prvsIMQ Or pvtItmName = previousMonth Or pvtItmName = qMnth Then
-
-        lr = Worksheets("ETTR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
-        
-        For X = 3 To lr
-            On Error Resume Next
-            Cells(X, 14).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / 3
-            Cells(X, 14).NumberFormat = "0.00"
-        Next X
-    Else
-    End If
-'Calculate MAT for the Previous year
-
-    currentdate = Format(Now(), "yyyymm")
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
-    endDate1 = Format(DateAdd("yyyy", -2, fixedDate), "yyyy" & "-" & "mm")
-    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
-
-    Set pvtTbl = ActiveSheet.PivotTables("pvtETTR")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm < endDate Or pvtItm > startDate Then
-            pvtItm.Visible = False
-        Else
-            pvtItm.Visible = True
-            pvtItmName = pvtItm.value
-        End If
-            'pvtItmName = pvtItm.value
-    Next pvtItm
-    If pvtItmName = endDate Or pvtItmName = startDate Then
-
-        lr = Worksheets("ETTR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
-            
-        For X = 3 To lr
-            On Error Resume Next
-            Cells(X, 16).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / 12
-            Cells(X, 16).NumberFormat = "0.00"
-        Next X
-    Else
-    End If
-'Calculate YTD for the selected year i.e. from January to the selected month for the year
-
-    currentdate = Format(Now(), "yyyymm")
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
-    EndDateMonth = Mid(fixedDate, 6, 2)
-
-    endDate = Format(DateAdd("m", -EndDateMonth, fixedDate), "yyyy" & "-" & "mm")
-   
-    Set pvtTbl = ActiveSheet.PivotTables("pvtETTR")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm <= endDate Or pvtItm > startDate Then
-            pvtItm.Visible = False
-        Else
-            pvtItm.Visible = True
-            pvtItmName = pvtItm.Caption
-        End If
-           'pvtItmName = pvtItm.Caption
-    Next pvtItm
-    If pvtItmName = endDate Or pvtItmName = startDate Then
-
-        lr = Worksheets("ETTR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
-            
-        For X = 3 To lr
-            On Error Resume Next
-            Cells(X, 11).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / EndDateMonth
-            Cells(X, 11).NumberFormat = "0.00"
-        Next X
-    Else
-    End If
-
-'Calculate YTD for the previous year i.e. ETTR data from January to the month in the previous year
-
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
-    startDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
-    EndDateMonth = Mid(fixedDate, 6, 2)
-
-    endDate = Format(DateAdd("m", -EndDateMonth, startDate1), "yyyy" & "-" & "mm")
-    Set pvtTbl = ActiveSheet.PivotTables("pvtETTR")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm <= endDate Or pvtItm > startDate1 Then
-            pvtItm.Visible = False
-        Else
-            pvtItm.Visible = True
-            pvtItmName = pvtItm.Caption
-        End If
-    Next pvtItm
-    If pvtItmName = endDate Or pvtItmName = startDate1 Then
-
-        lr = Worksheets("ETTR").Cells(rows.Count, "C").End(xlUp).Row
-        Range("AE3").Select
-        fstAdd = ActiveCell.Address(False, False)
-        ActiveCell.End(xlDown).Select
-        ActiveCell.Offset(0, 5).Select
-        lstAdd = ActiveCell.Address(False, False)
-        Range(fstAdd, lstAdd).Select
-        rng = Range(fstAdd, lstAdd)
-            
-        For X = 3 To lr
-            On Error Resume Next
-            Cells(X, 15).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / EndDateMonth
-            Cells(X, 15).NumberFormat = "0.00"
-        Next X
-
-    Else
-    End If
-
-    fixedDate = Sheet1.combYear.value
-    startDate = Mid(fixedDate, 1, 4) & " - " & Mid(fixedDate, 5, 2) & "-" & "01"
-    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
-    endDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
-    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
-    Set pvtTbl = ActiveSheet.PivotTables("pvtETTR")
-    Set pf = pvtTbl.PivotFields("Period")
-    pf.ClearAllFilters
-    pf.CurrentPage = "(All)"
-    Cells(3, 18).Select
-    i = 18
-    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-        If pvtItm < endDate Or pvtItm > startDate Then
-        Else
-            pvtMonth = Format(pvtItm, "m" & "/" & "d" & "/" & "yyyy")
-            Sheets("ETTR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
-            ActiveCell.Offset(1, 0).Select
-            myRow = ActiveCell.Row
-            MyCol = ActiveCell.Column
-            pf.CurrentPage = pvtItm.Caption
-            lr = Worksheets("ETTR").Cells(rows.Count, "D").End(xlUp).Row
-            Range("AE3").Select
-            fstAdd = ActiveCell.Address(False, False)
-            ActiveCell.End(xlDown).Select
-            ActiveCell.Offset(0, 6).Select
-            lstAdd = ActiveCell.Address(False, False)
-            rng = Range(fstAdd, lstAdd)
-            'rng = Range("AE3:AJ91")
-            
-            If i <= 29 Then
-                For X = myRow To lr
-                    On Error Resume Next
-                    Cells(X, MyCol).value = Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)
-                    Cells(X, MyCol).NumberFormat = "0.00"
-                Next X
-             
-            End If
-                i = i + 1
-        End If
-    Next pvtItm
-    Range("D3").Select
+    With ActiveSheet.PivotTables("pvtETTR").PivotFields("System")
+        .Orientation = xlPageField
+        .Position = 2
+    End With
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("System").CurrentPage = "(All)"
+    With ActiveSheet.PivotTables("pvtETTR").PivotFields("System")
+        .PivotItems("").Visible = False
+        .PivotItems(" ").Visible = False
+    End With
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("System"). _
+        EnableMultiplePageItems = True
+    ActiveSheet.PivotTables("pvtETTR").ColumnGrand = False
+    
+    Sheets("ETTR").UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
+    ETTRperYrVal = ActiveCell.Offset(1, 0).value
+    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Yr", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.value = ETTRperYrVal
+    
+'==================================================================================================
+    Range("C3").Select
     ActiveCell.Offset(1, 2).Select
     sumAdd = ActiveCell.Address(False, False)
     sumMidAdd = Mid(sumAdd, 2)
@@ -5006,71 +5340,26 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Range("F3").Select
     sumAdd2 = ActiveCell.Address(False, False)
     sumMidAdd2 = Mid(sumAdd2, 2)
-    Range("F3").Select
-    ActiveCell.Formula = "=SUM(" & sumAdd & ":" & sumAdd1 & ")"
-    Range("G3").Select
-    ActiveCell.Formula = "=SUM(" & "G" & sumMidAdd & ":" & "G" & sumMidAdd1 & ")"
-    Range("H3").Select
-    ActiveCell.Formula = "=SUM(" & "H" & sumMidAdd & ":" & "H" & sumMidAdd1 & ")"
-    Range("I3").Select
-    ActiveCell.Formula = "=SUM(" & "I" & sumMidAdd & ":" & "I" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("J3").Select
-    ActiveCell.Formula = "=SUM(" & "J" & sumMidAdd & ":" & "J" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("K3").Select
-    ActiveCell.Formula = "=SUM(" & "K" & sumMidAdd & ":" & "K" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("L3").Select
-    ActiveCell.Formula = "=SUM(" & "L" & sumMidAdd & ":" & "L" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("M3").Select
-    ActiveCell.Formula = "=SUM(" & "M" & sumMidAdd & ":" & "M" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("N3").Select
-    ActiveCell.Formula = "=SUM(" & "N" & sumMidAdd & ":" & "N" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("O3").Select
-    ActiveCell.Formula = "=SUM(" & "O" & sumMidAdd & ":" & "O" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("P3").Select
-    ActiveCell.Formula = "=SUM(" & "P" & sumMidAdd & ":" & "P" & sumMidAdd1 & ")/SUM(" & "F" & sumMidAdd2 & ":" & "G" & sumMidAdd2 & ") "
-    Range("R3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "R" & sumMidAdd & ":" & "R" & sumMidAdd1 & ")"
-    Range("S3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "S" & sumMidAdd & ":" & "S" & sumMidAdd1 & ")"
-    Range("T3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "T" & sumMidAdd & ":" & "T" & sumMidAdd1 & ")"
-    Range("U3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "U" & sumMidAdd & ":" & "U" & sumMidAdd1 & ")"
-    Range("V3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "V" & sumMidAdd & ":" & "V" & sumMidAdd1 & ")"
-    Range("W3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "W" & sumMidAdd & ":" & "W" & sumMidAdd1 & ")"
-    Range("X3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "X" & sumMidAdd & ":" & "X" & sumMidAdd1 & ")"
-    Range("Y3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "Y" & sumMidAdd & ":" & "Y" & sumMidAdd1 & ")"
-    Range("Z3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "Z" & sumMidAdd & ":" & "Z" & sumMidAdd1 & ")"
-    Range("AA3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "AA" & sumMidAdd & ":" & "AA" & sumMidAdd1 & ")"
-    Range("AB3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "AB" & sumMidAdd & ":" & "AB" & sumMidAdd1 & ")"
-    Range("AC3").Select
-    ActiveCell.Formula = "=AVERAGE(" & "AC" & sumMidAdd & ":" & "AC" & sumMidAdd1 & ")"
+   
     Sheets("ETTR").Select
-    Range("Q3").Select
-    ActiveCell.FormulaR1C1 = "=RC[-7]>RC[-3]"
-    Range("Q3").Select
-    Selection.AutoFill Destination:=Range("" & "Q" & sumMidAdd - 1 & ":" & "Q" & sumMidAdd1 & "")
-    Range("" & "Q" & sumMidAdd - 1 & ":" & "Q" & sumMidAdd1 & "").Select
+    Sheets("ETTR").UsedRange.Find(what:="Trigger", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.FormulaR1C1 = "=AND(RC[-7]>RC[-6],RC[-12]<RC[-9])"
+    Selection.AutoFill Destination:=Range("" & "P" & sumMidAdd - 1 & ":" & "P" & sumMidAdd1 & "")
+    Range("" & "P" & sumMidAdd - 1 & ":" & "P" & sumMidAdd1 & "").Select
     Calculate
-    Range("" & "R" & sumMidAdd - 1 & ":" & "AC" & sumMidAdd1 & "").Select
+    Range("" & "Q" & sumMidAdd - 1 & ":" & "AB" & sumMidAdd1 & "").Select
     Selection.Replace what:="", Replacement:="0.00", lookat:=xlPart, _
         SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
         ReplaceFormat:=False
     Selection.NumberFormat = "0.00"
     Application.CutCopyMode = False
-    Range("AD1").Select
+    Range("AC1").Select
     Selection.EntireColumn.Select
      Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-     Range("" & "AD" & sumMidAdd - 1 & ":" & "AD" & sumMidAdd1 & "").Select
+     Range("" & "AC" & sumMidAdd - 1 & ":" & "AC" & sumMidAdd1 & "").Select
     Selection.SparklineGroups.Add Type:=xlSparkLine, SourceData:= _
-        "" & "R" & sumMidAdd - 1 & ":" & "AC" & sumMidAdd1 & ""
+        "" & "Q" & sumMidAdd - 1 & ":" & "AB" & sumMidAdd1 & ""
     Selection.SparklineGroups.Item(1).SeriesColor.Color = 9592887
     Selection.SparklineGroups.Item(1).SeriesColor.TintAndShade = 0
     Selection.SparklineGroups.Item(1).Points.Negative.Color.Color = 208
@@ -5085,86 +5374,344 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     Selection.SparklineGroups.Item(1).Points.Firstpoint.Color.TintAndShade = 0
     Selection.SparklineGroups.Item(1).Points.Lastpoint.Color.Color = 208
     Selection.SparklineGroups.Item(1).Points.Lastpoint.Color.TintAndShade = 0
-    
-    Range("AD2").Select
+    Range("" & "G" & sumMidAdd - 1 & ":" & "O" & sumMidAdd1 & "").Select
+    Selection.Copy
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=False, Transpose:=False
+    Selection.Replace what:="", Replacement:="0.00", lookat:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Selection.NumberFormat = "0.00"
+    Application.CutCopyMode = False
+    Range("AC2").Select
     ActiveCell.FormulaR1C1 = "Trend"
     Application.CutCopyMode = False
-    Range("H4").Select
-    Range(Selection, Selection.End(xlDown)).Select
-    Selection.FormatConditions.AddTop10
+    Range("G4").Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.Offset(0, -1).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 1).Select
+    
+    lstAdd = ActiveCell.Address
+    Range(fstAdd, lstAdd).Select
+
+    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, _
+    Formula1:="=LARGE(" & fstAdd & ":" & lstAdd & ",10)"
+    'Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, _
+    'Formula1:="=G4/100*10"
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1)
-        .TopBottom = xlTop10Top
-        .Rank = 10
-        .Percent = False
-    End With
+    
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
         .Color = 13551615
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    Range("Q3").Select
-    Range(Selection, Selection.End(xlDown)).Select
-    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
-        Formula1:="=TRUE"
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Interior
+'Highlight ETTR Crossover Trigger in Red or Orange for true values depending upon 20% largest values
+    Sheets("ETTR").Select
+    Sheets("ETTR").UsedRange.Find(what:="BuildingBlock", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 3).Select
+    fstAdd = ActiveCell.Address(False, False)
+    fstMidAdd = Mid(fstAdd, 2)
+    
+    Sheets("ETTR").UsedRange.Find(what:="BuildingBlock", lookat:=xlWhole).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 4).Select
+    lstAdd = ActiveCell.Address(False, False)
+    lstMidAdd = Mid(lstAdd, 2)
+    ActiveCell.Offset(1, 0).Select
+   
+    ActiveCell.Formula = "=LARGE(" & "E" & fstMidAdd & ":" & "F" & lstMidAdd & ",20)"
+    topTwentyVal = ActiveCell.value
+    
+    Sheets("ETTR").UsedRange.Find(what:="Trigger", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    Do While ActiveCell.value <> ""
+    If ActiveCell.value = "True" Then
+        If Range("E" & fstMidAdd).value >= topTwentyVal Or Range("F" & fstMidAdd).value >= topTwentyVal Then
+        With Selection.Interior
+        .Pattern = xlSolid
         .PatternColorIndex = xlAutomatic
-        .Color = 240
+        .Color = 255
         .TintAndShade = 0
+        .PatternTintAndShade = 0
     End With
-    Selection.FormatConditions(1).StopIfTrue = False
-    Range("A1").Select
-    Selection.EntireColumn.Delete
+        Else
+        With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 1484526
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+        End If
+        
+    End If
+    fstMidAdd = fstMidAdd + 1
+    ActiveCell.Offset(1, 0).Select
+    
+    Loop
+    Range(lstAdd).Offset(1, 0).Select
+    Selection.ClearContents
+
     Range("C1").Select
     Selection.EntireColumn.Delete
-    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Sys/Yr", lookat:=xlWhole).Select
-    ActiveCell.Offset(0, 1).Select
-    fstAdd = ActiveCell.Address
+    Range("AE10").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.EntireColumn.Delete
+    Selection.End(xlToRight).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.EntireColumn.Delete
+    
+    Sheets("ETTR").UsedRange.Find(what:="Trend", lookat:=xlWhole).Select
     ActiveCell.Offset(0, -1).Select
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 8).Select
-    lstAdd = ActiveCell.Address
-    ActiveCell.Offset(1, 1).Select
-    deleteFnlAdd = ActiveCell.Address
-    ActiveCell.Offset(0, 13).Select
-    deleteFnlCAdd = ActiveCell.Address
-    ActiveCell.End(xlDown).Select
-    deleteFnlRAdd = ActiveCell.Address
-    Sheets("ETTR").UsedRange.Find(what:="Trigger", lookat:=xlWhole).Select
-    ActiveCell.Offset(0, -1).Select
-    fstRwAdd = ActiveCell.Address
-    Range(fstAdd & ":" & fstRwAdd, lstAdd).Select
-    Selection.Replace what:="", Replacement:="0.00", lookat:=xlPart, _
-        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-        ReplaceFormat:=False
-    Selection.NumberFormat = "0.00"
-    Range(deleteFnlAdd & ":" & deleteFnlCAdd, deleteFnlRAdd).Select
-    Selection.ClearContents
-    ActiveWindow.Zoom = 85
-    Sheets("ETTR").UsedRange.Find(what:="SubSystem", lookat:=xlWhole).Select
     ActiveCell.Offset(1, 0).Select
-    fstAdd = ActiveCell.Address
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 1).Select
-    lstAdd = ActiveCell.Address
-    Range(fstAdd, lstAdd).Select
-    Selection.Replace what:="0", Replacement:="", lookat:=xlPart, _
-    SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-    ReplaceFormat:=False
-    Sheets("ETTR").UsedRange.Find(what:="DataFill", lookat:=xlWhole).Select
-   ' Range("AE3").Select
-    fstAdd = ActiveCell.Address(False, False)
-    ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(0, 6).Select
-    lstAdd = ActiveCell.Address(False, False)
-    Range(fstAdd, lstAdd).Select
-    Selection.ClearContents
-    Sheets("ETTR").Select
+    ITMfrtRowVal = ActiveCell.value
+    ITMfrtRowAdd = ActiveCell.Address
+    IMQfrtRowAdd = ActiveCell.Offset(0, -2).Address
+
+    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Yr", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 1).value = ITMfrtRowVal
+    ActiveCell.Offset(1, 2) = "=AVERAGE(" & ITMfrtRowAdd & ":" & IMQfrtRowAdd & ")"
+
+'Enter YTD value in 4th Row
+    
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(fixedDate, "yyyy" & "-" & "mm")
+    startDate = Format(fixedDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(fixedDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -EndDateMonth, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Yr", lookat:=xlWhole).Select
+    Sheets("ETTR").UsedRange.Find(what:="YTD", After:=ActiveCell, lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    YTDDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    YDTStrtMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    YDTEndMonth = ActiveCell.Address(False, False)
+    Range(YTDDatacellAdd).value = "=AVERAGE(" & YDTStrtMonth & ":" & YDTEndMonth & ")"
+
+'Enter MAT value in 4th Row
+    fixedDate = Sheet1.combYear.value
+    MATDate = Format(fixedDate, "yyyy" & "-" & "mm")
+
+    startDate = Format(MATDate, "yyyy" & "-" & "mm")
+    startDate = Format(MATDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(MATDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -12, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR (days) (Current Year)", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    ActiveCell.Offset(0, 3).Select
+    MATDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    MATStrtMonth = ActiveCell.Address(False, False)
+    
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    MATEndMonth = ActiveCell.Address(False, False)
+    Range(MATDatacellAdd).value = "=AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")"
+   
+'Enter values in 4th row for last years, ITM,IMQ, YTD and MAT
+    
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("Part12NC").Orientation = _
+        xlHidden
+    With ActiveSheet.PivotTables("pvtETTR").PivotFields("Period")
+        .Orientation = xlColumnField
+        .Position = 1
+    End With
+    
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+
+    endDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
     Set pvtTbl = ActiveSheet.PivotTables("pvtETTR")
-    pvtTbl.TableRange1.Select
+    Set pf = pvtTbl.PivotFields("Period")
+    pf.ClearAllFilters
+    With ActiveSheet.PivotTables("pvtETTR")
+        .ColumnGrand = True
+        .RowGrand = False
+    End With
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > startDate Then
+            pvtItm.Visible = False
+        Else
+            pvtItm.Visible = True
+        End If
+    Next pvtItm
+    
+    fixedDate1 = Sheet1.combYear.value
+    fixDte = Format(fixedDate1, "mmm" & "-" & "yyyy")
+    fixDate2 = Format(DateAdd("yyyy", -1, fixedDate1), "mmm" & "-" & "yyyy")
+    frmtData = Format(DateAdd("m", 1, fixDate2), "mmm" & "-" & "yyyy")
+
+    endDate1 = Format(DateAdd("mmm", -12, frmtData), "mmm" & "-" & "yyyy")
+    endDate2 = Format(DateAdd("m", -24, frmtData), "mmm" & "-" & "yyyy")
+
+    fnlEndDate = Format(DateAdd("m", 1, endDate1), "mmm" & "-" & "yyyy")
+    fnlEndDate1 = Format(endDate2, "mmm" & "-" & "yyyy")
+    frmEndDate = Format(fnlEndDate, "mmm" & "-" & "yyyy")
+   
+    Range("AE9").Select
+    Do Until frmEndDate = frmtData
+    ActiveCell.value = frmEndDate
+    ActiveCell.Offset(0, 1).Select
+    frmEndDate = Format(DateAdd("m", 1, frmEndDate), "mmm" & "-" & "yyyy")
+    Loop
+    ActiveCell.Offset(0, -1).Select
+    ActiveCell.End(xlToLeft).Select
+    fstAdd = ActiveCell.Offset(1, 0).Address
+    Sheets("ETTR").UsedRange.Find(what:="Buildingblocks Aggregated", lookat:=xlWhole).Select
+    ActiveCell.Offset(0, 1).Select
+    Range(Selection, Selection.End(xlToRight)).Copy
+    Range(fstAdd).PasteSpecial xlPasteAll
+    pvtTbl.TableRange2.Select
     pvtTbl.TableRange2.Clear
+    ActiveCell.End(xlDown).Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.End(xlToRight).Offset(1, 0).Select
+    lstAdd = ActiveCell.Address
+    Range(fstAdd, lstAdd).Copy
+    Range("AE2").PasteSpecial xlPasteAll
+    Range(fstAdd, lstAdd).ClearContents
+    
+'Enter ITM values for current year month
+    fixedDate = Sheet1.combYear.value
+    Sheets("ETTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    ActiveCell.Offset(2, 0).Select
+    ITMDatacellAdd = ActiveCell.Address
+    Range("A2").Select
+    
+    Selection.EntireRow.Select
+    startDate = Format(DateAdd("yyyy", -1, fixedDate), "mmm" & "-" & "yyyy")
+    startDate1 = Format(startDate, "m" & "/" & "d" & "/" & "yyyy")
+    endDate = Format(DateAdd("yyyy", -2, fixedDate), "mmm" & "-" & "yyyy")
+
+    endDate1 = Format(DateAdd("m", 1, endDate), "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:=startDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    ITMMonth = ActiveCell.Address
+    Range(ITMDatacellAdd).value = Range(ITMMonth).value
+
+'Enter IMQ values for current year
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    startDate1 = Format(startDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(startDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -3, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+        IMQDatacellAdd = Range(ITMDatacellAdd).Offset(0, 1).Address
+    Range("A2").Select
+    
+    Range(Selection, Selection.End(xlToRight)).Select
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    IMQStrtMonth = ActiveCell.Address(False, False)
+    Sheets("ETTR").UsedRange.Find(what:=startDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    IMQEndMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Range(IMQDatacellAdd).value = "=AVERAGE(" & IMQStrtMonth & ":" & IMQEndMonth & ")"
+ 
+ 'Enter YTD value in 4th Row
+    
+    fixedDate = Sheet1.combYear.value
+    startDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    startDate1 = Format(startDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(startDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -EndDateMonth, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    Sheets("ETTR").UsedRange.Find(what:="Last Year", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    YTDDatacellAdd = Range(ITMDatacellAdd).Offset(0, 2).Address
+    Range("A2").Select
+    
+    Selection.EntireRow.Select
+    Sheets("ETTR").UsedRange.Find(what:=startDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    YDTStrtMonth = ActiveCell.Address(False, False)
+    Range("A2").Select
+    
+    Selection.EntireRow.Select
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    YDTEndMonth = ActiveCell.Address(False, False)
+    Range(YTDDatacellAdd).value = "=AVERAGE(" & YDTStrtMonth & ":" & YDTEndMonth & ")"
+
+'Enter MAT value in 4th Row
+    fixedDate = Sheet1.combYear.value
+    MATDate = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+
+    startDate = Format(MATDate, "m" & "/" & "d" & "/" & "yyyy")
+    EndDateMonth = Mid(MATDate, 6, 2)
+
+    endDate = Format(DateAdd("m", -12, startDate), "yyyy" & "-" & "mm")
+    CendDate = Format(DateAdd("m", 1, endDate), "yyyy" & "-" & "mm")
+    endDate1 = Format(CendDate, "m" & "/" & "d" & "/" & "yyyy")
+    MATDatacellAdd = Range(ITMDatacellAdd).Offset(0, 3).Address
+    Range("A2").Select
+    
+    Selection.EntireRow.Select
+    Sheets("ETTR").UsedRange.Find(what:=startDate, lookat:=xlWhole).Select
+    
+    ActiveCell.Offset(1, 0).Select
+    MATStrtMonth = ActiveCell.Address(False, False)
+    
+    Sheets("ETTR").UsedRange.Find(what:=endDate1, lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    MATEndMonth = ActiveCell.Address(False, False)
+    Range(MATDatacellAdd).value = "=AVERAGE(" & MATStrtMonth & ":" & MATEndMonth & ")"
+    Sheets("ETTR").UsedRange.Find(what:="Avg. ETTR/Yr", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.Copy
+    Selection.PasteSpecial xlPasteValues
+    Range(MATEndMonth).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.EntireColumn.Delete
+    Range("A1").Select
+    ActiveWindow.Zoom = 85
+    Sheets("ETTR").UsedRange.Find(what:="Trigger", lookat:=xlWhole).Select
+    ActiveCell.Offset(1, 0).Select
+    If ActiveCell.value = "True" Then
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 255
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+        End With
+    End If
     Cells(1, 1).Select
     fstAdd = ActiveCell.Address
     ActiveCell.Offset(1, 0).Select
@@ -5187,11 +5734,11 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
     End With
     Selection.EntireColumn.Select
     
-    'Add Heading to DashBoard
- Sheets("ETTR").Select
- rows("1:1").Select
-Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
-Range("A1").Select
+'Add Heading to DashBoard
+    Sheets("ETTR").Select
+    rows("1:1").Select
+    Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
+    Range("A1").Select
     ActiveCell.FormulaR1C1 = "ETTR Dash Board for " & KPISheetName
     Range("A1:AB1").Select
     With Selection
@@ -5242,19 +5789,40 @@ Range("A1").Select
     End With
      rows("1:1").Select
     Selection.RowHeight = 25
-    Range("A1").Select
-    Workbooks(myPvtWorkBook).Close
-    Workbooks(OutPutFileWB).Activate
-    
+    Range("A2").Select
+    Application.Workbooks(myPvtWorkBook).Close
+    Sheets("KPI-All").Select
+    fixedDate = Sheet1.combYear.value
+    endDate1 = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
+    Set pvtTbl = ActiveSheet.PivotTables("pvtKPIALL")
+    Set pf = pvtTbl.PivotFields("Period")
+    pf.ClearAllFilters
+    With ActiveSheet.PivotTables("pvtKPIALL")
+        .ColumnGrand = True
+        .RowGrand = False
+    End With
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > fixedDate Then
+            pvtItm.Visible = False
+        Else
+            pvtItm.Visible = True
+        End If
+    Next pvtItm
+
 'Create a new sheet for the summary of the All subsystems and Building blocks
     Call allSSsummarySheet
+
+'Save an output file with the productgroup name
+    Application.Workbooks(myWorkBook).Activate
     Sheets("KPI-Master").Select
     ActiveWorkbook.SaveAs fileName:= _
         ThisWorkbook.Path & "\CTS_KPI_Summary_" & prdFileName & ".xlsx", FileFormat:= _
         xlOpenXMLWorkbook, CreateBackup:=False
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
-   End Sub
+
+End Sub
 Public Function ETTRPivotTableNew()
 Dim pt As PivotTable
 Dim pf As PivotField
@@ -5336,7 +5904,8 @@ Dim lastRow As Integer
     'prdNameFile = KPISheetName & "_" & dateValue
     prdFileName = KPISheetName
 
-'Open input file-Aggregated Data File
+'Open Aggregated Data File
+    'Open input file-Aggregated Data File
 
     inputFileGlobal = prdFileName & ".xlsx"
     If Sheet1.rdbLocalDrive.value = True Then
@@ -5355,7 +5924,8 @@ Dim lastRow As Integer
     myPvtWorkBook = ActiveWorkbook.name
     
     Workbooks(myPvtWorkBook).Activate
-    ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
     Cells(1, 1).Select
     ActiveCell.EntireRow.Select
     Selection.Delete
@@ -5406,7 +5976,9 @@ Dim lastRow As Integer
     Next sh
 
 'Filter the Buildingblocks Aggregated data and delete the Buildingblocks Aggregated data
-    Sheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
+    Sheets(AggrDataShtName).Activate
     Cells(1, 1).Select
     fstCellAdd = ActiveCell.Address
     ActiveCell.End(xlToRight).Select
@@ -5415,22 +5987,7 @@ Dim lastRow As Integer
     If ActiveSheet.AutoFilterMode = True Then
          ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter
          End If
-    Dim l As Long
-    l = Application.WorksheetFunction.Match("BuildingBlock", Range("1:1"), 0)
-    ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter Field:=l, Criteria1:="=Buildingblocks Aggregated"
-    Range("A1").Offset(1, 0).Select
-    fstFiltCellAdd = ActiveCell.Address
-    Range("A1").Offset(1, 0).End(xlDown).Select
-    fstFiltCellAdd1 = ActiveCell.Address
-    Range(fstFiltCellAdd1).End(xlToRight).Select
-    fstFiltCellAdd2 = ActiveCell.Address
-   ' lastFiltCellAdd = ActiveCell.Address
-    Range(fstFiltCellAdd, fstFiltCellAdd2).Select
-    Range(fstFiltCellAdd, fstFiltCellAdd2).EntireRow.Delete
-    ActiveSheet.ShowAllData
-    
-'Remove the values which are less then 10% of the top value in the Total Calls(#) column
-    
+     
 'Add a new sheet to create a Pivot Table
     Sheets.Add After:=Worksheets(Worksheets.Count)
     Set wsPtTable = Worksheets(Sheets.Count)
@@ -5439,9 +5996,9 @@ Dim lastRow As Integer
     Sheets(wsptName).Activate
     ActiveSheet.Cells(1, 1).Select
     fstadd1 = ActiveCell.Address(ReferenceStyle:=xlR1C1)
-    ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
-    Set wsData = Worksheets("Aggr. SWO Data CV")
-    Worksheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(AggrDataShtName).Activate
+    Set wsData = Worksheets(AggrDataShtName)
+    Worksheets(AggrDataShtName).Activate
     sourceSheet = ActiveSheet.name
     ActiveSheet.Cells(1, 1).Select
     fstAdd = ActiveCell.Address(ReferenceStyle:=xlR1C1)
@@ -5476,9 +6033,10 @@ Dim lastRow As Integer
         .Orientation = xlPageField
         .Position = 1
     End With
-    ActiveSheet.PivotTables("pvtETTR").AddDataField ActiveSheet.PivotTables( _
-    "pvtETTR").PivotFields("Avg. ETTR (days)"), "#ETTR (days)", xlSum
+     ActiveSheet.PivotTables("pvtETTR").AddDataField ActiveSheet.PivotTables( _
+    "pvtETTR").PivotFields("Avg. ETTR (days)"), "#ETTR (days)", xlAverage
         
+
     ActiveSheet.PivotTables("pvtETTR").PivotFields("Part12NC").PivotItems( _
     "Non-Parts Aggregated").Caption = "Non-Parts"
 
@@ -5507,6 +6065,10 @@ Dim lastRow As Integer
         .ColumnGrand = True
         .RowGrand = True
     End With
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("SubSystem").RepeatLabels = _
+    True
+    ActiveSheet.PivotTables("pvtETTR").PivotFields("BuildingBlock").RepeatLabels _
+    = True
     pvtTbl.RefreshTable
     
     Columns("A:E").EntireColumn.AutoFit
@@ -5524,29 +6086,20 @@ Dim lastRow As Integer
     Range("AF3,AF91").Select
     Range("AF3,AF3:AJ91").Select
     ActiveSheet.Paste
-    Range("AD2").Select
-    ActiveCell.value = "DataFill"
-    Range("AD3").Select
-    ActiveCell.FormulaR1C1 = "=IF(RC[2]=0,R[-1]C,RC[2])"
-    Application.CutCopyMode = False
-    Selection.AutoFill Destination:=Range("AD3:AD91")
     Range("AE2").Select
     ActiveCell.value = "SS&BB"
     Range("AE3").Select
-    ActiveCell.FormulaR1C1 = "=CONCATENATE(RC[-1],RC[2])"
+    ActiveCell.FormulaR1C1 = "=CONCATENATE(RC[1],RC[2])"
     Range("AE3").Select
     Selection.AutoFill Destination:=Range("AE3:AE91")
     
 End Function
-
-
 
 '""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 '""""RRR Data-Merge All CCC Files and Create a RRR Report using FDV Raw Data
 
 '""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 
 Public Sub ListSubfoldersFile()
 
@@ -6582,7 +7135,6 @@ Dim rownum As Integer
    ActiveSheet.ChartObjects(2).Top = ActiveSheet.rows(30).Top
  
  End Sub
-
 Public Sub createPivotTableAggregatedKPIMaster()
 
 Dim pt As PivotTable
@@ -6699,9 +7251,11 @@ Dim lastRow As Integer
         
     Next sh
      
-DataBrekUpFrPivot
+    Call DataBrekUpFrPivot
+
 'Filter the Buildingblocks Aggregated data and delete the Buildingblocks Aggregated data
-    Sheets("Aggr. SWO Data CV").Activate
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
     Cells(1, 1).Select
     Selection.UnMerge
     Cells(2, 1).Select
@@ -6728,7 +7282,6 @@ DataBrekUpFrPivot
     ActiveSheet.Range("A1").Select
     Selection.UnMerge
       
-   'ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter Field:=4, Criteria1:="=Non-Parts Aggregated"
 'Remove the values which are less then 10% of the top value in the Total Calls(#) column
     ActiveSheet.UsedRange.Find(what:="Total Calls (#)", lookat:=xlWhole).Select
     fstAdd = ActiveCell.Address
@@ -6757,7 +7310,7 @@ DataBrekUpFrPivot
     If Not rows Is Nothing Then rows.Delete
     
 Dim Part12NCClmn As Range
-       Set Part12NCClmn = Sheets("Aggr. SWO Data CV").rows(2).Find("Part12NC", , , xlWhole, , , , False)
+       Set Part12NCClmn = Sheets(AggrDataShtName).rows(2).Find("Part12NC", , , xlWhole, , , , False)
     
       If Not Part12NCClmn Is Nothing Then
         Application.ScreenUpdating = False
@@ -6766,7 +7319,7 @@ Dim Part12NCClmn As Range
       End If
         
        Dim ttlCalls As Range
-       Set ttlCalls = Sheets("Aggr. SWO Data CV").rows(2).Find("Total Calls (#)", , , xlWhole, , , , False)
+       Set ttlCalls = Sheets(AggrDataShtName).rows(2).Find("Total Calls (#)", , , xlWhole, , , , False)
     
       If Not ttlCalls Is Nothing Then
         Application.ScreenUpdating = False
@@ -6775,7 +7328,7 @@ Dim Part12NCClmn As Range
       End If
         
        Dim AvgMTTRprCallHrs As Range
-       Set AvgMTTRprCallHrs = Sheets("Aggr. SWO Data CV").rows(2).Find("Avg. MTTR/Call (hrs)", , , xlWhole, , , , False)
+       Set AvgMTTRprCallHrs = Sheets(AggrDataShtName).rows(2).Find("Avg. MTTR/Call (hrs)", , , xlWhole, , , , False)
     
       If Not AvgMTTRprCallHrs Is Nothing Then
         Application.ScreenUpdating = False
@@ -6784,7 +7337,7 @@ Dim Part12NCClmn As Range
       End If
             
        Dim visitsprCallNP As Range
-       Set visitsprCallNP = Sheets("Aggr. SWO Data CV").rows(2).Find("# of calls with 1 visit", , , xlWhole, , , , False)
+       Set visitsprCallNP = Sheets(AggrDataShtName).rows(2).Find("# of calls with 1 visit", , , xlWhole, , , , False)
     
       If Not visitsprCallNP Is Nothing Then
         Application.ScreenUpdating = False
@@ -6793,7 +7346,7 @@ Dim Part12NCClmn As Range
       End If
       
        Dim visitsprCallP As Range
-       Set visitsprCallP = Sheets("Aggr. SWO Data CV").rows(2).Find("Calls = 0 Visit", , , xlWhole, , , , False)
+       Set visitsprCallP = Sheets(AggrDataShtName).rows(2).Find("Calls = 0 Visit", , , xlWhole, , , , False)
     
       If Not visitsprCallP Is Nothing Then
         Application.ScreenUpdating = False
@@ -6804,16 +7357,15 @@ Dim Part12NCClmn As Range
 'Add one column for "Total Cost of Parts & Non-Parts"
 
   Dim found As Range
-  Set found = Sheets("Aggr. SWO Data CV").rows(2).Find("Total Costs/part (EUR)", , , xlWhole, , , , False)
+  Set found = Sheets(AggrDataShtName).rows(2).Find("Total Costs/part (EUR)", , , xlWhole, , , , False)
     
     If Not found Is Nothing Then
         Application.ScreenUpdating = False
         found.Offset(, 1).Resize(, 1).EntireColumn.Insert
   
-  End If
+    End If
   
-        Workbooks(myPvtWorkBook).Sheets("Aggr. SWO Data CV").Activate
-      ' ActiveSheet.ClearAllFilters
+        Workbooks(myPvtWorkBook).Sheets(AggrDataShtName).Activate
 
         found.End(xlDown).Select
         ActiveCell.Offset(0, 1).Select
@@ -6823,27 +7375,24 @@ Dim Part12NCClmn As Range
         ttlCstAdd = ActiveCell.Address
    
         Cells(2, 1).Select
-        ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
+        ActiveWorkbook.Sheets(AggrDataShtName).Activate
+
 'Add a new sheet to create a Pivot Table
         Sheets.Add After:=Worksheets(Worksheets.Count)
 
         Set wsPtTable = Worksheets(Sheets.Count)
 
-        'Set wsPtTable = Worksheets(3)
         wsptName = wsPtTable.name
         Sheets(wsptName).Activate
         ActiveSheet.Cells(1, 1).Select
         fstadd1 = ActiveCell.Address(ReferenceStyle:=xlR1C1)
-        ActiveWorkbook.Sheets("Aggr. SWO Data CV").Activate
+        ActiveWorkbook.Sheets(AggrDataShtName).Activate
 
-        Set wsData = Worksheets("Aggr. SWO Data CV")
-        Worksheets("Aggr. SWO Data CV").Activate
+        Set wsData = Worksheets(AggrDataShtName)
+        Worksheets(AggrDataShtName).Activate
         sourceSheet = ActiveSheet.name
-
         ActiveSheet.Cells(2, 1).Select
-        
         Selection.EntireColumn.Select
-        
         Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
         ActiveCell.Offset(1, 0).Select
         ActiveCell.value = "Period"
@@ -6933,12 +7482,6 @@ Dim Part12NCClmn As Range
         With ActiveSheet.PivotTables("pvtKPIMASTER").PivotFields("#Avg. ETTR (days)/12")
             .NumberFormat = "0.00"
         End With
-        'ActiveSheet.PivotTables("pvtKPIMASTER").AddDataField ActiveSheet.PivotTables( _
-        '"pvtKPIMASTER").PivotFields("Avg. MTTR/Call (hrs)"), "MTTR/Call (hrs)", xlSum
-    
-        'ActiveSheet.PivotTables("pvtKPIMASTER").AddDataField ActiveSheet.PivotTables( _
-        '"pvtKPIMASTER").PivotFields("Avg. ETTR (days)"), "ETTR (days)", xlSum
-    
         ActiveSheet.PivotTables("pvtKPIMASTER").AddDataField ActiveSheet.PivotTables( _
         "pvtKPIMASTER").PivotFields("Avg. Visits/call (#)"), "Visits/call (#)", xlAverage
         With ActiveSheet.PivotTables("pvtKPIMASTER").PivotFields("Visits/call (#)")
@@ -7020,24 +7563,24 @@ Dim Part12NCClmn As Range
         
     pvtTbl.RefreshTable
 
-fixedDate = Sheet1.combYear.value
-endDate1 = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
-endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
-Set pvtTbl = ActiveSheet.PivotTables("pvtKPIMASTER")
-Set pf = pvtTbl.PivotFields("Period")
-pf.ClearAllFilters
-With ActiveSheet.PivotTables("pvtKPIMASTER")
+    fixedDate = Sheet1.combYear.value
+    endDate1 = Format(DateAdd("yyyy", -1, fixedDate), "yyyy" & "-" & "mm")
+    endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
+    Set pvtTbl = ActiveSheet.PivotTables("pvtKPIMASTER")
+    Set pf = pvtTbl.PivotFields("Period")
+    pf.ClearAllFilters
+    With ActiveSheet.PivotTables("pvtKPIMASTER")
         .ColumnGrand = True
         .RowGrand = False
     End With
-   ' pvtTbl.RefreshTable
-For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
-    If pvtItm < endDate Or pvtItm > fixedDate Then
+
+    For Each pvtItm In pvtTbl.PivotFields("Period").PivotItems
+        If pvtItm < endDate Or pvtItm > fixedDate Then
             pvtItm.Visible = False
-    Else
+        Else
             pvtItm.Visible = True
-    End If
-Next pvtItm
+        End If
+    Next pvtItm
     
     ActiveSheet.PivotTables("pvtKPIMASTER").PivotFields("SubSystem").ShowDetail = True
     ActiveSheet.PivotTables("pvtKPIMASTER").PivotFields("BuildingBlock").ShowDetail = _
@@ -7046,9 +7589,8 @@ Next pvtItm
 ' Add ConditionalFormatting of Data Bars on total calls of Parts and Non parts
      ActiveSheet.PivotTables("pvtKPIMASTER").PivotFields("Part12NC-Sub Parts").ShowDetail = _
         False
-    
 
-Range("E6").Select
+    Range("E6").Select
     fstAdd = ActiveCell.Address
     ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
     ActiveCell.Offset(0, 4).Select
@@ -7113,7 +7655,6 @@ Range("E6").Select
     ActiveSheet.PivotTables("pvtKPIMASTER").PivotFields("BuildingBlock").ShowDetail = _
         False
         
-   'ActiveSheet.PivotTables("pvtKPIMASTER").PivotFields("Part12NC-Sub Parts").PivotFilters.Add Type:=xlCaptionEquals, Value1:="-"
     Range("E6").Select
     fstAdd = ActiveCell.Address
     ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
@@ -7142,7 +7683,6 @@ Range("E6").Select
         .Color = 13012579
         .TintAndShade = 0
     End With
-    
     
     Range("F6").Select
     fstAdd = ActiveCell.Address
@@ -7227,7 +7767,6 @@ Range("E6").Select
     End With
     Selection.FormatConditions(1).StopIfTrue = False
     
-    
     Range("I6").Select
     fstAdd = ActiveCell.Address
     ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
@@ -7289,7 +7828,6 @@ Range("E6").Select
     End With
     Selection.FormatConditions(1).StopIfTrue = False
     
-    
     ActiveSheet.PivotTables("pvtKPIMASTER").PivotFields("BuildingBlock").ShowDetail = _
         False
    
@@ -7330,7 +7868,6 @@ Range("E6").Select
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    
     
     Range("I6").Select
     fstAdd = ActiveCell.Address
@@ -7422,14 +7959,12 @@ Range("E6").Select
     
     Worksheets(wsptName).PivotTables("pvtKPIMASTER").PreserveFormatting = False
     Sheets(wsptName).name = "PivotTableAggData"
-  '  pt.ManualUpdate = True
      ActiveWindow.Zoom = 85
 
-   ' AggPvtTableName = ActiveWorkbook.name
     Workbooks(myPvtWorkBook).Activate
     Set pvtTbl = ActiveSheet.PivotTables("pvtKPIMASTER")
-    
-    'Open Output file CTS_KPI_Summary.xlsx
+     
+'Open Output file CTS_KPI_Summary.xlsx
     outputFileGlobal = "CTS_KPI_Summary.xlsx"
     If Sheet1.rdbLocalDrive.value = True Then
         outputPath = ThisWorkbook.Path & "\" & outputFileGlobal
@@ -7481,18 +8016,15 @@ Range("E6").Select
     Set pf = pvtTbl.PivotFields("Period")
     pf.ClearAllFilters
     pf.CurrentPage = "(All)"
-        
     
-            Sheets("IB").Select
-            Sheets("IB").PivotTables("pvtIB").PivotFields("Period").CurrentPage = fixedDate
-            ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
-        
-            IBVal = ActiveCell.Offset(0, 1).value
-  
+        Sheets("IB").Select
+        Sheets("IB").PivotTables("pvtIB").PivotFields("Period").CurrentPage = fixedDate
+        ActiveSheet.UsedRange.Find(what:="Grand Total", lookat:=xlWhole).Select
+        IBVal = ActiveCell.Offset(0, 1).value
 
-  'Add RRR% and CallRate Columns
-Workbooks(outputFlName).Activate
-Sheets("KPI-Master").Select
+'Add RRR% and CallRate Columns
+    Workbooks(outputFlName).Activate
+    Sheets("KPI-Master").Select
     Range("O5").Select
     ActiveCell.FormulaR1C1 = "RRR%"
     
@@ -7535,7 +8067,6 @@ Sheets("KPI-Master").Select
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    
     
     Selection.FormatConditions.AddTop10
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
@@ -7611,18 +8142,15 @@ Sheets("KPI-Master").Select
         .MergeCells = False
     End With
     Selection.Merge
-   'Call function RRR to add RRR Data
+
+'Call function RRR to add RRR Data
         Call RRR
         
 'Apply Icon Set Conditional formatting on RRR Column Values
-        Range("O6").Select
-        fstAdd = ActiveCell.Address
-        ActiveCell.End(xlDown).Select
-        
-       ' ActiveCell.Offset(0, 1).Select
-        'ActiveCell.Offset(1, 0).Select
-        
-        lstAdd = ActiveCell.Address
+    Range("O6").Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.End(xlDown).Select
+    lstAdd = ActiveCell.Address
     Range(fstAdd).Select
     Range(Selection, Selection.End(xlDown)).Select
     Selection.FormatConditions.AddIconSetCondition
@@ -7642,9 +8170,10 @@ Sheets("KPI-Master").Select
         .value = 67
         .Operator = 7
     End With
-Range(fstAdd, lstAdd).Select
-Selection.NumberFormat = "0"
-        'Add Headings to DashBoard
+    Range(fstAdd, lstAdd).Select
+    Selection.NumberFormat = "0"
+
+'Add Headings to DashBoard
     
     Range("A2").Select
     ActiveCell.FormulaR1C1 = "KPI-Master Dash Board for " & KPISheetName
@@ -7677,12 +8206,10 @@ Selection.NumberFormat = "0"
     Range("A1").Select
     pvtmstName = ActiveCell.PivotTable.name
     Set pvtMstTbl = ActiveSheet.PivotTables(pvtmstName)
-   ' ActiveSheet.PivotTables(pvtmstName).PivotFields("Part12NC-Sub Parts").PivotFilters.Add Type:=xlCaptionEquals, Value1:="-"
-    'ActiveSheet.PivotTables(pvtmstName).PivotFields("Part12NC-Sub Parts").EnableMultiplePageItems _
-        = True
 
-    Workbooks(myPvtWorkBook).Close
-    Workbooks(myWorkBook).Save
+    Application.Workbooks(myPvtWorkBook).Close
+    Application.Workbooks(myWorkBook).Activate
+    ActiveWorkbook.Save
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
     
@@ -7693,7 +8220,6 @@ Range("A1").Select
     Set pvtMstTbl = ActiveSheet.PivotTables(pvtmstName)
     ActiveSheet.PivotTables(pvtmstName).PivotSelect "", xlDataAndLabel, True
     Selection.Copy
-    
 
     Range("AD1").Select
     ActiveSheet.Paste
@@ -7713,7 +8239,6 @@ Range("A1").Select
         Caption = "#Calls = 0 Visit"
     ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC").ShowAllItems = _
         True
-        'ActiveSheet.PivotTables(pvtName).CalculatedFields("RRR").Delete
         pvtTbl.CalculatedFields.Add "RRR", _
         "='Calls = 0 Visit' /'Total Calls (#)' *100", True
     pvtTbl.PivotFields("RRR").Orientation = _
@@ -7768,7 +8293,6 @@ Range("A1").Select
     ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables(pvtmstName), _
         "BuildingBlock").Slicers.Add ActiveSheet, , "BuildingBlock", "BuildingBlock", _
         98.25, 449.25, 144, 198.75
-   
    
     ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables(pvtmstName), _
         "Part12NC-Sub Parts").Slicers.Add ActiveSheet, , "Part12NC-Sub Parts", _
@@ -7830,35 +8354,35 @@ Range("A1").Select
     Range("AC2").Select
     Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
         SkipBlanks:=False, Transpose:=False
-    End Sub
+
+End Sub
 Sub DataBrekUpFrPivot()
-
-Sheets("Aggr. SWO Data CV").Select
-Cells(1, 1).Select
-ActiveCell.UnMerge
-Cells(2, 1).Select
-Selection.EntireRow.Select
-Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
-Selection.Offset(0, 1).Select
-Selection.EntireColumn.Select
-Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-Cells(2, 1).Select
-Selection.EntireRow.Select
-Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
-Selection.Offset(0, 1).Select
-ActiveCell.value = "Part12NC-Sub Parts"
-
-Application.CutCopyMode = False
-ActiveCell.Offset(1, 0).Select
-fstAdd = ActiveCell.Address
-ActiveCell.Offset(0, -1).Select
-ActiveCell.End(xlDown).Select
-ActiveCell.Offset(0, 1).Select
-lstAdd = ActiveCell.Address
-Cells(2, 1).Select
-Selection.EntireRow.Select
-Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
-Selection.Offset(1, 1).Select
+    ActiveWorkbook.Sheets(2).Activate
+    AggrDataShtName = ActiveSheet.name
+    Cells(1, 1).Select
+    ActiveCell.UnMerge
+    Cells(2, 1).Select
+    Selection.EntireRow.Select
+    Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
+    Selection.Offset(0, 1).Select
+    Selection.EntireColumn.Select
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Cells(2, 1).Select
+    Selection.EntireRow.Select
+    Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
+    Selection.Offset(0, 1).Select
+    ActiveCell.value = "Part12NC-Sub Parts"
+    Application.CutCopyMode = False
+    ActiveCell.Offset(1, 0).Select
+    fstAdd = ActiveCell.Address
+    ActiveCell.Offset(0, -1).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(0, 1).Select
+    lstAdd = ActiveCell.Address
+    Cells(2, 1).Select
+    Selection.EntireRow.Select
+    Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
+    Selection.Offset(1, 1).Select
     ActiveCell.FormulaR1C1 = _
         "=IF(OR(RC[-1]=""All Aggregated"",RC[-1]=""Parts Aggregated"",RC[-1]=""Non-Parts Aggregated""),""-"",RC[-1])"
     Selection.AutoFill Destination:=Range(fstAdd, lstAdd)
@@ -7873,17 +8397,17 @@ Selection.Offset(1, 1).Select
     Selection.EntireRow.Select
     Selection.Find(what:="Part12NC", lookat:=xlWhole).Select
     Selection.Offset(1, 0).Select
-   Cells(2, 1).Select
+    Cells(2, 1).Select
     Selection.EntireRow.Select
     Selection.Find(what:="Part12NC-Sub Parts", lookat:=xlWhole).Select
     Selection.Offset(1, 0).Select
     Do Until ActiveCell.value = ""
-    If ActiveCell.value = "-" Then
-    ActiveCell.Offset(1, 0).Select
-    Else
-    ActiveCell.Offset(0, -1).value = ActiveCell.Offset(-1, -1).value
-    ActiveCell.Offset(1, 0).Select
-    End If
+        If ActiveCell.value = "-" Then
+            ActiveCell.Offset(1, 0).Select
+        Else
+            ActiveCell.Offset(0, -1).value = ActiveCell.Offset(-1, -1).value
+            ActiveCell.Offset(1, 0).Select
+        End If
     Loop
     
 End Sub
@@ -7923,7 +8447,8 @@ Dim lastRow As Integer
 
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
-    'Case select for sheet tab
+
+'Case select for sheet tab
     KPISheetName = Sheet1.comb6NC1.value
 
     Select Case KPISheetName
@@ -7968,11 +8493,9 @@ Dim lastRow As Integer
 
     CTSProductName = Sheet1.comb6NC1.value
     dateValue = Sheet1.combYear.value
-   ' prdNameFile = KPISheetName & "_" & dateValue
     prdNameFile = KPISheetName
 
-
-    'Open Output file CTS_KPI_Summary.xlsx
+'Open Output file CTS_KPI_Summary.xlsx
     outputFileGlobal = "CTS_KPI_Summary.xlsx"
     If Sheet1.rdbLocalDrive.value = True Then
         outputPath = ThisWorkbook.Path & "\" & outputFileGlobal
@@ -7997,10 +8520,8 @@ Dim lastRow As Integer
     Selection.EntireRow.Delete
     sourceSheet = ActiveSheet.name
     
-    'Open IB Data File
-    
-    'Open IB Data File
-    outputFileGlobal = "IB_IXR.xls"
+'Open IB Data File
+    outputFileGlobal = "IB_IXR.xlsx"
     If Sheet1.rdbLocalDrive.value = True Then
         inputPath = ThisWorkbook.Path & "\" & outputFileGlobal
         inputFlName = outputFileGlobal
@@ -8016,14 +8537,6 @@ Dim lastRow As Integer
     Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
     
     IBWorkBook = ActiveWorkbook.name
-
-    
-    
-    'myPath = ThisWorkbook.Path
-    'IBExcel = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "IB_IXR" & "*.xls*")   'input file path
-    'Application.Workbooks.Open (IBExcel), False
-    'IBWorkBook = ActiveWorkbook.name
-    'Workbooks(IBWorkBook).Activate
     Cells(1, 1).Select
     Selection.EntireColumn.Select
     Selection.EntireRow.Select
@@ -8038,7 +8551,6 @@ Dim lastRow As Integer
     ActiveSheet.UsedRange.Find(what:="IBContract", lookat:=xlWhole).Select
     Range(Selection, Selection.End(xlToRight)).Select
     Selection.EntireColumn.Delete
-    
     
     SearchForWords = Array("*Old*")
    
@@ -8099,12 +8611,20 @@ Dim lastRow As Integer
         Workbooks(outputFlName).Save
     Application.ScreenUpdating = True
     Application.DisplayAlerts = True
+
 End Sub
-
-
 Sub allSSsummarySheet()
-
-Sheets("CR").Select
+'Delete Blank sheets from aggregated data file if any
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    Application.Workbooks(myWorkBook).Activate
+    For Each s In ActiveWorkbook.Sheets
+        If Left(s.name, 16) = "All SS-BB" Then
+            s.Delete
+        End If
+    Next s
+    
+    Sheets("CR").Select
     Range("A3").Select
     Range(Selection, Selection.End(xlToRight)).Select
     Range("A2:AB3").Select
@@ -8133,9 +8653,17 @@ Sheets("CR").Select
     ActiveCell.FormulaR1C1 = "Current Year"
     Range("Q2:AB2").Select
     ActiveCell.FormulaR1C1 = "Monthly Data"
+    Range("D3").Select
+    ActiveCell.FormulaR1C1 = "Values / Sys / Yr"
+    Range("G3").Select
+    ActiveCell.FormulaR1C1 = "Values / Sys / Yr"
     Sheets("CR").Select
     Range("A4").Select
-    Range(Selection, Selection.End(xlToRight)).Select
+    fstAdd = ActiveCell.Address
+    ActiveSheet.UsedRange.Find(what:="Trend", lookat:=xlWhole).Select
+    lstAdd = ActiveCell.Offset(1, -1).Address
+
+    Range(fstAdd, lstAdd).Select
     Selection.Copy
     Sheets(shtName).Select
     Range("B4").Select
@@ -8143,8 +8671,11 @@ Sheets("CR").Select
         :=False, Transpose:=False
     Sheets("MTTR").Select
     Range("A4").Select
-    Range(Selection, Selection.End(xlToRight)).Select
-    Application.CutCopyMode = False
+    fstAdd = ActiveCell.Address
+    ActiveSheet.UsedRange.Find(what:="Trend", lookat:=xlWhole).Select
+    lstAdd = ActiveCell.Offset(1, -1).Address
+
+    Range(fstAdd, lstAdd).Select
     Selection.Copy
     Sheets(shtName).Select
     Range("B5").Select
@@ -8152,8 +8683,11 @@ Sheets("CR").Select
         :=False, Transpose:=False
     Sheets("ETTR").Select
     Range("A4").Select
-    Range(Selection, Selection.End(xlToRight)).Select
-    Application.CutCopyMode = False
+    fstAdd = ActiveCell.Address
+    ActiveSheet.UsedRange.Find(what:="Trend", lookat:=xlWhole).Select
+    lstAdd = ActiveCell.Offset(1, -1).Address
+
+    Range(fstAdd, lstAdd).Select
     Selection.Copy
     Sheets(shtName).Select
     Range("B6").Select
@@ -8199,8 +8733,6 @@ Sheets("CR").Select
     ActiveCell.FormulaR1C1 = "MTTR"
     Range("A6").Select
     ActiveCell.FormulaR1C1 = "ETTR"
-    Range("A4").Select
-    ActiveCell.FormulaR1C1 = "CR"
     Range("A4:A6").Select
     With Selection
         .HorizontalAlignment = xlCenter
@@ -8324,7 +8856,5 @@ Sheets("CR").Select
     Selection.FormatConditions(1).StopIfTrue = False
     Columns("P:P").EntireColumn.AutoFit
     ActiveSheet.name = "All SS-BB"
+    
 End Sub
-
-
-
