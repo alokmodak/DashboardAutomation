@@ -91,7 +91,14 @@ startTime = second(Now())
                        
                        Call Send_Email_For_Contracts_Drops_Joins
                    End If
-                   
+                   If Sheet1.lstBx6NC.List(i) = "Diffusion Rate" Then
+                       
+                       Call DiffusionRate_Calculations
+                   End If
+                   If Sheet1.lstBx6NC.List(i) = "BoxPlot" Then
+                       
+                       Call BoxPlot_Calculations
+                   End If
                End If
             Next i
             
