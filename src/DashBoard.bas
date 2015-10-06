@@ -3128,31 +3128,31 @@ Select Case j
     selMonth = "003"
     Case 4
     insCDate = "Apr"
-    selMonth = "4"
+    selMonth = "004"
     Case 5
     insCDate = "May"
-    selMonth = "5"
+    selMonth = "005"
     Case 6
     insCDate = "Jun"
-    selMonth = "6"
+    selMonth = "006"
     Case 7
     insCDate = "Jul"
-    selMonth = "7"
+    selMonth = "007"
     Case 8
     insCDate = "Aug"
-    selMonth = "8"
+    selMonth = "008"
     Case 9
     insCDate = "Sep"
-    selMonth = "9"
+    selMonth = "009"
     Case 10
     insCDate = "Oct"
-    selMonth = "10"
+    selMonth = "010"
     Case 11
     insCDate = "Nov"
-    selMonth = "11"
+    selMonth = "011"
     Case 12
     insCDate = "Dec"
-    selMonth = "12"
+    selMonth = "012"
 End Select
 
 Dim insCMonth As String
