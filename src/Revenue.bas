@@ -3270,6 +3270,13 @@ ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole).Select
 ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="Current contract contract material", lookat:=xlWhole, After:=ActiveCell).Select
+Range(ActiveCell.Offset(0, 1).Address, ActiveCell.Offset(0, 6).Address).Copy
+ActiveCell.Offset(-1, 1).PasteSpecial xlPasteAll
+
+ActiveSheet.Cells(1, 1).Select
+ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole).Select
+ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole, After:=ActiveCell).Select
 
 'Putting names in blank cells
 Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
