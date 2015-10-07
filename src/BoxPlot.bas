@@ -1,5 +1,5 @@
 Attribute VB_Name = "BoxPlot"
-Public Sub BoxPlot()
+Public Sub BoxPlot_Calculations()
 
 Dim NCNotPresent(20) As String
 Dim ncNt As Integer
@@ -290,9 +290,9 @@ pvtTblName = pvtTbl.name
     ActiveCell.Offset(1, 0).Formula = "=IFERROR(SUM(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & "),)"
     ActiveCell.Offset(2, 0).Formula = "=IFERROR(AVERAGE(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & "),)"
     ActiveCell.Offset(3, 0).Formula = "=IFERROR(Min(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & "),)"
-    ActiveCell.Offset(4, 0).Formula = "=IFERROR(PERCENTILE.EXC(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & ",0.25),)"
+    ActiveCell.Offset(4, 0).Formula = "=IFERROR(PERCENTILE.INC(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & ",0.25),)"
     ActiveCell.Offset(5, 0).Formula = "=IFERROR(MEDIAN(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & "),)"
-    ActiveCell.Offset(6, 0).Formula = "=IFERROR(PERCENTILE.EXC(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & ",0.95),)"
+    ActiveCell.Offset(6, 0).Formula = "=IFERROR(PERCENTILE.INC(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & ",0.95),)"
     ActiveCell.Offset(7, 0).Formula = "=IFERROR(MAX(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & "),)"
     ActiveCell.Offset(9, 0).Formula = "=IFERROR(" & ActiveCell.Offset(4, 0).Address(False, False) & ",)"
     ActiveCell.Offset(10, 0).Formula = "=IFERROR(" & ActiveCell.Offset(5, 0).Address(False, False) & "-" & ActiveCell.Offset(4, 0).Address(False, False) & ",)"
@@ -300,12 +300,63 @@ pvtTblName = pvtTbl.name
     ActiveCell.Offset(13, 0).Formula = "=IFERROR(" & ActiveCell.Offset(4, 0).Address(False, False) & "-" & ActiveCell.Offset(3, 0).Address(False, False) & ",)"
     ActiveCell.Offset(14, 0).Formula = "=IFERROR(" & ActiveCell.Offset(7, 0).Address(False, False) & "-" & ActiveCell.Offset(6, 0).Address(False, False) & ",)"
     
-    Range(ActiveCell.Address, ActiveCell.Offset(14, 1).Address).Copy
-    Do Until ActiveCell.Offset(21, 0).Value = ""
+    Dim fstChartAdd As String
+    Dim lstChartAdd As String
+    Dim fstAddToCopy As String
+    Dim lstAddToCopy As String
+    Dim chartName As String
+    
+    fstAddToCopy = ActiveCell.Address
+    lstAddToCopy = ActiveCell.Offset(14, 0).Address
+    fstChartAdd = ActiveCell.Offset(0, -1).Address
+    
+    ActiveSheet.Range(fstAddToCopy, lstAddToCopy).Copy
+    
+    Do Until ActiveCell.Offset(21, 1).Value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
     
+    lstChartAdd = ActiveCell.Offset(14, 0).Address
+    Dim chartRNG As Range
+    Set chartRNG = Range("Pivot!" & fstChartAdd & ":" & lstChartAdd)
+    chartRNG.Select
+    ActiveSheet.Shapes.AddChart2(297, xlColumnStacked).Select
+    ActiveChart.SetSourceData Source:=chartRNG
+    chartName = ActiveChart.name
+    With ActiveChart.Parent
+         .Height = 250 ' resize
+         .Width = 550  ' resize
+         .Top = 10    ' reposition
+         .Left = 100   ' reposition
+     End With
     
+    For i = 1 To 8
+        ActiveChart.FullSeriesCollection(i).IsFiltered = True
+    Next
+    For i = 12 To 14
+        ActiveChart.FullSeriesCollection(i).IsFiltered = True
+    Next
+    
+    ActiveChart.FullSeriesCollection(11).Select
+    ActiveChart.FullSeriesCollection(11).HasErrorBars = True
+    ActiveChart.FullSeriesCollection(11).ErrorBar Direction:=xlY, Include:= _
+        xlPlusValues, Type:=xlFixedValue, Amount:=1000000
+    ActiveChart.FullSeriesCollection(11).Select
+    ActiveChart.FullSeriesCollection(10).Select
+    ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveChart.FullSeriesCollection(9).Select
+    ActiveChart.FullSeriesCollection(1).HasErrorBars = True
+    ActiveSheet.ChartObjects("Chart 1").Activate
+    ActiveChart.FullSeriesCollection(9).ErrorBar Direction:=xlY, Include:= _
+        xlMinusValues, Type:=xlFixedValue, Amount:=1000000
+    ActiveChart.Axes(xlCategory).Select
+    Selection.TickLabelPosition = xlLow
+    ActiveChart.Axes(xlValue).Select
+    ActiveChart.Axes(xlValue).DisplayUnit = xlThousands
+    ActiveChart.ChartArea.Select
+
+ActiveSheet.Cells(1, 1).Select
+ActiveSheet.name = "BoxPlot"
 End Sub
 

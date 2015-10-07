@@ -1,5 +1,5 @@
 Attribute VB_Name = "DiffusionRate"
-Public Sub DiffusionRate()
+Public Sub DiffusionRate_Calculations()
 
 Dim NCNotPresent(20) As String
 Dim ncNt As Integer
@@ -575,8 +575,14 @@ Application.ReferenceStyle = xlA1
         .Position = 1
     End With
     
-    ActiveSheet.Cells(7, 1).Value = "ASP"
-    ActiveSheet.Cells(8, 1).Value = "55000"
+    ActiveSheet.Cells(16, 3).Value = "Bath Tub"
+    ActiveCell.Offset(18, 3).Select
+    Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).NumberFormat = "0"
+    With Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).Borders
+        .LineStyle = xlContinuous
+        .Weight = xlThin
+    End With
+    
     Range(fstNewAdd).Select
     Dim fstCostIbCountAdd As String
     Dim lstCostIbCountAdd As String
@@ -588,7 +594,7 @@ Application.ReferenceStyle = xlA1
     lstCostIbCountAdd = ActiveCell.Address(False, False)
     
     Cells(14, 3).Select
-    ActiveCell.Formula = "=IFERROR(Count(" & fstCostIbCountAdd & ":" & lstCostIbCountAdd & ")*$A$8,)"
+    ActiveCell.Formula = "=IFERROR(Count(" & fstCostIbCountAdd & ":" & lstCostIbCountAdd & "),)"
     ActiveCell.Copy
     Do Until ActiveCell.Offset(3, 0).Value = ""
         ActiveCell.Offset(0, 1).Select
@@ -607,28 +613,6 @@ Application.ReferenceStyle = xlA1
      ActiveCell.PasteSpecial xlPasteFormulas
     Loop
         
-    ActiveSheet.Cells(20, 3).Value = "Cumm. IB"
-    ActiveSheet.Cells(21, 3).Select
-    ActiveCell.Formula = "=" & ActiveSheet.Cells(14, 3).Address(False, False)
-    ActiveCell.Offset(0, 1).Select
-    ActiveCell.Formula = "=" & ActiveSheet.Cells(14, 4).Address(False, False) & "/" & ActiveCell.Offset(0, -1).Address(False, False)
-    ActiveCell.Copy
-    Do Until ActiveCell.Offset(-3, 1).Value = ""
-        ActiveCell.Offset(0, 1).Select
-        ActiveCell.PasteSpecial xlPasteFormulas
-    Loop
-    
-    ActiveSheet.Cells(23, 3).Value = "Cumm. Diffusion Rate"
-    ActiveSheet.Cells(24, 3).Select
-    ActiveCell.Formula = "=" & fstCostAdd & "/" & ActiveSheet.Cells(21, 3).Address(False, False)
-    
-    ActiveCell.Copy
-    Do Until ActiveCell.Offset(-3, 1).Value = ""
-        ActiveCell.Offset(0, 1).Select
-        ActiveCell.PasteSpecial xlPasteFormulas
-    Loop
-        
-    Range(ActiveCell.Address, ActiveCell.End(xlToLeft).Address).NumberFormat = "0%"
 ActiveWorkbook.Sheets("Data").Delete
 
 End Sub

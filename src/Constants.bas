@@ -13,6 +13,7 @@ Public Const vectraASP = 40000
 Public Const alluraASP = 120000
 Public Const optaASP = 55000
 
+
 'System Codes
 Public Const pulseraSysCode1 = "718094"
 Public Const pulseraSysCode2 = "718095"
@@ -40,4 +41,6 @@ Public Const mamoSysCode5 = "714248"
 Public Const optaSysCode1 = "712301"
 Public Const optaSysCode2 = "704301"
 Public Const alluraSysCode = "723003"
+
+
 

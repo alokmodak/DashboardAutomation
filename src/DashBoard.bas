@@ -83,7 +83,11 @@ outputPath = sharedDrivePath
 outputFlName = outputFileGlobal
 End If
 
+Dim wsheet As Worksheet
 Application.Workbooks.Open (outputPath), False
+For Each wsheet In ActiveWorkbook.Sheets
+    ActiveSheet.UsedRange.AutoFilter
+Next
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = False
 
 'Open service scorecard file and install file
@@ -480,6 +484,9 @@ For Each pfi In p.PivotFields("System").PivotItems
 pfi.Visible = True
 Next pfi
 
+For Each pfi In p.PivotFields("Period").PivotItems
+pfi.Visible = True
+Next pfi
 'selecting values for product group
     For Each pfi In p.PivotFields("System").PivotItems
         If pfi = insFilterValue1 Then

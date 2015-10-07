@@ -45,6 +45,8 @@ With Sheet1.lstBx6NC
 .AddItem "MarketDynamics_Waterfall"
 .AddItem "Contract_Penetration"
 .AddItem "SendEmail_Contracts-Join&Drops"
+.AddItem "Diffusion Rate"
+.AddItem "BoxPlot"
 End With
 
 Sheet1.rdbLocalDrive.value = True

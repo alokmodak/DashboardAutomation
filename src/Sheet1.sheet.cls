@@ -95,7 +95,14 @@ startTime = second(Now())
                        
                        Call Send_Email_For_Contracts_Drops_Joins
                    End If
-                   
+                   If Sheet1.lstBx6NC.List(i) = "Diffusion Rate" Then
+                       
+                       Call DiffusionRate_Calculations
+                   End If
+                   If Sheet1.lstBx6NC.List(i) = "BoxPlot" Then
+                       
+                       Call BoxPlot_Calculations
+                   End If
                End If
             Next i
             
@@ -161,14 +168,23 @@ Private Sub comb6NC2_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 End Sub
 
 Private Sub helpMenu_Click()
-On Error Resume Next
-Dim wordFl As Object
-Dim helpPath As String
-helpPath = ThisWorkbook.Path & "\" & "DashboardAutomation_Help.doc"
-Set wordFl = CreateObject("word.application")
-wordFl.documents.Open helpPath
-wordFl.Visible = True
-wordFl.Activate
+'On Error Resume Next
+Const READYSTATE_COMPLETE As Integer = 4
+
+  Dim objIE As Object
+  
+  Set objIE = CreateObject("InternetExplorer.Application")
+
+  With objIE
+    .Visible = True
+    .silent = True
+    .navigate "https://github.com/alokmodak/DashboardAutomation/wiki"
+    Do Until .ReadyState = READYSTATE_COMPLETE
+      DoEvents
+    Loop
+  End With
+  Set objIE = Nothing
+
 End Sub
 
 
