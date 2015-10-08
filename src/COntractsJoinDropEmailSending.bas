@@ -62,11 +62,11 @@ marketInputFile = Replace(inputRevenue, inputFileNameContracts, marketInputFile)
 Application.Workbooks.Open (marketInputFile), False
 
 'opening Requrements file
-userRequiremetsFile = "User_Requirements.xlsx"
-userRequiremetsFile = Replace(inputRevenue, inputFileNameContracts, userRequiremetsFile)
-Application.Workbooks.Open (userRequiremetsFile), False
+'userRequiremetsFile = "User_Requirements.xlsx"
+'userRequiremetsFile = Replace(inputRevenue, inputFileNameContracts, userRequiremetsFile)
+'Application.Workbooks.Open (userRequiremetsFile), False
 Dim reqFile As String
-reqFile = ActiveWorkbook.name
+reqFile = ThisWorkbook.name
 
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
@@ -475,14 +475,14 @@ Dim subject As String
 Dim txtBody As String
 
 Application.Workbooks(reqFile).Activate
-ActiveWorkbook.Sheets(1).Activate
+ActiveWorkbook.Sheets("Contracts_Drop-Requirements").Activate
 ActiveSheet.UsedRange.Find(what:="Market", lookat:=xlWhole).Select
 fstRNGForSendMail = ActiveCell.Offset(1, 0).Address
 lstRNGForSendMail = ActiveCell.End(xlDown).Address
 
 For Each cellVal In Range(fstRNGForSendMail, lstRNGForSendMail)
 Application.Workbooks(reqFile).Activate
-ActiveWorkbook.Sheets(1).Activate
+ActiveWorkbook.Sheets("Contracts_Drop-Requirements").Activate
 ActiveCell.Offset(1, 0).Select
 filterValMarket = ActiveCell.Value
 filterValCountry = ActiveCell.Offset(0, 1).Value
@@ -902,8 +902,9 @@ Send_Email_Via_OutlookInbox flName, toEmailAdd, subject, txtBody
 
 Next cellVal
 
+ThisWorkbook.Sheets("UI").Activate
 Application.Workbooks(marketInputFile).Close False
-Application.Workbooks(reqFile).Close False
+'Application.Workbooks(reqFile).Close False
 Application.Workbooks(revenueOutputGlobal).Close False
 
 End Sub
