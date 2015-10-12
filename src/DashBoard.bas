@@ -378,7 +378,7 @@ Select Case valToFind
     valToFind = "iGM%"
     Case "CR IW"
     valToFind = "Call Rate (IW)"
-    Case "CR OoW"
+    Case "CR OoW - Contract"
     valToFind = "Call Rate (OoW Contract)"
     Case "Remote Resolution"
     valToFind = "RRR"
@@ -735,7 +735,7 @@ For Each celItem In Range(firstCell, lastCell)
         YTDPasteValue = ""
         
     Case "Call Rate (OoW Contract)"
-        ActiveSheet.UsedRange.Find("OoW Call Rate (CM calls p/s)").Select
+        ActiveSheet.UsedRange.Find("OoW Call Rate - Contract (CM calls p/s)").Select
         i = 0
             Do Until ActiveCell.End(xlUp).Value = "YTD"
             i = i + 1

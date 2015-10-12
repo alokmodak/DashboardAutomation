@@ -157,7 +157,7 @@ Private Sub comb6NC2_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
 End Sub
 
 Private Sub helpMenu_Click()
-'On Error Resume Next
+On Error Resume Next
 Const READYSTATE_COMPLETE As Integer = 4
 
   Dim objIE As Object
