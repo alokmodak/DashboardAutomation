@@ -31,7 +31,7 @@ Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 Dim strtMonth As String
 
-'On Error Resume Next
+On Error Resume Next
 
 Application.FileDialog(msoFileDialogFilePicker).AllowMultiSelect = False
 If Application.FileDialog(msoFileDialogFilePicker).Show <> -1 Then
@@ -612,7 +612,8 @@ Application.ReferenceStyle = xlA1
      ActiveCell.Offset(0, 1).Select
      ActiveCell.PasteSpecial xlPasteFormulas
     Loop
-        
+    
+    Range(ActiveCell.Address, ActiveCell.End(xlToLeft).Address).NumberFormat = "0"
 ActiveWorkbook.Sheets("Data").Delete
 
 End Sub

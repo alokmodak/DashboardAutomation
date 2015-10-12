@@ -62,11 +62,11 @@ marketInputFile = Replace(inputRevenue, inputFileNameContracts, marketInputFile)
 Application.Workbooks.Open (marketInputFile), False
 
 'opening Requrements file
-userRequiremetsFile = "User_Requirements.xlsx"
-userRequiremetsFile = Replace(inputRevenue, inputFileNameContracts, userRequiremetsFile)
-Application.Workbooks.Open (userRequiremetsFile), False
+'userRequiremetsFile = "User_Requirements.xlsx"
+'userRequiremetsFile = Replace(inputRevenue, inputFileNameContracts, userRequiremetsFile)
+'Application.Workbooks.Open (userRequiremetsFile), False
 Dim reqFile As String
-reqFile = ActiveWorkbook.name
+reqFile = ThisWorkbook.name
 
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
@@ -389,12 +389,12 @@ pvtTblName = pvtTbl.name
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] System Code Material (Material no of  R Eq)").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
-    With ActiveSheet.PivotTables(pvtTblName).PivotFields("Country")
+    With ActiveSheet.PivotTables(pvtTblName).PivotFields("Country A")
         .Orientation = xlRowField
         .Position = 10
     End With
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "Country").Subtotals = Array(False, False, False, False _
+        "Country A").Subtotals = Array(False, False, False, False _
         , False, False, False, False, False, False, False, False)
     
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
@@ -475,14 +475,14 @@ Dim subject As String
 Dim txtBody As String
 
 Application.Workbooks(reqFile).Activate
-ActiveWorkbook.Sheets(1).Activate
+ActiveWorkbook.Sheets("Contracts_Drop-Requirements").Activate
 ActiveSheet.UsedRange.Find(what:="Market", lookat:=xlWhole).Select
 fstRNGForSendMail = ActiveCell.Offset(1, 0).Address
 lstRNGForSendMail = ActiveCell.End(xlDown).Address
 
 For Each cellVal In Range(fstRNGForSendMail, lstRNGForSendMail)
 Application.Workbooks(reqFile).Activate
-ActiveWorkbook.Sheets(1).Activate
+ActiveWorkbook.Sheets("Contracts_Drop-Requirements").Activate
 ActiveCell.Offset(1, 0).Select
 filterValMarket = ActiveCell.Value
 filterValCountry = ActiveCell.Offset(0, 1).Value
@@ -493,14 +493,14 @@ txtBody = ActiveSheet.Cells(7, 9).Value
 
 
 Workbooks(revenueOutputGlobal).Activate
-ActiveSheet.PivotTables(pvtTblName).PivotFields("Country").ClearAllFilters
+ActiveSheet.PivotTables(pvtTblName).PivotFields("Country A").ClearAllFilters
 
 ActiveSheet.PivotTables(pvtTblName).PivotFields("Market").ClearAllFilters
             
     countryFilterVal = Split(filterValCountry, ";")
         
         Workbooks(revenueOutputGlobal).Activate
-        For Each pvtItem In ActiveSheet.PivotTables(pvtTblName).PivotFields("Country").PivotItems
+        For Each pvtItem In ActiveSheet.PivotTables(pvtTblName).PivotFields("Country A").PivotItems
             With pvtItem
                 found = False
                 For filterNum = 0 To UBound(countryFilterVal)
@@ -511,7 +511,7 @@ ActiveSheet.PivotTables(pvtTblName).PivotFields("Market").ClearAllFilters
                 End If
             End With
         Next
-        If filterValCountry = "" Then ActiveSheet.PivotTables(pvtTblName).PivotFields("Country").ClearAllFilters
+        If filterValCountry = "" Then ActiveSheet.PivotTables(pvtTblName).PivotFields("Country A").ClearAllFilters
         
     marketFilterVal = Split(filterValMarket, ";")
     Workbooks(revenueOutputGlobal).Activate
@@ -885,7 +885,7 @@ Selection.Borders(xlDiagonalDown).LineStyle = xlNone
         .TintAndShade = 0
         .Weight = xlThin
     End With
-    ActiveSheet.UsedRange.Find(what:="Country", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(what:="Country A", lookat:=xlWhole).Select
     ActiveCell.EntireRow.Select
     With Selection.Interior
         .Pattern = xlSolid
@@ -902,8 +902,9 @@ Send_Email_Via_OutlookInbox flName, toEmailAdd, subject, txtBody
 
 Next cellVal
 
+ThisWorkbook.Sheets("UI").Activate
 Application.Workbooks(marketInputFile).Close False
-Application.Workbooks(reqFile).Close False
+'Application.Workbooks(reqFile).Close False
 Application.Workbooks(revenueOutputGlobal).Close False
 
 End Sub
