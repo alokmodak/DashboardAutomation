@@ -34,6 +34,15 @@ With Sheet1.lstBx6NC
 .AddItem "BoxPlot"
 End With
 
+Sheet1.combModality.Value = "Modality"
+With Sheet1.combModality
+.AddItem "DXR"
+.AddItem "MoS"
+.AddItem "Mammography"
+.AddItem "CV"
+End With
+
+
 Sheet1.rdbLocalDrive.Value = True
 Sheet1.processTime.Value = 0
 Sheet1.processTime.Enabled = False

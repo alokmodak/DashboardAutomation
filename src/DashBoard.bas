@@ -443,7 +443,7 @@ insFilterValue5 = ""
 Case "IXR-MOS Veradius-Y"
 insFilterValue1 = veradiusSysCode1
 insFilterValue2 = veradiusSysCode2
-insFilterValue3 = ""
+insFilterValue3 = veradiusSysCode3
 insFilterValue4 = ""
 insFilterValue5 = ""
 
@@ -456,7 +456,7 @@ insFilterValue5 = ""
 
 Case "DXR-PrimaryDiagnost Digital-N"
 insFilterValue1 = PDSysCode1
-insFilterValue2 = ""
+insFilterValue2 = PDSysCode2
 insFilterValue3 = ""
 insFilterValue4 = ""
 insFilterValue5 = ""
@@ -471,6 +471,13 @@ insFilterValue5 = mamoSysCode5
 Case "DXR-MobileDiagnost Opta-N"
 insFilterValue1 = optaSysCode1
 insFilterValue2 = optaSysCode2
+insFilterValue3 = ""
+insFilterValue4 = ""
+insFilterValue5 = ""
+
+Case "IXR-CV Allura FC-Y"
+insFilterValue1 = alluraSysCode1
+insFilterValue2 = alluraSysCode2
 insFilterValue3 = ""
 insFilterValue4 = ""
 insFilterValue5 = ""
@@ -658,7 +665,7 @@ For Each celItem In Range(firstCell, lastCell)
     
     Case "Contract Revenue"
         ActiveSheet.UsedRange.Find("Customer").Select
-        ActiveSheet.UsedRange.Find(what:=YTDFindValue, After:=ActiveCell, LookIn:=xlValues).Select
+        ActiveSheet.UsedRange.Find(what:=YTDFindValue, after:=ActiveCell, LookIn:=xlValues).Select
          i = 0
             Do Until ActiveCell.End(xlUp).Value = "YTD"
             i = i + 1
@@ -676,7 +683,7 @@ For Each celItem In Range(firstCell, lastCell)
     
     Case "iGM%"
         ActiveSheet.UsedRange.Find("Customer").Select
-        ActiveSheet.UsedRange.Find(what:="Contract Profitability - Gross Margin %", After:=ActiveCell, LookIn:=xlValues).Select
+        ActiveSheet.UsedRange.Find(what:="Contract Profitability - Gross Margin %", after:=ActiveCell, LookIn:=xlValues).Select
          i = 0
             Do Until ActiveCell.End(xlUp).Value = "YTD"
             i = i + 1
@@ -1154,7 +1161,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("# of Patterns").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = patternValToPaste
 
@@ -1164,7 +1171,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("DAP capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = dapValToPaste
 
@@ -1174,7 +1181,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("Remote Capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(patternDate).Select
-ActiveSheet.UsedRange.Find(what:=patternDate, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=patternDate, after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = remoteValToPaste
 
@@ -1250,7 +1257,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("# of Patterns").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = patternValToPaste
 
@@ -1260,7 +1267,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("DAP capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = dapValToPaste
 
@@ -1270,7 +1277,7 @@ Worksheets(KPISheetName).Activate
 ActiveSheet.UsedRange.Find("Remote Capability").Select
 patternFstAdd = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find("YTD").Select
-ActiveSheet.UsedRange.Find(what:="YTD", After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:="YTD", after:=ActiveCell, LookIn:=xlValues).Select
 ActiveCell.Offset(patternFstAdd - 2, 0).Select
 ActiveCell.Value = remoteValToPaste
 
@@ -2092,7 +2099,7 @@ cProductGroup = "BV Vectra"
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("CHU synop").Activate
 ActiveSheet.Cells(5, 5).Select
-ActiveSheet.UsedRange.Find(what:=cProductGroup, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=cProductGroup, after:=ActiveCell).Select
 Dim chuYearToFind As Integer
 chuYearToFind = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.Value, 1, 4) & "-" & selMonth).Select
@@ -2179,7 +2186,7 @@ cProductGroup = "Allura FC"
 Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("CHU synop").Activate
 ActiveSheet.Cells(5, 5).Select
-ActiveSheet.UsedRange.Find(what:=cProductGroup, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=cProductGroup, after:=ActiveCell).Select
 chuYearToFind = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.Value, 1, 4) & "-" & selMonth).Select
 toMinusVal = CInt(Mid(ActiveCell.Address, 4, 2))
@@ -3457,7 +3464,7 @@ Dim mcSysCode1 As Double, mcSysCode2 As Double, mcSysCode3 As Double, mcSysCode4
 Workbooks(inputFlDI).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 mcSysCode1 = 0
@@ -3519,7 +3526,7 @@ Case "DXR-PrimaryDiagnost Digital-N"
 Workbooks(inputFlDI).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 mcSysCode1 = 0
@@ -3568,7 +3575,7 @@ Dim ytdIGTvalToPaste As Double
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, after:=ActiveCell).Select
 
 i = 0
 mcSysCode1 = 0
@@ -3621,7 +3628,7 @@ Case "IXR-MOS Pulsera-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 mcSysCode1 = 0
@@ -3667,7 +3674,7 @@ Case "IXR-MOS Veradius-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 mcSysCode1 = 0
@@ -3716,7 +3723,7 @@ Case "IXR-MOS BV Vectra-N"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 mcSysCode1 = 0
@@ -3765,14 +3772,14 @@ Case "IXR-CV Allura FC-Y"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, After:=ActiveCell, LookIn:=xlValues).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, after:=ActiveCell, LookIn:=xlValues).Select
 
 i = 0
 mcSysCode1 = 0
 
 Do Until ActiveCell.Value = ""
 
-    If ActiveCell.End(xlToLeft).Value = alluraSysCode Then
+    If ActiveCell.End(xlToLeft).Value = alluraSysCode1 Then
     mcSysCode1 = ActiveCell.Value * 12 / alluraASP
     End If
     
@@ -3809,7 +3816,7 @@ Case "DXR-MobileDiagnost Opta-N"
 Workbooks(inputFlIGT).Activate
 ActiveWorkbook.Sheets("Product Level Data Sheet").Activate
 ActiveSheet.UsedRange.Find(what:="Product Level Spend / Unit Per Month - Total", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:=warrantyCMonth, LookIn:=xlValues, after:=ActiveCell).Select
 
 i = 0
 mcSysCode1 = 0
@@ -4424,9 +4431,9 @@ lstAdd = "V11"
 
 Case "IXR-MOS BV Vectra-N"
 KPISheetName = "BV Vectra"
-plcmProductGroup = "HIC Legacy"
-fstAdd = "$J$21"
-lstAdd = "$V$29"
+plcmProductGroup = "MoS"
+fstAdd = "$J$3"
+lstAdd = "$V$11"
 
 Case "IXR-MOS Endura-Y"
 KPISheetName = "Endura"
@@ -4442,33 +4449,33 @@ lstAdd = "V11"
 
 Case "IXR-CV Allura FC-Y"
 KPISheetName = "Allura FC"
-plcmProductGroup = "HIC Legacy"
-fstAdd = "$J$21"
-lstAdd = "$V$29"
+plcmProductGroup = "MoS"
+fstAdd = "$J$3"
+lstAdd = "$V$11"
 
 Case "IXR-MOS Libra-N"
 KPISheetName = "Libra"
 plcmProductGroup = "HIC Legacy"
-fstAdd = "$J$21"
-lstAdd = "$V$29"
+fstAdd = "$J$33"
+lstAdd = "$V$41"
 
 Case "DXR-PrimaryDiagnost Digital-N"
 KPISheetName = "PrimaryDiagnost Digital"
-plcmProductGroup = "HIC Legacy"
-fstAdd = "$J$21"
-lstAdd = "$V$29"
+plcmProductGroup = "DXR - PD/PM"
+fstAdd = "$J$23"
+lstAdd = "$V$31"
 
 Case "DXR-MicroDose Mammography-Y"
 KPISheetName = "MicroDose Mammography"
 plcmProductGroup = "Mammo"
-fstAdd = "$J$12"
-lstAdd = "$V$20"
+fstAdd = "$J$13"
+lstAdd = "$V$21"
 
 Case "DXR-MobileDiagnost Opta-N"
-KPISheetName = "HIC Legacy"
-plcmProductGroup = "MobileDiagnost Opta"
-fstAdd = "$J$21"
-lstAdd = "$V$29"
+KPISheetName = "MobileDiagnost Opta"
+plcmProductGroup = "HIC Legacy"
+fstAdd = "$J$33"
+lstAdd = "$V$41"
 
 End Select
 

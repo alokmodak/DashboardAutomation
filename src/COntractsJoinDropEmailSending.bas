@@ -86,7 +86,7 @@ End If
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 
 'Putting names in blank cells
 Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
@@ -104,7 +104,7 @@ Loop
 
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 fstAddForPivot = ActiveCell.Address
 Selection.SpecialCells(xlCellTypeLastCell).Select
 lstAddForPivot = ActiveCell.Address
@@ -637,9 +637,9 @@ If ActiveCell.Value <> "" Then
         If ActiveCell.Offset(0, monthCellForTable - 3).Value = "Yes" Then
             If duration <= 12 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "0To1Year"
-            ElseIf 13 >= duration <= 36 Then
+            ElseIf 13 >= duration Or duration <= 36 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "1To3Years"
-            ElseIf 37 >= duration <= 60 Then
+            ElseIf 37 >= duration Or duration <= 60 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "3To5Years"
             ElseIf duration >= 61 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "MoreThan5Years"
@@ -674,9 +674,9 @@ End If
         If ActiveCell.Offset(0, monthCellForTable - 3).Value = "Yes" Then
             If duration <= 12 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "0To1Year"
-            ElseIf 13 >= duration <= 36 Then
+            ElseIf 13 >= duration Or duration <= 36 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "1To3Years"
-            ElseIf 37 >= duration <= 60 Then
+            ElseIf 37 >= duration Or duration <= 60 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "3To5Years"
             ElseIf duration >= 61 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "MoreThan5Years"
@@ -709,9 +709,9 @@ If i = 2 And ActiveCell.Offset(0, monthCellForTable).Value = "Yes" Then
   If ActiveCell.Offset(0, monthCellForTable - 3).Value = "No" Then
    If duration <= 12 Then
      ActiveCell.Offset(0, monthCellForTable - 1).Value = "0To1Year"
-   ElseIf 13 >= duration <= 36 Then
+   ElseIf 13 >= duration Or duration <= 36 Then
      ActiveCell.Offset(0, monthCellForTable - 1).Value = "1To3Years"
-   ElseIf 37 >= duration <= 60 Then
+   ElseIf 37 >= duration Or duration <= 60 Then
      ActiveCell.Offset(0, monthCellForTable - 1).Value = "3To5Years"
    ElseIf duration >= 61 Then
      ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
@@ -746,9 +746,9 @@ End If
                 If ActiveCell.Offset(0, monthCellForTable - 3).Value = "No" Then
                     If duration <= 12 Then
                         ActiveCell.Offset(0, monthCellForTable - 1).Value = "0To1Year"
-                    ElseIf 13 >= duration <= 36 Then
+                    ElseIf 13 >= duration Or duration <= 36 Then
                         ActiveCell.Offset(0, monthCellForTable - 1).Value = "1To3Years"
-                    ElseIf 37 >= duration <= 60 Then
+                    ElseIf 37 >= duration Or duration <= 60 Then
                         ActiveCell.Offset(0, monthCellForTable - 1).Value = "3To5Years"
                     ElseIf duration >= 61 Then
                         ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"

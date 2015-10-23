@@ -4,6 +4,7 @@ Public revenueSelCountry As String
 Public revenueOutputGlobal As String
 Public marketInputFile As String
 Public lastmonthVal As String
+Public stDate As String
 
 Public Sub Revenue_Graph_Creation()
 
@@ -13,7 +14,7 @@ Dim inputFileNameContracts As String
 Dim inputRevenue As String
 Dim fstAddForPivot As String
 Dim lstAddForPivot As String
-Dim duration As String
+Dim duration As Integer
 Dim monthsForTable As String
 Dim monthCellForTable As Integer
 Dim topCelVal As Integer
@@ -36,8 +37,16 @@ Dim lastColumn
 Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 Dim strtMonth As String
+Dim modalityVal As String
 
 On Error Resume Next
+
+'Selection for Modality
+If Sheet1.combModality.Value = "Modality" Or Sheet1.combModality.Value = "" Then
+     MsgBox "Please Select a Modality Group!"
+     End
+End If
+
 
 Application.FileDialog(msoFileDialogFilePicker).AllowMultiSelect = False
 If Application.FileDialog(msoFileDialogFilePicker).Show <> -1 Then
@@ -73,7 +82,7 @@ End If
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 
 'Putting names in blank cells
 Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
@@ -91,7 +100,7 @@ Loop
 
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 fstAddForPivot = ActiveCell.Address
 Selection.SpecialCells(xlCellTypeLastCell).Select
 lstAddForPivot = ActiveCell.Address
@@ -108,6 +117,7 @@ ActiveSheet.name = "Data"
 
 'Adding 6NC Names column
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
+modalityVal = Sheet1.combModality.Value
 
 Application.Workbooks(marketInputFile).Activate
 ActiveWorkbook.Sheets("Sheet1").Activate
@@ -118,7 +128,7 @@ Dim marketFSTAdd As String
 Dim marketLSTAdd As String
 
 marketFSTAdd = ActiveCell.Address
-ActiveCell.Offset(0, 1).Select
+ActiveCell.Offset(0, 3).Select
 ActiveCell.End(xlDown).Select
 marketLSTAdd = ActiveCell.Address
 ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
@@ -153,7 +163,8 @@ ActiveCell.Offset(1, 0).Select
 lookForVal = ActiveCell.Address(False, False)
 
 ActiveCell.Offset(0, -1).Select
-ActiveCell.Formula = "=IFERROR(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)," & Chr(34) & "Others" & Chr(34) & ")"
+ActiveCell.Formula = "=IFERROR(IF(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "4" & "," & "False)=" & Chr(34) & modalityVal & Chr(34) & ",VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)," & Chr(34) & "Others" & Chr(34) & ")," & Chr(34) & "Others" & Chr(34) & ")"
+'=IFERROR(IF(VLOOKUP(B2,$AS$1:$AV$143,4,FALSE)="MoS",VLOOKUP(B2,$AS$1:$AV$143,2,FALSE),"Others"),"Others")
 ActiveCell.Copy
 ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
 ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
@@ -440,13 +451,17 @@ Loop
 
 ActiveSheet.Cells(2, 40).Select
 Dim fstTableAdd As String
+Dim stMonth As Integer
 fstTableAdd = ActiveCell.Address
 ActiveCell.End(xlToRight).Select
+stDate = Format(stDate, "yyyy/mm/dd")
 
-monthsForTable = DateAdd("m", -24, Date)
+stMonth = DateDiff("m", stDate, Format(Now(), "yyyy/mm/dd"))
+
+monthsForTable = DateAdd("m", -stMonth, Date)
 
 ActiveCell.Offset(0, 1).Select
-For monthCellForTable = 2 To 37
+For monthCellForTable = 2 To 30
     ActiveCell.Value = monthsForTable
     ActiveCell.NumberFormat = "[$-409]mmm-yy;@"
         If monthCellForTable > 1 Then
@@ -484,6 +499,7 @@ If ActiveCell.Value <> "" Then
                 ActiveCell.Offset(0, 2).Value = ActiveCell.Offset(-2, 2).Value
             End If
             duration = DateDiff("m", Replace(ActiveCell.Offset(0, 1).Value, ".", "/"), Replace(ActiveCell.Offset(0, 2).Value, ".", "/"))
+            duration = CInt(duration)
             i = 1
             Do Until ActiveCell.Offset(i, 0).Value <> "" Or i > 20
             'exit loop for last cell
@@ -497,11 +513,12 @@ If ActiveCell.Value <> "" Then
                 ActiveCell.Offset(i, 2).Value = ActiveCell.Offset(-2, 2).Value
             End If
             duration = duration + DateDiff("m", Replace(ActiveCell.Offset(i, 1).Value, ".", "/"), Replace(ActiveCell.Offset(i, 2).Value, ".", "/"))
+            duration = CInt(duration)
             i = i + 1
             Loop
         
             monthCellForTable = 4
-            For i = 1 To 36
+            For i = 1 To 29
             
         Dim k As Integer
         k = 0
@@ -527,10 +544,10 @@ If ActiveCell.Value <> "" Then
     If i = 2 And ActiveCell.Offset(0, monthCellForTable).Value = "No" Then
         If ActiveCell.Offset(0, monthCellForTable - 3).Value = "Yes" Then
             If duration <= 12 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "0To1Year"
-            ElseIf 13 >= duration <= 36 Then
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "LessThan1Year"
+            ElseIf 13 >= duration Or duration <= 36 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "1To3Years"
-            ElseIf 37 >= duration <= 60 Then
+            ElseIf 37 >= duration Or duration <= 60 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "3To5Years"
             ElseIf duration >= 61 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "MoreThan5Years"
@@ -564,10 +581,10 @@ End If
     If i > 2 And ActiveCell.Offset(0, monthCellForTable).Value = "No" Then
         If ActiveCell.Offset(0, monthCellForTable - 3).Value = "Yes" Then
             If duration <= 12 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "0To1Year"
-            ElseIf 13 >= duration <= 36 Then
+                ActiveCell.Offset(0, monthCellForTable - 2).Value = "LessThan1Year"
+            ElseIf 13 >= duration Or duration <= 36 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "1To3Years"
-            ElseIf 37 >= duration <= 60 Then
+            ElseIf 37 >= duration Or duration <= 60 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "3To5Years"
             ElseIf duration >= 61 Then
                 ActiveCell.Offset(0, monthCellForTable - 2).Value = "MoreThan5Years"
@@ -599,10 +616,10 @@ End If
 If i = 2 And ActiveCell.Offset(0, monthCellForTable).Value = "Yes" Then
   If ActiveCell.Offset(0, monthCellForTable - 3).Value = "No" Then
    If duration <= 12 Then
-     ActiveCell.Offset(0, monthCellForTable - 1).Value = "0To1Year"
-   ElseIf 13 >= duration <= 36 Then
+     ActiveCell.Offset(0, monthCellForTable - 1).Value = "LessThan1Year"
+   ElseIf 13 >= duration Or duration <= 36 Then
      ActiveCell.Offset(0, monthCellForTable - 1).Value = "1To3Years"
-   ElseIf 37 >= duration <= 60 Then
+   ElseIf 37 >= duration Or duration <= 60 Then
      ActiveCell.Offset(0, monthCellForTable - 1).Value = "3To5Years"
    ElseIf duration >= 61 Then
      ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
@@ -636,10 +653,10 @@ End If
                 
                 If ActiveCell.Offset(0, monthCellForTable - 3).Value = "No" Then
                     If duration <= 12 Then
-                        ActiveCell.Offset(0, monthCellForTable - 1).Value = "0To1Year"
-                    ElseIf 13 >= duration <= 36 Then
+                        ActiveCell.Offset(0, monthCellForTable - 1).Value = "LessThan1Year"
+                    ElseIf 13 >= duration Or duration <= 36 Then
                         ActiveCell.Offset(0, monthCellForTable - 1).Value = "1To3Years"
-                    ElseIf 37 >= duration <= 60 Then
+                    ElseIf 37 >= duration Or duration <= 60 Then
                         ActiveCell.Offset(0, monthCellForTable - 1).Value = "3To5Years"
                     ElseIf duration >= 61 Then
                         ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
@@ -825,7 +842,7 @@ Dim filterValueJoined As String
 Dim filterValueDropped As String
 Dim filterPos As Integer
 filterPos = 7
-monthsForTable = DateAdd("m", -24, Date)
+monthsForTable = DateAdd("m", -stMonth, Date)
 For monthCellForTable = 7 To 42
     filterValue = Format(monthsForTable, "mmm-yy")
     filterValueJoined = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Joined"
@@ -861,15 +878,21 @@ lstCelNumForChart = ActiveCell.Address
 ActiveCell.Offset(10, 0).Select
 lstCelNum = ActiveCell.Address
 ActiveCell.Value = "ZCSS"
-ActiveCell.Offset(2, 0).Value = "0To1Year"
-ActiveCell.Offset(3, 0).Value = "1To3Years"
-ActiveCell.Offset(4, 0).Value = "3To5Years"
-ActiveCell.Offset(5, 0).Value = "MoreThan5Years"
-ActiveCell.Offset(6, 0).Value = "Warranty"
-ActiveCell.Offset(7, 0).Value = "EOL"
-ActiveCell.Offset(8, 0).Value = "ZCSP"
-ActiveCell.Offset(9, 0).Value = "ZCSW"
-ActiveCell.Offset(1, 0).Value = "Blanks"
+ActiveCell.Offset(4, 0).Value = "LessThan1Year-Dropped"
+ActiveCell.Offset(5, 0).Value = "LessThan1Year-Joined"
+ActiveCell.Offset(6, 0).Value = "1To3Years-Dropped"
+ActiveCell.Offset(7, 0).Value = "1To3Years-Joined"
+ActiveCell.Offset(8, 0).Value = "3To5Years-Dropped"
+ActiveCell.Offset(9, 0).Value = "3To5Years-Joined"
+ActiveCell.Offset(10, 0).Value = "MoreThan5Years-Dropped"
+ActiveCell.Offset(11, 0).Value = "MoreThan5Years-Joined"
+ActiveCell.Offset(12, 0).Value = "Warranty-Dropped"
+ActiveCell.Offset(13, 0).Value = "Warranty-Joined"
+ActiveCell.Offset(14, 0).Value = "EOL-Dropped"
+ActiveCell.Offset(15, 0).Value = "EOL-Joined"
+ActiveCell.Offset(1, 0).Value = "ZCSP"
+ActiveCell.Offset(2, 0).Value = "ZCSW"
+ActiveCell.Offset(3, 0).Value = "Blanks"
 
 ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
 Dim fstCelCount As String
@@ -917,39 +940,39 @@ ActiveSheet.Range(lstCelNum).Select
 ActiveSheet.UsedRange.Find(what:="Blanks", lookat:=xlWhole).Select
 ActiveCell.Offset(0, 2).Select
 fstAddB = ActiveCell.Offset(1, 0).Address(False, False)
-lstAddB = ActiveCell.Offset(6, 0).Address(False, False)
-fstAddB2 = ActiveCell.Offset(-1, -1).Address(False, False)
-lstaddB2 = ActiveCell.Offset(8, -1).Address(False, False)
+lstAddB = ActiveCell.Offset(12, 0).Address(False, False)
+fstAddB2 = ActiveCell.Offset(-3, -1).Address(False, False)
+lstaddB2 = ActiveCell.Offset(-1, -1).Address(False, False)
 fstAddB3 = ActiveCell.Offset(1, 1).Address(False, False)
-lstAddB3 = ActiveCell.Offset(6, 1).Address(False, False)
-fstAddB4 = ActiveCell.Offset(-1, 2).Address(False, False)
-lstAddB4 = ActiveCell.Offset(8, 2).Address(False, False)
+lstAddB3 = ActiveCell.Offset(12, 1).Address(False, False)
+fstAddB4 = ActiveCell.Offset(-3, 2).Address(False, False)
+lstAddB4 = ActiveCell.Offset(-1, 2).Address(False, False)
 
 ActiveSheet.Range(lstCelNum).Select
 ActiveCell.Offset(0, 1).Formula = "=COUNTIFS(" & fstcntF & ":" & lstcntF & "," & Chr(34) & "ZCSS" & Chr(34) & "," & fstcntG & ":" & lstcntG & "," & Chr(34) & "Yes" & Chr(34) & ")"
-ActiveCell.Offset(8, 1).Formula = "=COUNTIFS(" & fstcntF & ":" & lstcntF & "," & Chr(34) & "ZCSP" & Chr(34) & "," & fstcntG & ":" & lstcntG & "," & Chr(34) & "Yes" & Chr(34) & ")"
-ActiveCell.Offset(9, 1).Formula = "=COUNTIFS(" & fstcntF & ":" & lstcntF & "," & Chr(34) & "ZCSW" & Chr(34) & "," & fstcntG & ":" & lstcntG & "," & Chr(34) & "Yes" & Chr(34) & ")"
-ActiveCell.Offset(1, 2).Formula = "=SUM(" & fstAddB2 & ":" & lstaddB2 & ")-SUM(" & fstAddB & ":" & lstAddB & ")"
-ActiveCell.Offset(1, 3).Formula = "=SUM(" & fstAddB4 & ":" & lstAddB4 & ")-SUM(" & fstAddB3 & ":" & lstAddB3 & ")"
-ActiveCell.Offset(2, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "0To1Year" & Chr(34) & ")"
-ActiveCell.Offset(2, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "0To1Year" & Chr(34) & ")"
-ActiveCell.Offset(3, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "1To3Years" & Chr(34) & ")"
-ActiveCell.Offset(3, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "1To3Years" & Chr(34) & ")"
-ActiveCell.Offset(4, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "3To5Years" & Chr(34) & ")"
-ActiveCell.Offset(4, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "3To5Years" & Chr(34) & ")"
-ActiveCell.Offset(5, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "MoreThan5Years" & Chr(34) & ")"
-ActiveCell.Offset(5, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "MoreThan5Years" & Chr(34) & ")"
-ActiveCell.Offset(6, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "Warranty" & Chr(34) & ")"
-ActiveCell.Offset(6, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "Warranty" & Chr(34) & ")"
-ActiveCell.Offset(7, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "EOL" & Chr(34) & ")"
-ActiveCell.Offset(7, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "EOL" & Chr(34) & ")"
+ActiveCell.Offset(1, 1).Formula = "=COUNTIFS(" & fstcntF & ":" & lstcntF & "," & Chr(34) & "ZCSP" & Chr(34) & "," & fstcntG & ":" & lstcntG & "," & Chr(34) & "Yes" & Chr(34) & ")"
+ActiveCell.Offset(2, 1).Formula = "=COUNTIFS(" & fstcntF & ":" & lstcntF & "," & Chr(34) & "ZCSW" & Chr(34) & "," & fstcntG & ":" & lstcntG & "," & Chr(34) & "Yes" & Chr(34) & ")"
+ActiveCell.Offset(3, 2).Formula = "=SUM(" & fstAddB2 & ":" & lstaddB2 & ")-SUM(" & fstAddB & ":" & lstAddB & ")"
+ActiveCell.Offset(3, 3).Formula = "=SUM(" & fstAddB4 & ":" & lstAddB4 & ")-SUM(" & fstAddB3 & ":" & lstAddB3 & ")"
+ActiveCell.Offset(4, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "LessThan1Year" & Chr(34) & ")"
+ActiveCell.Offset(5, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "LessThan1Year" & Chr(34) & ")"
+ActiveCell.Offset(6, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "1To3Years" & Chr(34) & ")"
+ActiveCell.Offset(7, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "1To3Years" & Chr(34) & ")"
+ActiveCell.Offset(8, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "3To5Years" & Chr(34) & ")"
+ActiveCell.Offset(9, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "3To5Years" & Chr(34) & ")"
+ActiveCell.Offset(10, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "MoreThan5Years" & Chr(34) & ")"
+ActiveCell.Offset(11, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "MoreThan5Years" & Chr(34) & ")"
+ActiveCell.Offset(12, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "Warranty" & Chr(34) & ")"
+ActiveCell.Offset(13, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "Warranty" & Chr(34) & ")"
+ActiveCell.Offset(14, 2).Formula = "=COUNTIF(" & fstcntH & ":" & lstcntH & "," & Chr(34) & "EOL" & Chr(34) & ")"
+ActiveCell.Offset(15, 3).Formula = "=COUNTIF(" & fstcntI & ":" & lstcntI & "," & Chr(34) & "EOL" & Chr(34) & ")"
 
 ActiveCell.Offset(0, 1).Select
-ActiveSheet.Range(Selection, ActiveCell.Offset(9, 2).Address).Select
+ActiveSheet.Range(Selection, ActiveCell.Offset(15, 2).Address).Select
 Selection.Copy
 
 Dim formulaCopy As Integer
-For formulaCopy = 1 To 36
+For formulaCopy = 1 To 28
 ActiveCell.Offset(0, 3).Select
 ActiveCell.PasteSpecial xlPasteFormulas
 Next
@@ -963,7 +986,7 @@ ActiveSheet.Range(lstCelNum).Select
 ActiveCell.Offset(-1, 1).Select
 fstChartAdd = ActiveCell.Offset(0, -1).Address
 ActiveCell.End(xlToRight).Select
-ActiveCell.Offset(10, 0).Select
+ActiveCell.Offset(16, 0).Select
 lstChartAdd = ActiveCell.Address
 
     Range(fstChartAdd, lstChartAdd).Select
@@ -995,173 +1018,154 @@ lstChartAdd = ActiveCell.Address
          .Top = 10    ' reposition
          .Left = 300   ' reposition
      End With
-    ActiveChart.seriesCollection(9).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent5
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = -0.5
-        .Solid
-    End With
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorText2
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.400000006
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(10).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorText2
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.400000006
-        .Solid
-    End With
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorText2
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.6000000238
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.Legend.LegendEntries(9).Select
-    Selection.Delete
-    
-Dim c As Chart
-Dim s As Series
-Dim iPoint As Long
-Dim nPoint As Long
-Dim colorCounter As Integer
-colorCounter = 1
-
-Set c = ActiveChart
-For i = 3 To 8
-Set s = c.seriesCollection(i)
-s.Select
-With Selection.Format.Fill
-.Visible = msoTrue
-If i = 8 Then
-.ForeColor.RGB = RGB(220, 100, 100)
-ElseIf i = 7 Then
-.ForeColor.RGB = RGB(200, 100, 100)
-ElseIf i = 6 Then
-.ForeColor.RGB = RGB(170, 70, 70)
-ElseIf i = 5 Then
-.ForeColor.RGB = RGB(150, 50, 50)
-ElseIf i = 4 Then
-.ForeColor.RGB = RGB(120, 30, 30)
-ElseIf i = 3 Then
-.ForeColor.RGB = RGB(100, 20, 20)
-End If
-.BackColor.ObjectThemeColor = msoThemeColorAccent2
-.BackColor.TintAndShade = 0
-.BackColor.Brightness = 0.4000006
-End With
-
-nPoint = s.Points.Count
-For iPoint = 1 To nPoint
-If InStr(1, s.XValues(iPoint), "Joined") Then
-s.Points(iPoint).Select
-With Selection.Format.Fill
-.Visible = msoTrue
-.ForeColor.ObjectThemeColor = msoThemeColorAccent6
-.ForeColor.TintAndShade = 0
-If colorCounter = 4 Then
-.ForeColor.Brightness = -0.25
-ElseIf colorCounter = 3 Then
-.ForeColor.Brightness = -0.4
-ElseIf colorCounter = 2 Then
-.ForeColor.Brightness = -0.6
-ElseIf colorCounter = 1 Then
-.ForeColor.Brightness = -0.8
-End If
-.Transparency = 0
-.Solid
-End With
-End If
-colorCounter = i
-If colorCounter > 4 Then
-colorCounter = colorCounter - 1
-End If
-Next iPoint
-Next i
-
-ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveChart.seriesCollection(9).Select
-    ActiveChart.seriesCollection(9).ApplyDataLabels
-    ActiveChart.seriesCollection(10).Select
-    ActiveChart.seriesCollection(10).ApplyDataLabels
-    ActiveChart.ChartTitle.Text = "Contracts Joins & Drops"
-    ActiveSheet.ChartObjects("Chart 1").Activate
     ActiveChart.seriesCollection(1).Select
-    ActiveChart.seriesCollection(1).Points(73).Select
     With Selection.Format.Fill
         .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
+        .ForeColor.RGB = RGB(10, 50, 200)
         .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = -0.25
+        .ForeColor.Brightness = 0.2
         .Transparency = 0
         .Solid
     End With
-    ActiveChart.seriesCollection(10).Select
-    ActiveChart.seriesCollection(9).Select
-    ActiveChart.seriesCollection(9).Points(73).Select
-    With Selection.Format.Fill
+    ActiveChart.FullSeriesCollection(1).DataLabels.Select
+    With Selection.Format.TextFrame2.TextRange.Font.Fill
         .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
+        .ForeColor.ObjectThemeColor = msoThemeColorBackground1
         .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.400000006
+        .ForeColor.Brightness = 0
         .Transparency = 0
         .Solid
     End With
-    ActiveChart.seriesCollection(10).Select
-    ActiveChart.seriesCollection(10).Points(73).Select
+    ActiveChart.seriesCollection(2).Select
     With Selection.Format.Fill
         .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent2
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.8000000119
-        .Transparency = 0
-        .Solid
-    End With
-                
-    ActiveChart.FullSeriesCollection(10).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent1
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.7
-        .Transparency = 0
-        .Solid
-    End With
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent1
+        .ForeColor.RGB = RGB(10, 50, 150)
         .ForeColor.TintAndShade = 0
         .ForeColor.Brightness = 0.5
         .Transparency = 0
         .Solid
     End With
-    ActiveChart.FullSeriesCollection(9).Select
+    ActiveChart.seriesCollection(3).Select
     With Selection.Format.Fill
         .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent1
+        .ForeColor.RGB = RGB(10, 50, 255)
         .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.6000000238
+        .ForeColor.Brightness = 0.7
         .Transparency = 0
         .Solid
     End With
+    ActiveChart.seriesCollection(5).Select
     With Selection.Format.Fill
         .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorAccent1
+        .ForeColor.RGB = RGB(255, 5, 5)
         .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.400000006
+        .ForeColor.Brightness = -0.1
         .Transparency = 0
         .Solid
     End With
+    ActiveChart.seriesCollection(6).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(20, 255, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.1
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(7).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 25, 10)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.3
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(8).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(55, 255, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.2
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(9).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(200, 50, 0)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.2
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(10).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(10, 250, 150)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.6
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(11).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 50, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(12).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(10, 250, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(13).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 50, 150)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.5
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(14).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(5, 250, 30)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(15).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 100, 55)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    
+    ActiveChart.FullSeriesCollection(4).Select
+    Selection.Format.Fill.Visible = msoFalse
+    ActiveChart.Legend.Select
+    ActiveSheet.ChartObjects("ContractsDynamics").Activate
+    ActiveChart.ChartTitle.Select
+    ActiveChart.ChartTitle.Text = "Contracts Drop&Join"
+    Selection.Format.TextFrame2.TextRange.Characters.Text = "Contracts Drop&Join"
+    With Selection.Format.TextFrame2.TextRange.Characters(1, 19).ParagraphFormat
+        .TextDirection = msoTextDirectionLeftToRight
+        .Alignment = msoAlignCenter
+    End With
+    
     ActiveSheet.ChartObjects(1).name = "ContractsDynamics"
 'deleting old chart
 Dim ws As Worksheet
@@ -1358,7 +1362,7 @@ strMacro = strMacro & vbCrLf & _
     'Creating tables for Sceifics of drops and joins
     Range(fstChartAdd).Select
     ActiveCell.Offset(-1, 0).Select
-    For i = 1 To 11
+    For i = 1 To 17
         ActiveCell.Offset(i, -1).Value = i
     Next i
     
@@ -1368,13 +1372,15 @@ strMacro = strMacro & vbCrLf & _
     Dim tableRef As String
     tableRef = ActiveCell.Offset(1, -1).Address(False, True)
     Dim tableRefForHlook As String
-    tableRefForHlook = ActiveCell.Offset(3, -1).Address(False, True)
+    Dim tableRefForHlook2 As String
+    tableRefForHlook = ActiveCell.Offset(6, -1).Address(False, True)
+    tableRefForHlook2 = ActiveCell.Offset(5, -1).Address(False, True)
     
     ActiveCell.Offset(1, 0).Select
     ActiveCell.End(xlDown).Select
     ActiveCell.Offset(3, 0).Select
     
-    For i = 1 To 35
+    For i = 1 To 28
         ActiveCell.Offset(-1, i).Value = i * 3
     Next i
     
@@ -1391,14 +1397,14 @@ strMacro = strMacro & vbCrLf & _
                                     '=OFFSET($G$11166,0,G11178)
     ActiveCell.Offset(1, 0).Formula = "=HLOOKUP(" & fstNewTableAdd & "," & fstChartAdd & ":" & lstChartAdd & "," & tableRef & ",False)"
                                     '=HLOOKUP($G$11187,$F$11174:$DJ$11185,E11175,FALSE)
-    ActiveCell.Offset(2, 0).Formula = "=HLOOKUP(" & fstNewTableAdd & "," & fstChartAdd & ":" & lstChartAdd & "," & "10" & ",False)"
-    ActiveCell.Offset(3, 0).Formula = "=HLOOKUP(" & fstNewTableAdd & "," & fstChartAdd & ":" & lstChartAdd & "," & "11" & ",False)"
+    ActiveCell.Offset(2, 0).Formula = "=HLOOKUP(" & fstNewTableAdd & "," & fstChartAdd & ":" & lstChartAdd & "," & "3" & ",False)"
+    ActiveCell.Offset(3, 0).Formula = "=HLOOKUP(" & fstNewTableAdd & "," & fstChartAdd & ":" & lstChartAdd & "," & "4" & ",False)"
     
     ActiveCell.Offset(4, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Joined" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook & ",False)"
                                     '=HLOOKUP(CONCATENATE(LEFT(G$11179,3),RIGHT(G$11179,2),"-Joined"),$G$11166:$DJ$11176,$E11169,FALSE)
-    ActiveCell.Offset(10, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook & ",False)"
+    ActiveCell.Offset(10, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook2 & ",False)"
                                     '=HLOOKUP(CONCATENATE(LEFT(G$11179,3),RIGHT(G$11179,2),"-Dropped"),$G$11166:$DJ$11176,$E11169,FALSE)
-    ActiveCell.Offset(16, 0).Formula = "=" & negativeAdd & "*-1"
+        ActiveCell.Offset(16, 0).Formula = "=" & negativeAdd & "*-1"
                                     '=G11189*-1
                      
     For i = 1 To 22
@@ -1421,19 +1427,19 @@ strMacro = strMacro & vbCrLf & _
 ActiveCell.Offset(1, -1).Value = "ZCSS"
 ActiveCell.Offset(2, -1).Value = "ZCSP"
 ActiveCell.Offset(3, -1).Value = "ZCSW"
-ActiveCell.Offset(4, -1).Value = "Join - 0To1Year"
+ActiveCell.Offset(4, -1).Value = "Join - LessThan1Year"
 ActiveCell.Offset(5, -1).Value = "Join - 1To3Years"
 ActiveCell.Offset(6, -1).Value = "Join - 3To5Years"
 ActiveCell.Offset(7, -1).Value = "Join -MoreThan5Years"
 ActiveCell.Offset(8, -1).Value = "Join -Warranty"
 ActiveCell.Offset(9, -1).Value = "Join -EOL"
-ActiveCell.Offset(10, -1).Value = "Drop - 0To1Year"
+ActiveCell.Offset(10, -1).Value = "Drop - LessThan1Year"
 ActiveCell.Offset(11, -1).Value = "Drop - 1To3Years"
 ActiveCell.Offset(12, -1).Value = "Drop - 3To5Years"
 ActiveCell.Offset(13, -1).Value = "Drop -MoreThan5Years"
 ActiveCell.Offset(14, -1).Value = "Drop -Warranty"
 ActiveCell.Offset(15, -1).Value = "Drop -EOL"
-ActiveCell.Offset(16, -1).Value = "Drop - 0To1Year"
+ActiveCell.Offset(16, -1).Value = "Drop - LessThan1Year"
 ActiveCell.Offset(17, -1).Value = "Drop - 1To3Years"
 ActiveCell.Offset(18, -1).Value = "Drop - 3To5Years"
 ActiveCell.Offset(19, -1).Value = "Drop -MoreThan5Years"
@@ -1459,7 +1465,7 @@ ActiveCell.Offset(28, -1).Value = "IB Dummy"
 ActiveCell.Offset(23, 0).Select
 Range(ActiveCell.Address, ActiveCell.End(xlDown).Address).Copy
 
-Do Until ActiveCell.Offset(-2, 1).Value = ""
+    Do Until ActiveCell.Offset(-2, 1).Value = ""
     ActiveCell.Offset(0, 1).Select
     ActiveCell.PasteSpecial xlPasteFormulas
 Loop
@@ -1599,8 +1605,15 @@ Dim zcswVal As Boolean
 Dim countFstAddress As String
 Dim countLstAddress As String
 Dim strtMonth As String
+Dim modalityVal As String
 
 On Error Resume Next
+
+'Selection for Modality
+If Sheet1.combModality.Value = "Modality" Or Sheet1.combModality.Value = "" Then
+     MsgBox "Please Select a Modality Group!"
+     End
+End If
 
 Application.FileDialog(msoFileDialogFilePicker).AllowMultiSelect = False
 If Application.FileDialog(msoFileDialogFilePicker).Show <> -1 Then
@@ -1647,7 +1660,7 @@ Next
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 
 'Putting names in blank cells
 Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
@@ -1665,7 +1678,7 @@ Loop
 
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 fstAddForPivot = ActiveCell.Address
 Selection.SpecialCells(xlCellTypeLastCell).Select
 lstAddForPivot = ActiveCell.Address
@@ -1776,6 +1789,7 @@ Selection.PasteSpecial (xlValues)
 
 'Adding 6NC Names column
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
+modalityVal = Sheet1.combModality.Value
 
 Application.Workbooks(marketInputFile).Activate
 ActiveWorkbook.Sheets("Sheet1").Activate
@@ -1784,7 +1798,7 @@ ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
 ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
 
 marketFSTAdd = ActiveCell.Address
-ActiveCell.Offset(0, 1).Select
+ActiveCell.Offset(0, 3).Select
 ActiveCell.End(xlDown).Select
 marketLSTAdd = ActiveCell.Address
 ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
@@ -1813,7 +1827,7 @@ ActiveCell.Offset(1, 0).Select
 lookForVal = ActiveCell.Address(False, False)
 
 ActiveCell.Offset(0, -1).Select
-ActiveCell.Formula = "=IFERROR(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)," & Chr(34) & "Others" & Chr(34) & ")"
+ActiveCell.Formula = "=IFERROR(IF(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "4" & "," & "False)=" & Chr(34) & modalityVal & Chr(34) & ",VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)," & Chr(34) & "Others" & Chr(34) & ")," & Chr(34) & "Others" & Chr(34) & ")"
 ActiveCell.Copy
 ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
 ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
@@ -1959,12 +1973,15 @@ pvtTbl.ManualUpdate = False
     fstForPercentCal = ActiveCell.Offset(-1, 0).Address(True, False)
     ActiveSheet.Range(marketCelAdd).Select
     ActiveCell.End(xlToRight).Select
-    ActiveCell.End(xlDown).Select
+    'ActiveCell.End(xlDown).Select
+    ActiveSheet.Cells(Rows.Count, ActiveCell.Column).End(xlUp).Select
     lstForPercentCal = ActiveCell.Address
     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.Offset(2, 1).Select
     lstperCounterAdd = ActiveCell.Address(False, True)
+    ActiveCell.Offset(-1, 0).Select
     ActiveCell.End(xlToRight).Select
+    ActiveCell.Offset(1, 0).Select
     perCounterAdd = ActiveCell.Address(False, True)
     
     ActiveSheet.Range(lstPercentAdd).Select
@@ -2121,7 +2138,7 @@ pvtTbl.ManualUpdate = False
         .Left = 150
     End With
 
-Range("A1:W30").Select
+Range("A1:BI30").Select
     With Selection.Interior
         .Pattern = xlSolid
         .PatternColorIndex = xlAutomatic
@@ -2129,6 +2146,10 @@ Range("A1:W30").Select
         .TintAndShade = 0
         .PatternTintAndShade = 0
     End With
+
+Range(rngToPaste).Select
+    
+    Caculating_IMQANDMAT
     
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.name = "Market_Dynamics"
@@ -2612,6 +2633,15 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
         .TintAndShade = 0
         .PatternTintAndShade = 0
     End With
+    Range("Z1:BH30").Select
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorLight2
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    
     ActiveSheet.Shapes.Range(Array("System Code (6NC) 1")).Select
     ActiveWorkbook.SlicerCaches("Slicer_System_Code__6NC1").PivotTables. _
         AddPivotTable (ActiveSheet.PivotTables("countContractsPivotTable"))
@@ -2738,7 +2768,7 @@ Next
     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveSheet.PivotTables("contractsPivotTable").PivotSelect "", xlDataAndLabel, True
     Selection.Copy
-    Sheets.Add After:=ActiveSheet
+    Sheets.Add after:=ActiveSheet
     ActiveSheet.name = "Revenue_Forcast"
     Range("B31").Select
     ActiveSheet.Paste
@@ -3192,6 +3222,12 @@ ActiveSheet.Cells(1, 1).Select
     'calling a function for trends
     Creating_Trends_Market_Dynamics nxtYearFormulaAdd
     
+    'calling function for IMQ and MAT charts for contract Dynamics
+    Creating_IMQ_MAT_Charts_ContractsDynamics
+    
+'    Application.Workbooks(revenueOutputGlobal).Sheets("Data").Delete
+    ActiveSheet.Cells(1, 1).Select
+    Application.Workbooks(revenueOutputGlobal).Save
     Application.ScreenUpdating = True
     Application.Calculation = xlCalculationAutomatic
     Application.Workbooks(inputFileNameContracts).Close False
@@ -3220,8 +3256,16 @@ Dim zcswVal As Boolean
 Dim countFstAddress As String
 Dim countLstAddress As String
 Dim strtMonth As String
+Dim modalityVal As String
 
 On Error Resume Next
+
+'Selection for Modality
+If Sheet1.combModality.Value = "Modality" Or Sheet1.combModality.Value = "" Then
+     MsgBox "Please Select a Modality Group!"
+     End
+End If
+
 Application.DisplayAlerts = False
 Application.FileDialog(msoFileDialogFilePicker).AllowMultiSelect = False
 If Application.FileDialog(msoFileDialogFilePicker).Show <> -1 Then
@@ -3269,14 +3313,14 @@ Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole, After:=ActiveCell).Select
-ActiveSheet.UsedRange.Find(what:="Current contract contract material", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole, after:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="Current contract contract material", lookat:=xlWhole, after:=ActiveCell).Select
 Range(ActiveCell.Offset(0, 1).Address, ActiveCell.Offset(0, 6).Address).Copy
 ActiveCell.Offset(-1, 1).PasteSpecial xlPasteAll
 
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole, after:=ActiveCell).Select
 
 'Putting names in blank cells
 Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
@@ -3294,7 +3338,7 @@ Loop
 
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole, after:=ActiveCell).Select
 
 fstAddForPivot = ActiveCell.Address
 Selection.SpecialCells(xlCellTypeLastCell).Select
@@ -3406,6 +3450,7 @@ Selection.PasteSpecial (xlValues)
 
 'Adding 6NC Groups
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
+modalityVal = Sheet1.combModality.Value
 
 Application.Workbooks(marketInputFile).Activate
 ActiveWorkbook.Sheets("Sheet1").Activate
@@ -3414,7 +3459,7 @@ ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
 ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
 
 marketFSTAdd = ActiveCell.Address
-ActiveCell.Offset(0, 1).Select
+ActiveCell.Offset(0, 3).Select
 ActiveCell.End(xlDown).Select
 marketLSTAdd = ActiveCell.Address
 ActiveSheet.Range(marketFSTAdd, marketLSTAdd).Select
@@ -3443,7 +3488,7 @@ ActiveCell.Offset(1, 0).Select
 lookForVal = ActiveCell.Address(False, False)
 
 ActiveCell.Offset(0, -1).Select
-ActiveCell.Formula = "=IFERROR(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)," & Chr(34) & "Others" & Chr(34) & ")"
+ActiveCell.Formula = "=IFERROR(IF(VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "4" & "," & "False)=" & Chr(34) & modalityVal & Chr(34) & ",VLOOKUP(" & lookForVal & "," & rngStringMarket & "," & "2" & "," & "False)," & Chr(34) & "Others" & Chr(34) & ")," & Chr(34) & "Others" & Chr(34) & ")"
 ActiveCell.Copy
 ActiveSheet.Range(fstPasteRNG, lstPasteRNG).PasteSpecial xlPasteAll
 ActiveSheet.Range(fstPasteRNG, lstPasteRNG).Select
@@ -4074,8 +4119,11 @@ pvtTbl.ManualUpdate = False
     
     Application.Workbooks(inputFileNameContracts).Close False
     Application.Workbooks(marketInputFile).Close False
+    Application.Workbooks(revenueOutputGlobal).Activate
     ActiveSheet.Cells(1, 1).Select
     ActiveSheet.name = "CP Select Vs Global"
+ '   ActiveWorkbook.Sheets("Data").Delete
+    
     ActiveWorkbook.Save
     Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
     Sheet1.lstBx6NC.Value = ""
@@ -4381,6 +4429,18 @@ Range("K2").Select
         .ReadingOrder = xlContext
         .MergeCells = False
     End With
+    Range("L4:N4").Select
+    Selection.Copy
+    Range("L5:N5").Select
+    Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
+        SkipBlanks:=False, Transpose:=False
+    Application.CutCopyMode = False
+    Range("Q4:S4").Select
+    Selection.Copy
+    Range("Q5:S5").Select
+    Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
+        SkipBlanks:=False, Transpose:=False
+    Application.CutCopyMode = False
     
 End Sub
 
@@ -4388,7 +4448,6 @@ Public Sub Calculating_Data_Downloaded_Date()
 Dim fstPasteRNG As String
 Dim lstPasteRNG As String
 Dim lookForVal As String
-
 
 ActiveWorkbook.Sheets("Data").Activate
 ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
@@ -4427,4 +4486,439 @@ Application.CutCopyMode = False
         .Apply
     End With
 lastmonthVal = ActiveCell.Value
+stDate = ActiveCell.End(xlDown).Value
 End Sub
+
+Public Sub Caculating_IMQANDMAT()
+  'Calculating IMQ and MAT
+    
+    Dim fstIMQAdd As String
+    fstIMQAdd = ActiveCell.Address(False, False)
+    Selection.Copy
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(2, 0).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+    Range(fstIMQAdd).Select
+    Dim fstIMQCalcVal2 As String
+    Dim lstIMQCalcVal As String
+    fstIMQCalcVal2 = ActiveCell.Offset(1, 1).Address(False, False)
+    lstIMQCalcVal = ActiveCell.Offset(3, 1).Address(False, False)
+    Dim fstAddForQuarter As String
+    fstAddForQuarter = ActiveCell.Offset(3, 0).Address(False, False)
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(2, 0).Select
+    ActiveCell.Offset(1, 0).Formula = "=" & fstAddForQuarter
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.Copy
+    Do Until ActiveCell.Offset(1, 0).Value = ""
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    ActiveCell.End(xlUp).Select
+    ActiveCell.Offset(1, 1).Select
+    ActiveCell.Formula = "=IFERROR(SUM(" & fstIMQCalcVal2 & ":" & lstIMQCalcVal & "),)"
+    ActiveCell.Copy
+    Dim fstRNGToPaste As String
+    Dim lstRNGToPaste As String
+    
+    fstRNGToPaste = ActiveCell.Address
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.End(xlDown).Select
+    lstRNGToPaste = ActiveCell.Address
+    
+    Range(fstRNGToPaste, lstRNGToPaste).PasteSpecial xlPasteFormulas
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(-2, -1).Select
+    Do Until ActiveCell.Value = ""
+    Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).Delete
+    Loop
+    Range(fstRNGToPaste).Select
+    ActiveCell.Offset(-1, -1).Select
+    Dim fstRNGForChart As String
+    Dim lstRNGForChart As String
+    Dim rngForChart As String
+    
+    fstRNGForChart = ActiveCell.Address
+    ActiveCell.End(xlToRight).Select
+    ActiveCell.End(xlDown).Select
+    lstRNGForChart = ActiveCell.Address
+        
+    rngForChart = Range(fstRNGForChart, lstRNGForChart).Address
+    Range(rngForChart).Select
+    ActiveSheet.Shapes.AddChart2(276, xlAreaStacked).Select
+    ActiveChart.SetSourceData Source:=Range("Pivot!" & rngForChart)
+     With ActiveChart.Parent
+         .Height = 420 ' resize
+         .Width = 900  ' resize
+         .Top = 10    ' reposition
+         .Left = 1250   ' reposition
+     End With
+    ActiveChart.Axes(xlValue).Select
+    ActiveChart.Axes(xlValue).DisplayUnit = xlThousands
+    ActiveChart.ChartStyle = 279
+    ActiveChart.SetElement (msoElementPrimaryCategoryGridLinesMajor)
+    ActiveChart.Legend.Position = xlLegendPositionRight
+    ActiveChart.ChartTitle.Text = "Market Revenue Dynamics - IMQ"
+    Dim chrtName As String
+    
+     Dim fstRNGData As String
+     Dim seriesCollection As Integer
+     seriesCollection = 1
+     Dim fstSeriesDataAdd As String
+     Dim lstSeriesDataAdd As String
+     
+     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+     ActiveCell.End(xlDown).Select
+     ActiveCell.End(xlDown).Select
+     ActiveCell.Offset(0, 1).Select
+     
+     For seriesCollection = 1 To 5
+        ActiveSheet.ChartObjects("Chart 6").Activate
+        ActiveChart.FullSeriesCollection(seriesCollection).Select
+        ActiveChart.FullSeriesCollection(seriesCollection).ApplyDataLabels
+        ActiveChart.FullSeriesCollection(seriesCollection).DataLabels.Select
+        Selection.NumberFormat = "#,##0.00"
+        Selection.NumberFormat = "#,##0"
+        Selection.Format.Fill.Visible = msoFalse
+        With Selection.Format.TextFrame2.TextRange.Font.Fill
+            .Visible = msoTrue
+            .ForeColor.ObjectThemeColor = msoThemeColorText1
+            .ForeColor.TintAndShade = 0
+            .ForeColor.Brightness = 0
+            .Transparency = 0
+            .Solid
+        End With
+     Next
+    
+    Range(fstIMQAdd).Select
+    ActiveCell.Offset(2, 0).Select
+    Do Until Left(ActiveCell.Value, 4) <> Left(ActiveCell.Offset(-1, 0).Value, 4)
+        ActiveCell.Offset(1, 0).Select
+    Loop
+        
+    Dim fstMATAdd As String
+    Dim lstMATAdd As String
+    Dim yearMATAdd As String
+    Dim marketAdd As String
+    
+    marketAdd = ActiveCell.End(xlUp).Address(False, False)
+    yearMATAdd = ActiveCell.Address(False, False)
+    fstMATAdd = ActiveCell.Offset(0, 1).Address(False, False)
+    lstMATAdd = ActiveCell.Offset(-11, 1).Address(False, False)
+    
+    Dim i As Integer
+    i = 0
+    Do Until ActiveCell.Offset(0, 1).Value = ""
+        i = i + 1
+        ActiveCell.Offset(0, 1).Select
+    Loop
+    
+    ActiveCell.Offset(0, 2).Select
+    ActiveCell.Offset(-1, 1).Select
+    ActiveCell.Formula = "=" & marketAdd
+    ActiveCell.Copy
+    
+    Dim j As Integer
+    j = 0
+    Do Until j = i
+      j = j + 1
+      ActiveCell.Offset(0, 1).Select
+      ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    ActiveCell.End(xlToLeft).Select
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.Formula = "=" & yearMATAdd
+    ActiveCell.Offset(0, 1).Formula = "=IFERROR(SUM(" & fstMATAdd & ":" & lstMATAdd & "),)"
+    Range(ActiveCell.Address, ActiveCell.Offset(0, 1).Address).Copy
+    
+    Do Until ActiveCell.Offset(2, -3).Value = ""
+        ActiveCell.Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    ActiveCell.End(xlUp).Select
+    ActiveCell.Offset(1, 1).Select
+    Range(ActiveCell.Address, ActiveCell.End(xlDown)).Copy
+    
+    Do Until ActiveCell.Offset(-1, 1).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    Dim fstChartMATAdd As String
+    Dim lstChartMATAdd As String
+    
+    ActiveCell.End(xlDown).Select
+    lstChartMATAdd = ActiveCell.Address
+    ActiveCell.End(xlToLeft).Select
+    ActiveCell.End(xlUp).Select
+    fstChartMATAdd = ActiveCell.Address
+    
+    Dim rngChartMATAdd As String
+    rngChartMATAdd = Range(fstChartMATAdd, lstChartMATAdd).Address
+    Range(rngChartMATAdd).Select
+    ActiveSheet.Shapes.AddChart2(276, xlAreaStacked).Select
+    ActiveChart.SetSourceData Source:=Range("Pivot!" & rngChartMATAdd)
+     With ActiveChart.Parent
+         .Height = 420 ' resize
+         .Width = 900  ' resize
+         .Top = 10    ' reposition
+         .Left = 2200   ' reposition
+     End With
+    ActiveChart.Axes(xlValue).Select
+    ActiveChart.Axes(xlValue).DisplayUnit = xlThousands
+    ActiveChart.ChartStyle = 279
+    ActiveChart.SetElement (msoElementPrimaryCategoryGridLinesMajor)
+    ActiveChart.Legend.Position = xlLegendPositionRight
+    ActiveChart.ChartTitle.Text = "Market Revenue Dynamics - MAT"
+    chrtName = ActiveChart.name
+    ActiveChart.PlotBy = xlColumns
+    
+     seriesCollection = 1
+ 
+     For seriesCollection = 1 To 5
+        ActiveSheet.ChartObjects("Chart 7").Activate
+        ActiveChart.FullSeriesCollection(seriesCollection).Select
+        ActiveChart.FullSeriesCollection(seriesCollection).ApplyDataLabels
+        ActiveChart.FullSeriesCollection(seriesCollection).DataLabels.Select
+        Selection.NumberFormat = "#,##0.00"
+        Selection.NumberFormat = "#,##0"
+        Selection.Format.Fill.Visible = msoFalse
+        With Selection.Format.TextFrame2.TextRange.Font.Fill
+            .Visible = msoTrue
+            .ForeColor.ObjectThemeColor = msoThemeColorText1
+            .ForeColor.TintAndShade = 0
+            .ForeColor.Brightness = 0
+            .Transparency = 0
+            .Solid
+        End With
+     Next
+    
+End Sub
+
+Public Sub Creating_IMQ_MAT_Charts_ContractsDynamics()
+
+ActiveWorkbook.Sheets("Contract_Dynamics").Activate
+ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
+ActiveCell.End(xlDown).Select
+ActiveCell.Offset(3, 0).Select
+Dim fstAddForIMQ As String
+
+fstAddForIMQ = ActiveCell.Address(False, False)
+ActiveCell.Offset(0, 3).Select
+Dim fstAddForMonth As String
+Dim lstAddForMonth As String
+Dim MonthAdd As String
+
+fstAddForMonth = ActiveCell.Offset(1, 0).Address(False, False)
+lstAddForMonth = ActiveCell.Offset(0, -2).Address(False, False)
+MonthAdd = ActiveCell.Address(False, False)
+
+Dim i As Integer
+i = 0
+Do Until ActiveCell.Offset(0, 1).Value = ""
+    i = i + 1
+    ActiveCell.Offset(0, 1).Select
+Loop
+
+ActiveCell.End(xlToLeft).Select
+ActiveCell.Offset(0, -(i + 5)).Select
+ActiveCell.Formula = "=" & fstAddForIMQ
+ActiveCell.Copy
+Dim j As Integer
+For j = 1 To 11
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+Next
+
+ActiveCell.End(xlUp).Select
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Formula = "=" & MonthAdd
+ActiveCell.Copy
+For j = 1 To i
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.PasteSpecial
+Next j
+
+ActiveCell.End(xlToLeft).Select
+ActiveCell.Offset(1, 1).Select
+ActiveCell.Formula = "=IFERROR(SUM(" & fstAddForMonth & ":" & lstAddForMonth & "),)"
+ActiveCell.Copy
+For j = 1 To i
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+Next
+
+ActiveCell.End(xlToLeft).Select
+ActiveCell.Offset(0, 1).Select
+Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).Copy
+Do Until ActiveCell.Offset(1, -1).Value = ""
+    ActiveCell.Offset(1, 0).Select
+    ActiveCell.PasteSpecial xlPasteFormulas
+Loop
+
+Dim lstChartAdd As String
+Dim fstChartAdd As String
+
+lstChartAdd = ActiveCell.End(xlToRight).Address
+ActiveCell.End(xlToLeft).Select
+ActiveCell.End(xlUp).Select
+fstChartAdd = ActiveCell.Address
+
+    Dim rngChartIMQAdd As String
+    rngChartIMQAdd = Range(fstChartAdd, lstChartAdd).Address
+    Range(rngChartIMQAdd).Select
+    ActiveSheet.Shapes.AddChart2(276, xlAreaStacked).Select
+    ActiveChart.SetSourceData Source:=Range("Contract_Dynamics!" & rngChartIMQAdd)
+     With ActiveChart.Parent
+         .Height = 420 ' resize
+         .Width = 900  ' resize
+         .Top = 10    ' reposition
+         .Left = 1250   ' reposition
+     End With
+    ActiveChart.Axes(xlValue).Select
+    ActiveChart.Axes(xlValue).DisplayUnit = xlThousands
+    ActiveChart.ChartStyle = 279
+    ActiveChart.SetElement (msoElementPrimaryCategoryGridLinesMajor)
+    ActiveChart.Legend.Position = xlLegendPositionRight
+    ActiveChart.ChartTitle.Text = "Contract Revenue Dynamics - IMQ"
+    Dim seriesCollection As Integer
+    Dim chrtName As String
+    
+    chrtName = ActiveChart.name
+     seriesCollection = 1
+ 
+     For seriesCollection = 1 To 5
+        ActiveSheet.ChartObjects(Replace(chrtName, "Contract_Dynamics ", "", 1)).Activate
+        ActiveChart.FullSeriesCollection(seriesCollection).Select
+        ActiveChart.FullSeriesCollection(seriesCollection).ApplyDataLabels
+        ActiveChart.FullSeriesCollection(seriesCollection).DataLabels.Select
+        Selection.NumberFormat = "#,##0.00"
+        Selection.NumberFormat = "#,##0"
+        Selection.Format.Fill.Visible = msoFalse
+        With Selection.Format.TextFrame2.TextRange.Font.Fill
+            .Visible = msoTrue
+            .ForeColor.ObjectThemeColor = msoThemeColorText1
+            .ForeColor.TintAndShade = 0
+            .ForeColor.Brightness = 0
+            .Transparency = 0
+            .Solid
+        End With
+     Next
+    
+    Range(fstAddForIMQ).Select
+    Dim fstTableAdd As String
+    Dim fstMonthAdd As String
+    Dim fstValAdd As String
+    Dim lstValAdd As String
+    
+    ActiveCell.Offset(0, 1).Select
+    Do Until Left(ActiveCell.Value, 4) <> Left(ActiveCell.Offset(0, 1).Value, 4)
+        ActiveCell.Offset(0, 1).Select
+    Loop
+    ActiveCell.Offset(0, 1).Select
+    lstValAdd = ActiveCell.Offset(1, 0).Address(False, False)
+    fstMonthAdd = ActiveCell.Address(False, False)
+    fstValAdd = ActiveCell.Offset(1, -11).Address(False, False)
+    
+    Dim k As Integer
+    k = 0
+    Do Until ActiveCell.Offset(0, 1).Value = ""
+        k = k + 1
+        ActiveCell.Offset(0, 1).Select
+    Loop
+    
+    ActiveCell.End(xlToLeft).Select
+    ActiveCell.End(xlDown).Select
+    ActiveCell.Offset(3, 0).Select
+    ActiveCell.Offset(0, -(k + 5)).Select
+    
+    ActiveCell.Formula = "=" & fstAddForIMQ
+    ActiveCell.Copy
+    For j = 1 To 11
+        ActiveCell.Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Next
+    
+    ActiveCell.End(xlUp).Select
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.Formula = "=" & fstMonthAdd
+    ActiveCell.Copy
+    For j = 1 To k
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Next
+    
+    ActiveCell.End(xlToLeft).Select
+    ActiveCell.Offset(1, 1).Select
+    ActiveCell.Formula = "=IFERROR(SUM(" & fstValAdd & ":" & lstValAdd & "),)"
+    ActiveCell.Copy
+    Do Until ActiveCell.Offset(1, -1).Value = ""
+        ActiveCell.Offset(1, 0).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    ActiveCell.End(xlUp).Select
+    ActiveCell.Offset(1, 0).Select
+    Range(ActiveCell.Address, ActiveCell.End(xlDown).Address).Copy
+    
+    Do Until ActiveCell.Offset(-1, 1).Value = ""
+        ActiveCell.Offset(0, 1).Select
+        ActiveCell.PasteSpecial xlPasteFormulas
+    Loop
+    
+    Dim fstChartMATAdd As String
+    Dim lstChartMATAdd As String
+    
+    Dim RNGMAT As String
+    
+    lstChartMATAdd = ActiveCell.End(xlDown).Address
+    ActiveCell.End(xlUp).Select
+    ActiveCell.End(xlToLeft).Select
+    
+    fstChartMATAdd = ActiveCell.Address
+    
+    RNGMAT = Range(fstChartMATAdd, lstChartMATAdd).Address
+        
+    Range(RNGMAT).Select
+    ActiveSheet.Shapes.AddChart2(276, xlAreaStacked).Select
+    ActiveChart.SetSourceData Source:=Range("Contract_Dynamics!" & RNGMAT)
+     With ActiveChart.Parent
+         .Height = 420 ' resize
+         .Width = 900  ' resize
+         .Top = 10    ' reposition
+         .Left = 2200   ' reposition
+     End With
+    ActiveChart.Axes(xlValue).Select
+    ActiveChart.Axes(xlValue).DisplayUnit = xlThousands
+    ActiveChart.ChartStyle = 279
+    ActiveChart.SetElement (msoElementPrimaryCategoryGridLinesMajor)
+    ActiveChart.Legend.Position = xlLegendPositionRight
+    ActiveChart.ChartTitle.Text = "Contract Revenue Dynamics - MAT"
+    ActiveChart.PlotBy = xlRows
+    
+    chrtName = ActiveChart.name
+     seriesCollection = 1
+ 
+     For seriesCollection = 1 To 5
+        ActiveSheet.ChartObjects(Replace(chrtName, "Contract_Dynamics ", "", 1)).Activate
+        ActiveChart.FullSeriesCollection(seriesCollection).Select
+        ActiveChart.FullSeriesCollection(seriesCollection).ApplyDataLabels
+        ActiveChart.FullSeriesCollection(seriesCollection).DataLabels.Select
+        Selection.NumberFormat = "#,##0.00"
+        Selection.NumberFormat = "#,##0"
+        Selection.Format.Fill.Visible = msoFalse
+        With Selection.Format.TextFrame2.TextRange.Font.Fill
+            .Visible = msoTrue
+            .ForeColor.ObjectThemeColor = msoThemeColorText1
+            .ForeColor.TintAndShade = 0
+            .ForeColor.Brightness = 0
+            .Transparency = 0
+            .Solid
+        End With
+     Next
+    
+    
+End Sub
+

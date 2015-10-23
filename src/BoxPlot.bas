@@ -31,7 +31,7 @@ Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 Dim strtMonth As String
 
-'On Error Resume Next
+On Error Resume Next
 
 Application.FileDialog(msoFileDialogFilePicker).AllowMultiSelect = False
 If Application.FileDialog(msoFileDialogFilePicker).Show <> -1 Then
@@ -64,10 +64,19 @@ Else
     revenueOutputGlobal = ActiveWorkbook.name
 End If
 
+
+Workbooks(revenueOutputGlobal).Activate
+Dim ws As Worksheet
+For Each ws In Workbooks(revenueOutputGlobal).Sheets
+    If ws.name = "BoxPlot" Or ws.name = "Data" Then
+        ws.Delete
+    End If
+Next
+
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 
 'Putting names in blank cells
 Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
@@ -85,7 +94,7 @@ Loop
 
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 fstAddForPivot = ActiveCell.Address
 Selection.SpecialCells(xlCellTypeLastCell).Select
 lstAddForPivot = ActiveCell.Address
@@ -276,13 +285,15 @@ pvtTblName = pvtTbl.name
     ActiveSheet.Cells(33, 1).Value = "Min"
     ActiveSheet.Cells(34, 1).Value = "Q1"
     ActiveSheet.Cells(35, 1).Value = "Median"
-    ActiveSheet.Cells(36, 1).Value = "P95"
-    ActiveSheet.Cells(37, 1).Value = "Max"
-    ActiveSheet.Cells(39, 1).Value = "25th PCT"
-    ActiveSheet.Cells(40, 1).Value = "50th PCT"
-    ActiveSheet.Cells(41, 1).Value = "95th PCT"
-    ActiveSheet.Cells(43, 1).Value = "Min"
-    ActiveSheet.Cells(44, 1).Value = "Max"
+    ActiveSheet.Cells(36, 1).Value = "P75"
+    ActiveSheet.Cells(37, 1).Value = "P95"
+    ActiveSheet.Cells(38, 1).Value = "Max"
+    ActiveSheet.Cells(40, 1).Value = "25th PCT"
+    ActiveSheet.Cells(41, 1).Value = "50th PCT"
+    ActiveSheet.Cells(42, 1).Value = "75th PCT"
+    ActiveSheet.Cells(43, 1).Value = "95th PCT"
+    ActiveSheet.Cells(45, 1).Value = "Min"
+    ActiveSheet.Cells(46, 1).Value = "Max"
     
     ActiveSheet.Cells(30, 1).Select
     ActiveCell.Offset(0, 1).Select
@@ -292,13 +303,15 @@ pvtTblName = pvtTbl.name
     ActiveCell.Offset(3, 0).Formula = "=IFERROR(Min(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & "),)"
     ActiveCell.Offset(4, 0).Formula = "=IFERROR(PERCENTILE.INC(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & ",0.25),)"
     ActiveCell.Offset(5, 0).Formula = "=IFERROR(MEDIAN(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & "),)"
-    ActiveCell.Offset(6, 0).Formula = "=IFERROR(PERCENTILE.INC(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & ",0.95),)"
-    ActiveCell.Offset(7, 0).Formula = "=IFERROR(MAX(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & "),)"
-    ActiveCell.Offset(9, 0).Formula = "=IFERROR(" & ActiveCell.Offset(4, 0).Address(False, False) & ",)"
-    ActiveCell.Offset(10, 0).Formula = "=IFERROR(" & ActiveCell.Offset(5, 0).Address(False, False) & "-" & ActiveCell.Offset(4, 0).Address(False, False) & ",)"
-    ActiveCell.Offset(11, 0).Formula = "=IFERROR(" & ActiveCell.Offset(6, 0).Address(False, False) & "-" & ActiveCell.Offset(5, 0).Address(False, False) & ",)"
-    ActiveCell.Offset(13, 0).Formula = "=IFERROR(" & ActiveCell.Offset(4, 0).Address(False, False) & "-" & ActiveCell.Offset(3, 0).Address(False, False) & ",)"
-    ActiveCell.Offset(14, 0).Formula = "=IFERROR(" & ActiveCell.Offset(7, 0).Address(False, False) & "-" & ActiveCell.Offset(6, 0).Address(False, False) & ",)"
+    ActiveCell.Offset(6, 0).Formula = "=IFERROR(PERCENTILE.INC(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & ",0.75),)"
+    ActiveCell.Offset(7, 0).Formula = "=IFERROR(PERCENTILE.INC(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & ",0.95),)"
+    ActiveCell.Offset(8, 0).Formula = "=IFERROR(MAX(" & Range(fstAdd).Offset(1, 0).Address(False, False) & ":" & lstAdd & "),)"
+    ActiveCell.Offset(10, 0).Formula = "=IFERROR(" & ActiveCell.Offset(4, 0).Address(False, False) & ",)"
+    ActiveCell.Offset(11, 0).Formula = "=IFERROR(" & ActiveCell.Offset(5, 0).Address(False, False) & "-" & ActiveCell.Offset(4, 0).Address(False, False) & ",)"
+    ActiveCell.Offset(12, 0).Formula = "=IFERROR(" & ActiveCell.Offset(6, 0).Address(False, False) & "-" & ActiveCell.Offset(4, 0).Address(False, False) & ",)"
+    ActiveCell.Offset(13, 0).Formula = "=IFERROR(" & ActiveCell.Offset(7, 0).Address(False, False) & "-" & ActiveCell.Offset(4, 0).Address(False, False) & ",)"
+    ActiveCell.Offset(15, 0).Formula = "=IFERROR(" & ActiveCell.Offset(4, 0).Address(False, False) & "-" & ActiveCell.Offset(3, 0).Address(False, False) & ",)"
+    ActiveCell.Offset(16, 0).Formula = "=IFERROR(" & ActiveCell.Offset(7, 0).Address(False, False) & "-" & ActiveCell.Offset(6, 0).Address(False, False) & ",)"
     
     Dim fstChartAdd As String
     Dim lstChartAdd As String
@@ -307,7 +320,7 @@ pvtTblName = pvtTbl.name
     Dim chartName As String
     
     fstAddToCopy = ActiveCell.Address
-    lstAddToCopy = ActiveCell.Offset(14, 0).Address
+    lstAddToCopy = ActiveCell.Offset(16, 0).Address
     fstChartAdd = ActiveCell.Offset(0, -1).Address
     
     ActiveSheet.Range(fstAddToCopy, lstAddToCopy).Copy
@@ -317,46 +330,63 @@ pvtTblName = pvtTbl.name
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
     
-    lstChartAdd = ActiveCell.Offset(14, 0).Address
+    lstChartAdd = ActiveCell.Offset(16, 0).Address
     Dim chartRNG As Range
     Set chartRNG = Range("Pivot!" & fstChartAdd & ":" & lstChartAdd)
     chartRNG.Select
     ActiveSheet.Shapes.AddChart2(297, xlColumnStacked).Select
     ActiveChart.SetSourceData Source:=chartRNG
+    ActiveChart.PlotBy = xlRows
     chartName = ActiveChart.name
     With ActiveChart.Parent
          .Height = 250 ' resize
          .Width = 550  ' resize
          .Top = 10    ' reposition
-         .Left = 100   ' reposition
+         .Left = 300   ' reposition
      End With
     
-    For i = 1 To 8
+    For i = 1 To 9
         ActiveChart.FullSeriesCollection(i).IsFiltered = True
     Next
-    For i = 12 To 14
+    For i = 14 To 16
         ActiveChart.FullSeriesCollection(i).IsFiltered = True
     Next
     
-    ActiveChart.FullSeriesCollection(11).Select
-    ActiveChart.FullSeriesCollection(11).HasErrorBars = True
-    ActiveChart.FullSeriesCollection(11).ErrorBar Direction:=xlY, Include:= _
+    ActiveChart.FullSeriesCollection(13).Select
+    ActiveChart.FullSeriesCollection(13).HasErrorBars = True
+    ActiveChart.FullSeriesCollection(13).ErrorBar Direction:=xlY, Include:= _
         xlPlusValues, Type:=xlFixedValue, Amount:=1000000
-    ActiveChart.FullSeriesCollection(11).Select
-    ActiveChart.FullSeriesCollection(10).Select
+    ActiveChart.FullSeriesCollection(13).Select
     ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveChart.FullSeriesCollection(9).Select
+    ActiveChart.FullSeriesCollection(10).Select
     ActiveChart.FullSeriesCollection(1).HasErrorBars = True
     ActiveSheet.ChartObjects("Chart 1").Activate
-    ActiveChart.FullSeriesCollection(9).ErrorBar Direction:=xlY, Include:= _
+    ActiveChart.FullSeriesCollection(10).ErrorBar Direction:=xlY, Include:= _
         xlMinusValues, Type:=xlFixedValue, Amount:=1000000
     ActiveChart.Axes(xlCategory).Select
     Selection.TickLabelPosition = xlLow
     ActiveChart.Axes(xlValue).Select
     ActiveChart.Axes(xlValue).DisplayUnit = xlThousands
     ActiveChart.ChartArea.Select
+    ActiveChart.ChartStyle = 279
 
+    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
+        "System Code (6NC)").Slicers.Add ActiveSheet, , "System Code (6NC)", _
+        "System Code (6NC)", 5, 5, 144, 198.75
+    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
+        "[C,S] System Code Material (Material no of  R Eq)").Slicers.Add ActiveSheet, _
+        , "[C,S] System Code Material (Material no of  R Eq)", _
+        "[C,S] System Code Material (Material no of  R Eq)", 210, 150, 144, 198.75
+    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
+        "[C] Contract Material Line Item").Slicers.Add ActiveSheet, , _
+        "[C] Contract Material Line Item", "[C] Contract Material Line Item", 5, 150 _
+        , 144, 198.75
+    ActiveSheet.Shapes.Range(Array("[C] Contract Material Line Item")).Select
+    
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.name = "BoxPlot"
+Application.Workbooks(revenueOutputGlobal).Save
+Workbooks(inputFileNameContracts).Close False
+Workbooks(marketInputFile).Close False
 End Sub
 

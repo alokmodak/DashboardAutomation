@@ -64,10 +64,18 @@ Else
     revenueOutputGlobal = ActiveWorkbook.name
 End If
 
+'deleting DATA sheet
+Dim ws As Worksheet
+For Each ws In ActiveWorkbook.Sheets
+    If ws.name = "Data" Then
+        ws.Delete
+    End If
+Next
+
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 
 'Putting names in blank cells
 Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
@@ -85,7 +93,7 @@ Loop
 
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, After:=ActiveCell).Select
+ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 fstAddForPivot = ActiveCell.Address
 Selection.SpecialCells(xlCellTypeLastCell).Select
 lstAddForPivot = ActiveCell.Address
@@ -163,6 +171,14 @@ ActiveCell.EntireRow.Hidden = True
 ActiveSheet.UsedRange.SpecialCells(xlCellTypeVisible).Select
 Selection.EntireRow.Delete
 ActiveSheet.UsedRange.EntireRow.Hidden = False
+
+'deleting sheets
+
+For Each ws In ActiveWorkbook.Sheets
+    If ws.name = "Revenue" Or ws.name = "Cost" Or ws.name = "Contracts-Data" Or ws.name = "Filtered-Data" Then
+        ws.Delete
+    End If
+Next
 
 ActiveWorkbook.Sheets("Data").Activate
 Set wsData = Worksheets("Data")
@@ -464,21 +480,21 @@ Application.ReferenceStyle = xlA1
     Set pvtTbl = ActiveCell.PivotTable
     
     For Each pvtFld In pvtTbl.PivotFields
-        If pvtFld.Caption <> "IB Year" Then
+        If pvtFld.Caption = "System Code (6NC)" Then
             pvtFld.Orientation = xlHidden
         End If
     Next
         
-    ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+   ' ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "Sum of     Total Contract Revenue").Orientation = xlHidden
-    ActiveSheet.PivotTables(pvtTblName).AddDataField ActiveSheet.PivotTables( _
+   ' ActiveSheet.PivotTables(pvtTblName).AddDataField ActiveSheet.PivotTables( _
         pvtTblName).PivotFields("[C,S] Reference Equipment"), _
         "Sum of [C,S] Reference Equipment", xlSum
-    With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
+   ' With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "Sum of [C,S] Reference Equipment")
-        .Caption = "Count of [C,S] Reference Equipment"
-        .Function = xlCount
-    End With
+     '   .Caption = "Count of [C,S] Reference Equipment"
+     '   .Function = xlCount
+    'End With
     
     With ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "[C,S] Reference Equipment")
@@ -505,13 +521,15 @@ Application.ReferenceStyle = xlA1
     ActiveSheet.Cells(13, 3).Value = "IB Count"
     
     Dim ibCountRng As String
-    ActiveSheet.UsedRange.Find(what:="Count of [C,S] Reference Equipment", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole, after:=ActiveCell).Select
     ActiveCell.Offset(1, 0).Select
     
-    ibCountRng = Range(ActiveCell.Address, ActiveCell.End(xlDown).Address).Address
+    ibCountRng = Range(ActiveCell.Offset(1, 0).Address, ActiveCell.End(xlDown).Address).Address
     
+    ActiveSheet.Cells(7, 1).Value = "ASP Value"
+    ActiveSheet.Cells(8, 1).Value = "55000"
     ActiveSheet.Cells(14, 3).Formula = "=COUNT(" & ibCountRng & ")"
-    ActiveSheet.Cells(14, 4).Formula = "=" & Cells(14, 3).Address & "*55000"
+    ActiveSheet.Cells(14, 4).Formula = "=" & Cells(14, 3).Address & "*$A$8"
     
     ActiveSheet.Cells(16, 3).Value = "Diffusion Rate"
     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
@@ -533,13 +551,38 @@ Application.ReferenceStyle = xlA1
     ActiveCell.Formula = "=" & divAdd & "/$D$14"
     ActiveCell.Copy
     
-    Do Until ActiveCell.Offset(-1, 0).Value = ""
+    Do Until ActiveCell.Offset(-1, 1).Value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
     
     Range(ActiveCell.Address, ActiveCell.End(xlToLeft).Address).NumberFormat = "0%"
+    Dim chartRNG As String
+    Dim legendRNG As String
     
+    chartRNG = "Revenue!" & ActiveCell.End(xlToLeft).Address & ":" & ActiveCell.Address
+    ActiveCell.Offset(-1, 0).Select
+    ActiveCell.End(xlToLeft).Select
+    legendRNG = "=Revenue!" & ActiveCell.Address & ":" & ActiveCell.End(xlToRight).Address
+    
+    'adding Chart
+    ActiveSheet.Shapes.AddChart2(279, xlLine).Select
+    ActiveChart.SetSourceData Source:=Range(chartRNG)
+    ActiveChart.FullSeriesCollection(1).XValues = legendRNG
+    With ActiveChart.Parent
+         .Height = 150 ' resize
+         .Width = 400  ' resize
+         .Top = 10    ' reposition
+         .Left = 300   ' reposition
+     End With
+    ActiveChart.ChartTitle.Text = "Diffusion Rate"
+    ActiveChart.FullSeriesCollection(1).Select
+    Selection.MarkerStyle = -4105
+    ActiveChart.FullSeriesCollection(1).ApplyDataLabels
+    ActiveChart.FullSeriesCollection(1).DataLabels.Select
+    Selection.Position = xlLabelPositionAbove
+    
+    'Creating Cost
     Sheets("Revenue").Select
     Sheets("Revenue").Copy Before:=Sheets(2)
     Sheets("Revenue (2)").Select
@@ -555,7 +598,7 @@ Application.ReferenceStyle = xlA1
         .Caption = "Sum of Total SWO cost"
         .Function = xlSum
     End With
-    ActiveSheet.UsedRange.Find(what:="Count of [C,S] Reference Equipment", lookat:=xlWhole).Select
+    ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     pvtTblName = ActiveCell.PivotTable.name
     Dim fstNewAdd As String
     fstNewAdd = ActiveCell.Address
@@ -569,11 +612,7 @@ Application.ReferenceStyle = xlA1
         .Function = xlSum
     End With
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
-        "Count of [C,S] Reference Equipment").Orientation = xlHidden
-    With ActiveSheet.PivotTables(pvtTblName).PivotFields("Fiscal Year/Period")
-        .Orientation = xlColumnField
-        .Position = 1
-    End With
+        "Sum of     Total Contract Revenue").Orientation = xlHidden
     
     ActiveSheet.Cells(16, 3).Value = "Bath Tub"
     ActiveCell.Offset(18, 3).Select
@@ -587,7 +626,7 @@ Application.ReferenceStyle = xlA1
     Dim fstCostIbCountAdd As String
     Dim lstCostIbCountAdd As String
     
-    fstCostIbCountAdd = ActiveCell.Offset(1, 0).Address(False, False)
+    fstCostIbCountAdd = ActiveCell.Offset(1, 1).Address(False, False)
     ActiveCell.End(xlToLeft).Select
     ActiveCell.End(xlDown).Select
     ActiveCell.Offset(0, 1).Select
@@ -614,6 +653,14 @@ Application.ReferenceStyle = xlA1
     Loop
     
     Range(ActiveCell.Address, ActiveCell.End(xlToLeft).Address).NumberFormat = "0"
+    ActiveSheet.Cells(8, 1).Value = ""
+    ActiveSheet.Cells(7, 1).Value = ""
+    
+    ActiveSheet.ChartObjects("Chart 2").Activate
+    ActiveChart.ChartTitle.Text = "Bath Tub"
+    ActiveSheet.Cells(1, 1).Select
+    
 ActiveWorkbook.Sheets("Data").Delete
+ActiveWorkbook.Save
 
 End Sub

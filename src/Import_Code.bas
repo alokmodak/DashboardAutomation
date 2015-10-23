@@ -257,7 +257,7 @@ Public Function addSheetToWorkbook(sheetName As String, workbookFilePath As Stri
     On Error GoTo 0
     If Not wb Is Nothing Then
         Dim ws As Worksheet
-        Set ws = wb.Sheets.Add(After:=wb.Sheets(wb.Sheets.Count))
+        Set ws = wb.Sheets.Add(after:=wb.Sheets(wb.Sheets.Count))
         ws.name = sheetName
         'ws.CodeName = sheetName: cannot assign to read only property
         Debug.Print "Sheet added " & sheetName
