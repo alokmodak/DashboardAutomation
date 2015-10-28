@@ -88,7 +88,7 @@ Application.Workbooks.Open (outputPath), False
 For Each wsheet In ActiveWorkbook.Sheets
     ActiveSheet.UsedRange.AutoFilter
 Next
-Application.Workbooks(outputFileGlobal).Windows(1).Visible = False
+Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
 
 'Open service scorecard file and install file
 
@@ -1332,18 +1332,18 @@ outputFl = outputFileGlobal
 
  'for Shared drive define path
     If Sheet1.rdbSharedDrive.Value = True Then
-        SharedDrive_Path ("Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx")
+        SharedDrive_Path ("Customer escalations (Weekly Review) Complaints.xlsx")
         'if file is not present in shared drive then exit
-        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx" Then
+        If Split(sharedDrivePath, "\")(UBound(Split(sharedDrivePath, "\"))) <> "Customer escalations (Weekly Review) Complaints" & ".xlsx" Then
             Exit Sub
         End If
         inputFl = sharedDrivePath
-        SharedDrive_Path ("Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx")
+        SharedDrive_Path ("Escalations_Overview_ALL BIUs.xlsx")
         escInputFl = sharedDrivePath
     Else
-    escInputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs_" & fstMonthChk & "*.xls*")
-    inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & "*.xls*")
-        If Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs_" & fstMonthChk & "*.xls*") = "" Or Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & "*.xls*") = "" Then
+    escInputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs" & "*.xls*")
+    inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints" & "*.xls*")
+        If Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs_" & "*.xls*") = "" Or Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & "*.xls*") = "" Then
             Exit Sub
         End If
     End If
@@ -1351,8 +1351,8 @@ outputFl = outputFileGlobal
 Application.Workbooks.Open (inputFl)
 Application.Workbooks.Open (escInputFl)
 
-escInputFl = "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx"
-inputFl = "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx"
+escInputFl = "Escalations_Overview_ALL BIUs.xlsx"
+inputFl = "Customer escalations (Weekly Review) Complaints.xlsx"
 
 complaintsProductGroup = Sheet1.combProductGroup.Value
 
@@ -1954,10 +1954,14 @@ Set p = ActiveSheet.PivotTables(pvtName)
 
 For Each pf In p.PageFields
     If pf = "Period" Then
-        pf.CurrentPage = "(All)"
+        For Each pfi In pf.PivotItems
+            pfi.Visible = True
+        Next
     End If
     If pf = "Product" Then
-        pf.CurrentPage = "(All)"
+        For Each pfi In pf.PivotItems
+            pfi.Visible = True
+        Next
     End If
 Next pf
 
@@ -1982,7 +1986,7 @@ ActiveSheet.UsedRange.Find("p95").Select
 compValToFindp95 = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.Value, 1, 4) & "-" & selMonth).Select
 ActiveCell.Offset(compValToFindp95 - toMinusVal, 0).Select
-ActiveCell.End(xlToRight).Select
+'ActiveCell.End(xlToRight).Select
 p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
@@ -2053,6 +2057,7 @@ ActiveCell.Value = p95ValToPaste
 
 'for escalations
 Workbooks(escInputFl).Activate
+cProductGroup = "Libra"
 ActiveWorkbook.Sheets("Open Esc_Product").Activate
 ActiveSheet.Cells.EntireRow.Hidden = False
 ActiveSheet.UsedRange.Find(cProductGroup).Select
@@ -2062,6 +2067,7 @@ toMinusVal = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveCell.Offset(escValToFind - toMinusVal, 0).Select
 escValToPaste = ActiveCell.Value
 escp95ValToPaste = ActiveCell.Offset(2, 0).Value
+cProductGroup = "BV Libra"
 
 Workbooks(outputFl).Activate
 Worksheets(KPISheetName).Activate
@@ -2449,7 +2455,7 @@ ActiveSheet.UsedRange.Find("p95").Select
 chuYearToFindp95 = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.Value, 1, 4) & "-" & selMonth).Select
 toMinusVal = CInt(Mid(ActiveCell.Address, 4, 2))
-ActiveCell.Offset(chuYearToFind - toMinusVal, 0).Select
+ActiveCell.Offset(chuYearToFindp95 - toMinusVal, 0).Select
 p95ValToPaste = ActiveCell.Value
 
 Workbooks(outputFl).Activate
@@ -2468,9 +2474,10 @@ ActiveCell.Value = p95ValToPaste
 
 'for escalations
 Workbooks(escInputFl).Activate
-ActiveWorkbook.Sheets("Open Esc_Product").Activate
+ActiveSheet.Cells(1, 1).Select
+ActiveWorkbook.Sheets("Open Esc_Modality").Activate
 ActiveSheet.Cells.EntireRow.Hidden = False
-ActiveSheet.UsedRange.Find("Legacy DXR").Select
+ActiveSheet.UsedRange.Find("DXR WHC").Select
 escValToFind = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.Value, 1, 4) & "-" & selMonth).Select
 toMinusVal = CInt(Mid(ActiveCell.Address, 4, 2))
@@ -4469,7 +4476,11 @@ Case "DXR-MicroDose Mammography-Y"
 KPISheetName = "MicroDose Mammography"
 plcmProductGroup = "Mammo"
 fstAdd = "$J$13"
-lstAdd = "$V$21"
+lstAdd = "$V$20"
+Dim fstFRU As String
+Dim lstFRU As String
+fstFRU = "J22"
+lstFRU = "V22"
 
 Case "DXR-MobileDiagnost Opta-N"
 KPISheetName = "MobileDiagnost Opta"
@@ -4548,6 +4559,19 @@ ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
 ActiveCell.Offset(i - 2, 0).Select
 Application.ActiveCell.PasteSpecial xlPasteValues
 
+If KPISheetName = "MicroDose Mammography" Then
+Workbooks(inputFl).Activate
+ActiveWorkbook.Sheets("Operating Review").Activate
+ActiveSheet.Range(fstFRU, lstFRU).Select
+Selection.Copy
+Workbooks(outputFl).Activate
+ActiveWorkbook.Sheets(KPISheetName).Activate
+ActiveSheet.UsedRange.Find(what:="Service DeFOA", lookat:=xlWhole).Select
+i = Split(ActiveCell.Address, "$")(UBound(Split(ActiveCell.Address, "$")))
+ActiveSheet.UsedRange.Find(what:="YTD", lookat:=xlWhole).Select
+ActiveCell.Offset(i - 2, 0).Select
+Application.ActiveCell.PasteSpecial xlPasteValues
+End If
 'j = j - 1 'loop for each month
 'Loop
 

@@ -110,18 +110,18 @@ If Sheet1.rdbLocalDrive.Value = True Then 'Input files check for Local drive
     'Escalations_Overview_ALL BIUs.xlsx
     Dim escOFileOpen As String
     escOFileOpen = ""
-    escOFileOpen = Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs_" & fstMonthChk & "*.xls*")
+    escOFileOpen = Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs" & "*.xls*")
     If escOFileOpen = "" Then
-        fileNotPresent = fileNotPresent & Chr(34) & "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx" & Chr(34) & vbCrLf
+        fileNotPresent = fileNotPresent & Chr(34) & "Escalations_Overview_ALL BIUs" & ".xlsx" & Chr(34) & vbCrLf
     End If
     
     'Customer escalations (Weekly Review) Complaints.xlsx
 
     Dim compOFileOpen As String
     compOFileOpen = ""
-    compOFileOpen = Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & "*.xls*")
+    compOFileOpen = Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints" & "*.xls*")
     If compOFileOpen = "" Then
-        fileNotPresent = fileNotPresent & Chr(34) & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx" & Chr(34) & vbCrLf
+        fileNotPresent = fileNotPresent & Chr(34) & "Customer escalations (Weekly Review) Complaints" & ".xlsx" & Chr(34) & vbCrLf
     End If
     
     '2015-05 Installation spend L2-report.xlsb
@@ -227,20 +227,20 @@ If Sheet1.rdbSharedDrive.Value = True Then
     End If
     
     'Escalations_Overview_ALL BIUs.xlsx
-    escOFileOpen = "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx"
+    escOFileOpen = "Escalations_Overview_ALL BIUs" & ".xlsx"
     SharedDrive_Path escOFileOpen
     
     If fileExists = False Then
-        fileNotFoundShared = fileNotFoundShared & Chr(34) & "Escalations_Overview_ALL BIUs_" & fstMonthChk & ".xlsx" & Chr(34) & vbCrLf
+        fileNotFoundShared = fileNotFoundShared & Chr(34) & "Escalations_Overview_ALL BIUs" & ".xlsx" & Chr(34) & vbCrLf
         
     End If
     
     'Customer escalations (Weekly Review) Complaints.xlsx
-    compOFileOpen = "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx"
+    compOFileOpen = "Customer escalations (Weekly Review) Complaints" & ".xlsx"
     SharedDrive_Path compOFileOpen
     
     If fileExists = False Then
-        fileNotFoundShared = fileNotFoundShared & Chr(34) & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & ".xlsx" & Chr(34) & vbCrLf
+        fileNotFoundShared = fileNotFoundShared & Chr(34) & "Customer escalations (Weekly Review) Complaints" & ".xlsx" & Chr(34) & vbCrLf
         
     End If
     

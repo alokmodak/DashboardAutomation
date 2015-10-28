@@ -711,11 +711,12 @@ For rowCount = 0 To lstRowCnt - 4
     End If
 Next
 ActiveSheet.UsedRange.Find(what:="Country A", lookat:=xlWhole).Select
-ActiveCell.Offset(1, 0).Select
-For rowCount = 0 To lstRowCnt - 4
-    If ActiveCell.Offset(1, -1).Value = "" Then
+ActiveCell.Offset(1, -1).Select
+'ActiveCell.EntireColumn.Value = ActiveCell.EntireColumn.Value
+For rowCount = 0 To lstRowCnt - 3
+    If ActiveCell.Value = "" Then
+        ActiveCell.FillDown
         ActiveCell.Offset(1, 0).Select
-        ActiveCell.Offset(0, -1).Value = ActiveCell.Offset(-1, -1).Value
     Else
         ActiveCell.Offset(1, 0).Select
     End If
@@ -723,7 +724,7 @@ For rowCount = 0 To lstRowCnt - 4
 Next
 ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
-For rowCount = 0 To lstRowCnt - 4
+For rowCount = 0 To lstRowCnt - 3
     If ActiveCell.Value = "" Then
         ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
         ActiveCell.Offset(1, 0).Select
@@ -4516,7 +4517,7 @@ Public Sub Caculating_IMQANDMAT()
     Loop
     ActiveCell.End(xlUp).Select
     ActiveCell.Offset(1, 1).Select
-    ActiveCell.Formula = "=IFERROR(SUM(" & fstIMQCalcVal2 & ":" & lstIMQCalcVal & "),)"
+    ActiveCell.Formula = "=IFERROR(SUM(" & fstIMQCalcVal2 & ":" & lstIMQCalcVal & ")/3,)"
     ActiveCell.Copy
     Dim fstRNGToPaste As String
     Dim lstRNGToPaste As String
@@ -4629,7 +4630,7 @@ Public Sub Caculating_IMQANDMAT()
     ActiveCell.End(xlToLeft).Select
     ActiveCell.Offset(1, 0).Select
     ActiveCell.Formula = "=" & yearMATAdd
-    ActiveCell.Offset(0, 1).Formula = "=IFERROR(SUM(" & fstMATAdd & ":" & lstMATAdd & "),)"
+    ActiveCell.Offset(0, 1).Formula = "=IFERROR(SUM(" & fstMATAdd & ":" & lstMATAdd & ")/12,)"
     Range(ActiveCell.Address, ActiveCell.Offset(0, 1).Address).Copy
     
     Do Until ActiveCell.Offset(2, -3).Value = ""
@@ -4743,7 +4744,7 @@ Next j
 
 ActiveCell.End(xlToLeft).Select
 ActiveCell.Offset(1, 1).Select
-ActiveCell.Formula = "=IFERROR(SUM(" & fstAddForMonth & ":" & lstAddForMonth & "),)"
+ActiveCell.Formula = "=IFERROR(SUM(" & fstAddForMonth & ":" & lstAddForMonth & ")/3,)"
 ActiveCell.Copy
 For j = 1 To i
     ActiveCell.Offset(0, 1).Select
@@ -4852,7 +4853,7 @@ fstChartAdd = ActiveCell.Address
     
     ActiveCell.End(xlToLeft).Select
     ActiveCell.Offset(1, 1).Select
-    ActiveCell.Formula = "=IFERROR(SUM(" & fstValAdd & ":" & lstValAdd & "),)"
+    ActiveCell.Formula = "=IFERROR(SUM(" & fstValAdd & ":" & lstValAdd & ")/12,)"
     ActiveCell.Copy
     Do Until ActiveCell.Offset(1, -1).Value = ""
         ActiveCell.Offset(1, 0).Select
