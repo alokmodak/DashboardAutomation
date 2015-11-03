@@ -60,7 +60,7 @@ Dim insFilterValue2 As String
 Dim insFilterValue3 As String, insFilterValue4 As String, insFilterValue5 As String
 Dim installPasteValue As String
 Dim inputItem As String
-Dim myWorkBook As String
+Dim myworkbook As String
 Dim installFileOpen As String
 Dim productItem As Variant 'for loop for each product
 Dim fstMonthChk As String
@@ -139,13 +139,13 @@ End If
 
     Application.Workbooks.Open (installFlName), False
     Application.Workbooks.Open (inputItem), False 'false to disable link update message
-    myWorkBook = ActiveWorkbook.name
-    Workbooks(myWorkBook).Activate
+    myworkbook = ActiveWorkbook.name
+    Workbooks(myworkbook).Activate
     ActiveWorkbook.Sheets("Data Analysis Pivot").Activate
     ActiveSheet.Cells(1, 1).Select
     ActiveSheet.UsedRange.Find("Column Labels").Select
     
-Application.Workbooks(myWorkBook).Windows(1).Visible = False
+Application.Workbooks(myworkbook).Windows(1).Visible = False
 Application.Workbooks(installFileOpen).Windows(1).Visible = False
 
 'Filtering servicescorecard data based on selection

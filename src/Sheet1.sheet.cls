@@ -156,6 +156,11 @@ Private Sub comb6NC2_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     End If
 End Sub
 
+Private Sub CommandButton1_Click()
+Create_Presentation
+MsgBox "Presentation Completed!"
+End Sub
+
 Private Sub helpMenu_Click()
 On Error Resume Next
 Const READYSTATE_COMPLETE As Integer = 4
@@ -163,7 +168,7 @@ Const READYSTATE_COMPLETE As Integer = 4
   Dim objIE As Object
   
   Set objIE = CreateObject("InternetExplorer.Application")
-
+  
   With objIE
     .Visible = True
     .silent = True

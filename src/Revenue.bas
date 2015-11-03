@@ -1019,141 +1019,8 @@ lstChartAdd = ActiveCell.Address
          .Top = 10    ' reposition
          .Left = 300   ' reposition
      End With
-    ActiveChart.seriesCollection(1).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(10, 50, 200)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.2
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.FullSeriesCollection(1).DataLabels.Select
-    With Selection.Format.TextFrame2.TextRange.Font.Fill
-        .Visible = msoTrue
-        .ForeColor.ObjectThemeColor = msoThemeColorBackground1
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(2).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(10, 50, 150)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.5
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(3).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(10, 50, 255)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.7
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(5).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(255, 5, 5)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = -0.1
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(6).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(20, 255, 50)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = -0.1
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(7).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(255, 25, 10)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = -0.3
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(8).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(55, 255, 50)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.2
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(9).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(200, 50, 0)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.2
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(10).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(10, 250, 150)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.6
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(11).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(255, 50, 50)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.7
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(12).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(10, 250, 50)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.7
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(13).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(255, 50, 150)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.5
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(14).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(5, 250, 30)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.7
-        .Transparency = 0
-        .Solid
-    End With
-    ActiveChart.seriesCollection(15).Select
-    With Selection.Format.Fill
-        .Visible = msoTrue
-        .ForeColor.RGB = RGB(255, 100, 55)
-        .ForeColor.TintAndShade = 0
-        .ForeColor.Brightness = 0.7
-        .Transparency = 0
-        .Solid
-    End With
+    
+    Color_ChartSeries
     
     ActiveChart.FullSeriesCollection(4).Select
     Selection.Format.Fill.Visible = msoFalse
@@ -1403,9 +1270,19 @@ strMacro = strMacro & vbCrLf & _
     
     ActiveCell.Offset(4, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Joined" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook & ",False)"
                                     '=HLOOKUP(CONCATENATE(LEFT(G$11179,3),RIGHT(G$11179,2),"-Joined"),$G$11166:$DJ$11176,$E11169,FALSE)
+    ActiveCell.Offset(5, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Joined" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & ",9,False)"
+    ActiveCell.Offset(6, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Joined" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & ",11,False)"
+    ActiveCell.Offset(7, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Joined" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & ",13,False)"
+    ActiveCell.Offset(8, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Joined" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & ",15,False)"
+    ActiveCell.Offset(9, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Joined" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & ",17,False)"
     ActiveCell.Offset(10, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & "," & tableRefForHlook2 & ",False)"
                                     '=HLOOKUP(CONCATENATE(LEFT(G$11179,3),RIGHT(G$11179,2),"-Dropped"),$G$11166:$DJ$11176,$E11169,FALSE)
-        ActiveCell.Offset(16, 0).Formula = "=" & negativeAdd & "*-1"
+    ActiveCell.Offset(11, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & ",8,False)"
+    ActiveCell.Offset(12, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & ",10,False)"
+    ActiveCell.Offset(13, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & ",12,False)"
+    ActiveCell.Offset(14, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & ",14,False)"
+    ActiveCell.Offset(15, 0).Formula = "=HLOOKUP(CONCATENATE(LEFT(" & fstNewTableAdd & ",3),RIGHT(" & fstNewTableAdd & ",2)," & Chr(34) & "-Dropped" & Chr(34) & ")," & fstChartAdd & ":" & lstChartAdd & ",16,False)"
+    ActiveCell.Offset(16, 0).Formula = "=" & negativeAdd & "*-1"
                                     '=G11189*-1
                      
     For i = 1 To 22
@@ -1578,6 +1455,7 @@ ActiveChart.ChartArea.Select
 ActiveSheet.ChartObjects(3).name = "JoinsAndDropsAll"
 Creating_Trend_Drops_Joins 'calling function for trends
 ActiveSheet.Cells(1, 1).Select
+    
 Application.Workbooks(marketInputFile).Close False
 Application.Workbooks(inputRevenue).Close False
 Application.Workbooks(revenueOutputGlobal).Save
@@ -3653,6 +3531,7 @@ pvtTbl.ManualUpdate = False
         ActiveSheet.Shapes.AddChart2(227, xlLine).Select
     ActiveChart.SetSourceData Source:=Range("Pivot!" & rngForChart)
     ActiveChart.ChartStyle = 279
+    ActiveChart.Legend.Select
     ActiveChart.Legend.Position = xlLegendPositionRight
     ActiveChart.SetElement (msoElementPrimaryCategoryGridLinesMajor)
     ActiveChart.ChartTitle.Text = "Contract Pentration - Market Trend"
@@ -4124,7 +4003,7 @@ pvtTbl.ManualUpdate = False
     ActiveSheet.Cells(1, 1).Select
     ActiveSheet.name = "CP Select Vs Global"
  '   ActiveWorkbook.Sheets("Data").Delete
-    
+
     ActiveWorkbook.Save
     Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
     Sheet1.lstBx6NC.Value = ""
@@ -4788,7 +4667,7 @@ fstChartAdd = ActiveCell.Address
     Dim chrtName As String
     
     chrtName = ActiveChart.name
-     seriesCollection = 1
+    seriesCollection = 1
  
      For seriesCollection = 1 To 5
         ActiveSheet.ChartObjects(Replace(chrtName, "Contract_Dynamics ", "", 1)).Activate
@@ -4900,7 +4779,7 @@ fstChartAdd = ActiveCell.Address
     ActiveChart.PlotBy = xlRows
     
     chrtName = ActiveChart.name
-     seriesCollection = 1
+    seriesCollection = 1
  
      For seriesCollection = 1 To 5
         ActiveSheet.ChartObjects(Replace(chrtName, "Contract_Dynamics ", "", 1)).Activate
@@ -4919,7 +4798,143 @@ fstChartAdd = ActiveCell.Address
             .Solid
         End With
      Next
-    
-    
+        
 End Sub
 
+Public Sub Color_ChartSeries()
+ActiveChart.seriesCollection(1).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(10, 50, 200)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.2
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.FullSeriesCollection(1).DataLabels.Select
+    With Selection.Format.TextFrame2.TextRange.Font.Fill
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorBackground1
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(2).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(10, 50, 150)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.5
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(3).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(10, 50, 255)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(5).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 5, 5)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.1
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(6).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(20, 255, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.1
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(7).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 25, 10)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.3
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(8).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(55, 255, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.2
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(9).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(200, 50, 0)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.2
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(10).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(10, 250, 150)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.6
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(11).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 50, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(12).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(10, 250, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(13).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 50, 150)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.5
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(14).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(5, 250, 30)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(15).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 100, 55)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+End Sub
