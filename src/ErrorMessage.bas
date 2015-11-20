@@ -10,24 +10,24 @@ Public Sub Error_Messagebox()
 Dim fileNotPresent As String
 
 'Messagebox if no drive is selected
-If Sheet1.rdbLocalDrive.Value = False Then
-    If Sheet1.rdbSharedDrive.Value = False Then
+If Sheet1.rdbLocalDrive.value = False Then
+    If Sheet1.rdbSharedDrive.value = False Then
             MsgBox "Please select a Data Source!" & vbCrLf & "Local or Shared or Sharepoint"
             End
     End If
 End If
 
 'Message box to select year
-If Sheet1.combYear.Value = "Select" Then
+If Sheet1.combYear.value = "Select" Then
 MsgBox "Please select a Year/Month Value!"
 End
 End If
 
 
 'message box for option select CTS, Revenue or Dashboard
-If Sheet1.chkDashboard.Value = False Then
-    If Sheet1.chkCTS.Value = False Then
-        If Sheet1.chkRevenue.Value = False Then
+If Sheet1.chkDashboard.value = False Then
+    If Sheet1.chkCTS.value = False Then
+        If Sheet1.chkRevenue.value = False Then
             MsgBox "Please select Output option"
             End
         End If
@@ -35,13 +35,13 @@ If Sheet1.chkDashboard.Value = False Then
 End If
 
 'Messagebox if no values selected in product group or CTS or revenue
-If Sheet1.combProductGroup.Value = "Select Product Group" Then
+If Sheet1.combProductGroup.value = "Select Product Group" Then
  MsgBox "Please select a value in Dashboard Product group"
         End
-    ElseIf Sheet1.comb6NC2.Value = "Select Product Group" Then
+    ElseIf Sheet1.comb6NC2.value = "Select Product Group" Then
      MsgBox "Please select a value in Product group"
         End
-        ElseIf Sheet1.comb6NC1.Value = "Select Product Group" Then
+        ElseIf Sheet1.comb6NC1.value = "Select Product Group" Then
          MsgBox "Please select a value in Product group"
         End
 End If
@@ -63,7 +63,7 @@ End If
     Dim serviceInfoDataFile As String
     Dim PLCMDataFile As String
     
-If Sheet1.rdbLocalDrive.Value = True Then 'Input files check for Local drive
+If Sheet1.rdbLocalDrive.value = True Then 'Input files check for Local drive
 
     outputPath = ThisWorkbook.Path & "\" & "KPI Summary.xlsx" 'output file path
     TestStr = ""
@@ -75,7 +75,7 @@ If Sheet1.rdbLocalDrive.Value = True Then 'Input files check for Local drive
     End If
     
     'for service scorecard
-    fstMonthChk = Format(Sheet1.combYear.Value, "mmmyy")
+    fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
     servicefileName = ""
     servicefileName = Dir(ThisWorkbook.Path & "\" & "Service Scorecard F 6.1_" & fstMonthChk & "*.xls*")
     
@@ -127,9 +127,9 @@ If Sheet1.rdbLocalDrive.Value = True Then 'Input files check for Local drive
     '2015-05 Installation spend L2-report.xlsb
     Dim inscostFileOpen As String
     inscostFileOpen = ""
-    inscostFileOpen = Dir(ThisWorkbook.Path & "\" & Sheet1.combYear.Value & " " & "Installation spend L2-report" & "*.xls*")
+    inscostFileOpen = Dir(ThisWorkbook.Path & "\" & Sheet1.combYear.value & " " & "Installation spend L2-report" & "*.xls*")
         If inscostFileOpen = "" Then
-        fileNotPresent = fileNotPresent & Chr(34) & Sheet1.combYear.Value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & vbCrLf
+        fileNotPresent = fileNotPresent & Chr(34) & Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & vbCrLf
     End If
     
     'warranty cost file
@@ -138,7 +138,7 @@ If Sheet1.rdbLocalDrive.Value = True Then 'Input files check for Local drive
     Dim valFind As String, found As String
     Dim found2 As String
     
-    valFind = Replace(Sheet1.combYear.Value, "-", "")
+    valFind = Replace(Sheet1.combYear.value, "-", "")
     warrantyCostFile1 = Dir(ThisWorkbook.Path & "\" & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb")
     warrantyCostFile2 = Dir(ThisWorkbook.Path & "\" & "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb")
     found = InStr(1, warrantyCostFile1, valFind, vbTextCompare)
@@ -182,7 +182,7 @@ End If
 
     
 'validation for files present over shared drive
-If Sheet1.rdbSharedDrive.Value = True Then
+If Sheet1.rdbSharedDrive.value = True Then
     
     Dim fileNotFoundShared As String
     
@@ -194,7 +194,7 @@ If Sheet1.rdbSharedDrive.Value = True Then
     End If
     
     'for service scorecard
-    fstMonthChk = Format(Sheet1.combYear.Value, "mmmyy")
+    fstMonthChk = Format(Sheet1.combYear.value, "mmmyy")
     SharedDrive_Path ("Service Scorecard F 6.1_" & fstMonthChk & ".xlsm")
     If fileExists = False Then
     fileNotFoundShared = Chr(34) & "Service Scorecard F 6.1_" & fstMonthChk & ".xlsm" & Chr(34) & vbCrLf
@@ -245,17 +245,17 @@ If Sheet1.rdbSharedDrive.Value = True Then
     End If
     
     '2015-05 Installation spend L2-report.xlsb
-    inscostFileOpen = Sheet1.combYear.Value & " " & "Installation spend L2-report" & ".xlsb"
+    inscostFileOpen = Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb"
     SharedDrive_Path inscostFileOpen
     
     If fileExists = False Then
-        fileNotFoundShared = fileNotFoundShared & Chr(34) & Sheet1.combYear.Value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & vbCrLf
+        fileNotFoundShared = fileNotFoundShared & Chr(34) & Sheet1.combYear.value & " " & "Installation spend L2-report" & ".xlsb" & Chr(34) & vbCrLf
         
     End If
     
     'warranty cost file
     
-    valFind = Replace(Sheet1.combYear.Value, "-", "")
+    valFind = Replace(Sheet1.combYear.value, "-", "")
     warrantyCostFile1 = "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_IGT.xlsb"
     warrantyCostFile2 = "Level 4 Warranty Spend Analysis - " & valFind & " @ " & valFind - 1 & " BS Rate_DI.xlsb"
     SharedDrive_Path warrantyCostFile1
@@ -333,7 +333,7 @@ On Error Resume Next
 Dim inputRevenue As String
 inputRevenue = inputFile
 
-If Sheet1.rdbSharedDrive.Value = True Then
+If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path inputRevenue
 Else
     sharedDrivePath = ThisWorkbook.Path & "\" & inputRevenue
@@ -348,7 +348,7 @@ End
 End If
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
 
-If Sheet1.rdbSharedDrive.Value = True Then
+If Sheet1.rdbSharedDrive.value = True Then
     SharedDrive_Path marketInputFile
 Else
     sharedDrivePath = ThisWorkbook.Path & "\" & marketInputFile

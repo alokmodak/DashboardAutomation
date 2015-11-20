@@ -10,7 +10,7 @@ Dim FSO, ofolder, osubfolder, ofile, queue As Collection
 Dim slicerItem As slicerItem
 
 If Application.FileDialog(msoFileDialogFilePicker).Show <> -1 Then
-    MsgBox "User Canceled!"
+    MsgBox "User Canceled!", vbExclamation, "Creating Presentation"
     End
 End If
 

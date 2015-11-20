@@ -35,7 +35,7 @@ Dim minProcessTime As Integer
 minstartTime = Minute(Now()) 'start time for process time
 startTime = second(Now())
 
-    If Sheet1.chkDashboard.Value = True Then
+    If Sheet1.chkDashboard.value = True Then
     
             Call Error_Messagebox
             
@@ -57,7 +57,7 @@ startTime = second(Now())
             
             Call CQ_Calculations
             
-    ElseIf Sheet1.chkRevenue.Value = True Then
+    ElseIf Sheet1.chkRevenue.value = True Then
             Error_RevenueNoSelection
             Dim i As Integer
             For i = 0 To Sheet1.lstBx6NC.ListCount - 1
@@ -102,10 +102,10 @@ startTime = second(Now())
                End If
             Next i
             
-    ElseIf Sheet1.chkCTS.Value = True Then
+    ElseIf Sheet1.chkCTS.value = True Then
     
     Else
-    MsgBox "Please select an output option"
+    MsgBox "Please select an output option", vbExclamation
     
     End If
     
@@ -118,8 +118,8 @@ If endTime < startTime Then
 startTime = 60 - startTime
 processTime = endTime + startTime
 End If
-Sheet1.processTime.Value = processTime
-Sheet1.minProcessTime.Value = minProcessTime
+Sheet1.processTime.value = processTime
+Sheet1.minProcessTime.value = minProcessTime
 End Sub
 
 'UI Date Control
@@ -139,11 +139,11 @@ Private Sub cmb6NC2OK_Click()
 On Error Resume Next
     Sheet1.lstBx6NC.Visible = False
     Sheet1.cmb6NC2OK.Visible = False
-    Sheet1.comb6NC2.Value = ""
+    Sheet1.comb6NC2.value = ""
     Dim i As Integer
     For i = 0 To 20
         If Sheet1.lstBx6NC.selected(i) = True Then
-            Sheet1.comb6NC2.Value = Sheet1.comb6NC2.Value & " " & Sheet1.lstBx6NC.List(i) & " "
+            Sheet1.comb6NC2.value = Sheet1.comb6NC2.value & " " & Sheet1.lstBx6NC.List(i) & " "
         End If
     Next
 End Sub
@@ -183,19 +183,19 @@ End Sub
 
 
 Private Sub chkAllGroups_Click()
-    If Sheet1.chkAllGroups.Value = True Then
+    If Sheet1.chkAllGroups.value = True Then
         Sheet1.comb6NC1.Enabled = False
         Sheet1.comb6NC2.Enabled = False
-        Sheet1.combProductGroup.Value = ""
+        Sheet1.combProductGroup.value = ""
         Sheet1.combProductGroup.Enabled = False
         Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
-        Sheet1.lstBx6NC.Value = ""
+        Sheet1.lstBx6NC.value = ""
         Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
-        Sheet1.comb6NC2.Value = ""
+        Sheet1.comb6NC2.value = ""
     Else
         Sheet1.comb6NC1.Enabled = True
         Sheet1.comb6NC2.Enabled = True
         Sheet1.combProductGroup.Enabled = True
-        Sheet1.combProductGroup.Value = "Select Product Group"
+        Sheet1.combProductGroup.value = "Select Product Group"
     End If
 End Sub

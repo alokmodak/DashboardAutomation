@@ -78,16 +78,16 @@ ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R 
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 
 'Putting names in blank cells
-Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
-    If ActiveCell.Value = "" Then
-        ActiveCell.Value = ActiveCell.Offset(0, -1).Value & " " & "A"
+Do Until ActiveCell.Offset(1, 0).value = "" And ActiveCell.Offset(0, 1).value = ""
+    If ActiveCell.value = "" Then
+        ActiveCell.value = ActiveCell.Offset(0, -1).value & " " & "A"
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 1).Select
     End If
     
-    If ActiveCell.Value = "EUR" Then
-        ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
+    If ActiveCell.value = "EUR" Then
+        ActiveCell.value = ActiveCell.Offset(-1, 0).value
     End If
 Loop
 
@@ -138,7 +138,7 @@ Set marketRNG = Range(Selection.Address)
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "System Code (6NC)"
+ActiveCell.Offset(0, -1).value = "System Code (6NC)"
 
 Dim lstPasteRNG As String
 Dim fstPasteRNG As String
@@ -186,7 +186,7 @@ Set wsData = Worksheets("Data")
 'A Pivot Cache represents the memory cache for a PivotTable report. Each Pivot Table report has one cache only. Create a new PivotTable cache, and then create a new PivotTable report based on the cache.
 'determine source data range (dynamic):
 'last row in column no. 1:
-lastRow = wsData.Cells(Rows.Count, 1).End(xlUp).Row
+lastRow = wsData.Cells(rows.Count, 1).End(xlUp).Row
 'last column in row no. 1:
 lastColumn = wsData.Cells(1, Columns.Count).End(xlToLeft).Column
 
@@ -299,13 +299,13 @@ ActiveCell.PasteSpecial xlPasteAll
 Dim eqRNG As String
 Dim celVal As Variant
 
-Range(ActiveCell.Address, Cells(Rows.Count, ActiveCell.Column).End(xlUp).Address).Select
+Range(ActiveCell.Address, Cells(rows.Count, ActiveCell.Column).End(xlUp).Address).Select
 eqRNG = Selection.Address
 For Each celVal In Range(eqRNG)
-    If ActiveCell.Offset(1, 0).Value = "" Then
+    If ActiveCell.Offset(1, 0).value = "" Then
         ActiveCell.EntireRow.Delete
     End If
-    If ActiveCell.Value = "" Or ActiveCell.Value = "Grand Total" Then
+    If ActiveCell.value = "" Or ActiveCell.value = "Grand Total" Then
         ActiveCell.EntireRow.Delete
         ActiveCell.Offset(-1, 0).Select
     End If
@@ -313,7 +313,7 @@ For Each celVal In Range(eqRNG)
 Next
 
 ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", lookat:=xlWhole).Select
-ActiveCell.Offset(0, 2).Value = "IB Year"
+ActiveCell.Offset(0, 2).value = "IB Year"
 ActiveCell.Offset(1, 0).Select
 
 ActiveCell.Offset(0, 2).Formula = "=RIGHT(" & ActiveCell.Offset(0, 1).Address(False, False) & ",4)"
@@ -379,7 +379,7 @@ ActiveSheet.name = "Filtered-Data"
 ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert Shift:=xlToRight
 
-ActiveCell.Value = "Fiscal Year/Period"
+ActiveCell.value = "Fiscal Year/Period"
 ActiveCell.Offset(1, 0).Select
 Dim fstAddForYear As String
 Dim fstAddRNG2 As String
@@ -398,19 +398,19 @@ Selection.PasteSpecial xlPasteFormulas
 Selection.Copy
 Selection.PasteSpecial xlPasteValues
 
-Do Until ActiveCell.Value = ""
-    If InStr(1, ActiveCell.Value, ".", vbTextCompare) Then
-        ActiveCell.Value = Replace(ActiveCell.Value, ".", "")
-        ActiveCell.Value = ActiveCell.Value & "0"
+Do Until ActiveCell.value = ""
+    If InStr(1, ActiveCell.value, ".", vbTextCompare) Then
+        ActiveCell.value = Replace(ActiveCell.value, ".", "")
+        ActiveCell.value = ActiveCell.value & "0"
     Else
-        ActiveCell.Value = ActiveCell.Value
+        ActiveCell.value = ActiveCell.value
     End If
     ActiveCell.Offset(1, 0).Select
 Loop
 
 ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert Shift:=xlToRight
-ActiveCell.Value = "IB Year"
+ActiveCell.value = "IB Year"
 ActiveCell.Offset(1, 0).Select
 ActiveCell.Formula = "=VLOOKUP(" & ActiveCell.Offset(0, 1).Address(False, False) & ",'Contracts-Data'!" & Sheets("Contracts-Data").UsedRange.Address & ",3,FALSE)"
 
@@ -514,11 +514,11 @@ Application.ReferenceStyle = xlA1
     
     Dim productAdd As String
     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
-    productAdd = ActiveCell.Offset(2, 0).Value
+    productAdd = ActiveCell.Offset(2, 0).value
     
-    ActiveSheet.Cells(1, 1).Value = ""
-    ActiveSheet.Cells(12, 3).Value = productAdd
-    ActiveSheet.Cells(13, 3).Value = "IB Count"
+    ActiveSheet.Cells(1, 1).value = ""
+    ActiveSheet.Cells(12, 3).value = productAdd
+    ActiveSheet.Cells(13, 3).value = "IB Count"
     
     Dim ibCountRng As String
     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole, after:=ActiveCell).Select
@@ -526,12 +526,12 @@ Application.ReferenceStyle = xlA1
     
     ibCountRng = Range(ActiveCell.Offset(1, 0).Address, ActiveCell.End(xlDown).Address).Address
     
-    ActiveSheet.Cells(7, 1).Value = "ASP Value"
-    ActiveSheet.Cells(8, 1).Value = "55000"
+    ActiveSheet.Cells(7, 1).value = "ASP Value"
+    ActiveSheet.Cells(8, 1).value = "55000"
     ActiveSheet.Cells(14, 3).Formula = "=COUNT(" & ibCountRng & ")"
     ActiveSheet.Cells(14, 4).Formula = "=" & Cells(14, 3).Address & "*$A$8"
     
-    ActiveSheet.Cells(16, 3).Value = "Diffusion Rate"
+    ActiveSheet.Cells(16, 3).value = "Diffusion Rate"
     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     Dim yrAdd As String
     Dim divAdd As String
@@ -541,7 +541,7 @@ Application.ReferenceStyle = xlA1
     ActiveSheet.Cells(17, 3).Formula = "=" & yrAdd
     ActiveSheet.Cells(17, 3).Select
     ActiveCell.Copy
-    Do Until ActiveCell.Offset(15, 0).Value = ""
+    Do Until ActiveCell.Offset(15, 0).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -551,7 +551,7 @@ Application.ReferenceStyle = xlA1
     ActiveCell.Formula = "=" & divAdd & "/$D$14"
     ActiveCell.Copy
     
-    Do Until ActiveCell.Offset(-1, 1).Value = ""
+    Do Until ActiveCell.Offset(-1, 1).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -614,7 +614,7 @@ Application.ReferenceStyle = xlA1
     ActiveSheet.PivotTables(pvtTblName).PivotFields( _
         "Sum of     Total Contract Revenue").Orientation = xlHidden
     
-    ActiveSheet.Cells(16, 3).Value = "Bath Tub"
+    ActiveSheet.Cells(16, 3).value = "Bath Tub"
     ActiveCell.Offset(18, 3).Select
     Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).NumberFormat = "0"
     With Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).Borders
@@ -635,7 +635,7 @@ Application.ReferenceStyle = xlA1
     Cells(14, 3).Select
     ActiveCell.Formula = "=IFERROR(Count(" & fstCostIbCountAdd & ":" & lstCostIbCountAdd & "),)"
     ActiveCell.Copy
-    Do Until ActiveCell.Offset(3, 0).Value = ""
+    Do Until ActiveCell.Offset(3, 0).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -647,14 +647,14 @@ Application.ReferenceStyle = xlA1
     ActiveCell.Formula = "=IFERROR(" & fstCostAdd & "/" & ActiveCell.Offset(-4, 0).Address(False, False) & ",)"
     ActiveCell.Copy
     
-    Do Until ActiveCell.Offset(-1, 1).Value = ""
+    Do Until ActiveCell.Offset(-1, 1).value = ""
      ActiveCell.Offset(0, 1).Select
      ActiveCell.PasteSpecial xlPasteFormulas
     Loop
     
     Range(ActiveCell.Address, ActiveCell.End(xlToLeft).Address).NumberFormat = "0"
-    ActiveSheet.Cells(8, 1).Value = ""
-    ActiveSheet.Cells(7, 1).Value = ""
+    ActiveSheet.Cells(8, 1).value = ""
+    ActiveSheet.Cells(7, 1).value = ""
     
     ActiveSheet.ChartObjects("Chart 2").Activate
     ActiveChart.ChartTitle.Text = "Bath Tub"

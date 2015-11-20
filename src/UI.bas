@@ -7,8 +7,8 @@ Option Explicit
 Public Sub Automation_Tool_File_Open()
 On Error Resume Next
 
-Sheet1.rdbLocalDrive.Value = 0
-Sheet1.rdbSharedDrive.Value = 0
+Sheet1.rdbLocalDrive.value = 0
+Sheet1.rdbSharedDrive.value = 0
 
 Sheet1.combProductGroup.Clear
 With Sheet1.combProductGroup
@@ -34,7 +34,7 @@ With Sheet1.lstBx6NC
 .AddItem "BoxPlot"
 End With
 
-Sheet1.combModality.Value = "Modality"
+Sheet1.combModality.value = "Modality"
 With Sheet1.combModality
 .AddItem "DXR"
 .AddItem "MoS"
@@ -43,30 +43,30 @@ With Sheet1.combModality
 End With
 
 
-Sheet1.rdbLocalDrive.Value = True
-Sheet1.processTime.Value = 0
+Sheet1.rdbLocalDrive.value = True
+Sheet1.processTime.value = 0
 Sheet1.processTime.Enabled = False
 Sheet1.minProcessTime.Enabled = False
-Sheet1.combProductGroup.Value = "Select Product Group"
+Sheet1.combProductGroup.value = "Select Product Group"
 Sheet1.chkCTS.Enabled = False
 Sheet1.chkRevenue.Enabled = True
-Sheet1.chkAllGroups.Value = False
-Sheet1.minProcessTime.Value = 0
-Sheet1.processTime.Value = 0
+Sheet1.chkAllGroups.value = False
+Sheet1.minProcessTime.value = 0
+Sheet1.processTime.value = 0
 
 Dim yearValue As String
 Dim monthVal As String
 monthVal = Format(Now(), "mm")
 
 yearValue = Year(Now()) & "-" & Format$(Now() - 31, "mm")
-Sheet1.combYear.Value = yearValue
+Sheet1.combYear.value = yearValue
 
 End Sub
 
 Public Sub Increase_Year_And_Month_Value()
 
 Dim valYear As String, yearVal As String, monthVal As String
-valYear = Sheet1.combYear.Value
+valYear = Sheet1.combYear.value
 yearVal = Split(valYear, "-")(LBound(Split(valYear, "-")))
 monthVal = Split(valYear, "-")(UBound(Split(valYear, "-")))
 
@@ -99,13 +99,13 @@ valYear = yearVal + 1 & "-" & "01"
 
 End Select
 
-Sheet1.combYear.Value = valYear
+Sheet1.combYear.value = valYear
 End Sub
 
 Public Sub Decrease_Year_And_Month_Value()
 
 Dim valYear As String, yearVal As String, monthVal As String
-valYear = Sheet1.combYear.Value
+valYear = Sheet1.combYear.value
 yearVal = Split(valYear, "-")(LBound(Split(valYear, "-")))
 monthVal = Split(valYear, "-")(UBound(Split(valYear, "-")))
 
@@ -138,7 +138,7 @@ valYear = yearVal & "-" & "11"
 
 End Select
 
-Sheet1.combYear.Value = valYear
+Sheet1.combYear.value = valYear
 
 End Sub
 

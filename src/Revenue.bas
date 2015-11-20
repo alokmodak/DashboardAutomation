@@ -42,7 +42,7 @@ Dim modalityVal As String
 On Error Resume Next
 
 'Selection for Modality
-If Sheet1.combModality.Value = "Modality" Or Sheet1.combModality.Value = "" Then
+If Sheet1.combModality.value = "Modality" Or Sheet1.combModality.value = "" Then
      MsgBox "Please Select a Modality Group!"
      End
 End If
@@ -62,6 +62,15 @@ inputFileNameContracts = ActiveWorkbook.name
 strtMonth = Format(Now() - 31, "mmmyyyy")
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
 marketInputFile = Replace(inputRevenue, inputFileNameContracts, marketInputFile)
+
+Dim flPresent As String
+flPresent = ""
+flPresent = Dir(marketInputFile)
+If flPresent = "" Then
+MsgBox Chr(34) & marketInputFile & Chr(34) & " File not Found! Please select Appropriate Path", vbCritical
+End
+End If
+
 Application.Workbooks.Open (marketInputFile), False
 
 Workbooks(inputFileNameContracts).Activate
@@ -85,16 +94,16 @@ ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R 
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 
 'Putting names in blank cells
-Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
-    If ActiveCell.Value = "" Then
-        ActiveCell.Value = ActiveCell.Offset(0, -1).Value & " " & "A"
+Do Until ActiveCell.Offset(1, 0).value = "" And ActiveCell.Offset(0, 1).value = ""
+    If ActiveCell.value = "" Then
+        ActiveCell.value = ActiveCell.Offset(0, -1).value & " " & "A"
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 1).Select
     End If
     
-    If ActiveCell.Value = "EUR" Then
-        ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
+    If ActiveCell.value = "EUR" Then
+        ActiveCell.value = ActiveCell.Offset(-1, 0).value
     End If
 Loop
 
@@ -117,7 +126,7 @@ ActiveSheet.name = "Data"
 
 'Adding 6NC Names column
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
-modalityVal = Sheet1.combModality.Value
+modalityVal = Sheet1.combModality.value
 
 Application.Workbooks(marketInputFile).Activate
 ActiveWorkbook.Sheets("Sheet1").Activate
@@ -146,7 +155,7 @@ Set marketRNG = Range(Selection.Address)
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "System Code (6NC)"
+ActiveCell.Offset(0, -1).value = "System Code (6NC)"
 
 Dim lstPasteRNG As String
 Dim fstPasteRNG As String
@@ -197,7 +206,7 @@ Set marketRNG = Range(Selection.Address)
 ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "Market"
+ActiveCell.Offset(0, -1).value = "Market"
 
 rngStringMarket = marketRNG.Address
 ActiveCell.Offset(1, 0).Select
@@ -240,7 +249,7 @@ Set marketRNG = Range(Selection.Address)
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "EOL Status"
+ActiveCell.Offset(0, -1).value = "EOL Status"
 
 rngStringMarket = marketRNG.Address
 ActiveCell.Offset(1, 0).Select
@@ -269,7 +278,7 @@ Set wsData = Worksheets("Data")
 'A Pivot Cache represents the memory cache for a PivotTable report. Each Pivot Table report has one cache only. Create a new PivotTable cache, and then create a new PivotTable report based on the cache.
 'determine source data range (dynamic):
 'last row in column no. 1:
-lastRow = wsData.Cells(Rows.Count, 1).End(xlUp).Row
+lastRow = wsData.Cells(rows.Count, 1).End(xlUp).Row
 'last column in row no. 1:
 lastColumn = wsData.Cells(1, Columns.Count).End(xlToLeft).Column
 
@@ -439,13 +448,13 @@ ActiveWorkbook.Sheets("Pivot").Delete
 ActiveWorkbook.Sheets("Contracts-Chart").Activate
 'FOr EOL Blank cells
 ActiveSheet.Cells(2, 35).Select
-Do Until ActiveCell.Offset(1, 8).Value = ""
+Do Until ActiveCell.Offset(1, 8).value = ""
     ActiveCell.Offset(1, 0).Select
-    If ActiveCell.Value = "" Then
-        ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
+    If ActiveCell.value = "" Then
+        ActiveCell.value = ActiveCell.Offset(-1, 0).value
     End If
-    If ActiveCell.Value = "#NA" Then
-        ActiveCell.Value = "Not Available"
+    If ActiveCell.value = "#NA" Then
+        ActiveCell.value = "Not Available"
     End If
 Loop
 
@@ -462,12 +471,12 @@ monthsForTable = DateAdd("m", -stMonth, Date)
 
 ActiveCell.Offset(0, 1).Select
 For monthCellForTable = 2 To 30
-    ActiveCell.Value = monthsForTable
+    ActiveCell.value = monthsForTable
     ActiveCell.NumberFormat = "[$-409]mmm-yy;@"
         If monthCellForTable > 1 Then
             ActiveCell.Offset(0, 3).Select
-            ActiveCell.Offset(0, -1).Value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Joined"
-            ActiveCell.Offset(0, -2).Value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Dropped"
+            ActiveCell.Offset(0, -1).value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Joined"
+            ActiveCell.Offset(0, -2).value = Format(DateAdd("m", 1, monthsForTable), "mmmyy") & "-" & "Dropped"
         End If
     monthsForTable = DateAdd("m", 1, monthsForTable)
 Next
@@ -479,7 +488,7 @@ fstAddForPivot = ActiveCell.Address
 
 countFstAddress = ActiveCell.Address 'first cell for total count
 
-Range(Mid(ActiveCell.Address, 2, 2) & Rows.Count).End(xlUp).Select
+Range(Mid(ActiveCell.Address, 2, 2) & rows.Count).End(xlUp).Select
 lstAddForPivot = ActiveCell.Address
 
 countLstAddress = ActiveCell.Address 'Last cell for total count
@@ -490,29 +499,29 @@ topCelVal = 1
 
 'Loop for each row individually to calculate values
 For Each cell In Range(fstAddForPivot, lstAddForPivot)
-If ActiveCell.Value <> "" Then
+If ActiveCell.value <> "" Then
             'leave row values blank if start or end date is not available
-            If ActiveCell.Offset(0, 1).Value = "" Then
-                ActiveCell.Offset(0, 1).Value = ActiveCell.Offset(-1, 1).Value
+            If ActiveCell.Offset(0, 1).value = "" Then
+                ActiveCell.Offset(0, 1).value = ActiveCell.Offset(-1, 1).value
             End If
-            If ActiveCell.Offset(0, 2).Value = "" Then
-                ActiveCell.Offset(0, 2).Value = ActiveCell.Offset(-2, 2).Value
+            If ActiveCell.Offset(0, 2).value = "" Then
+                ActiveCell.Offset(0, 2).value = ActiveCell.Offset(-2, 2).value
             End If
-            duration = DateDiff("m", Replace(ActiveCell.Offset(0, 1).Value, ".", "/"), Replace(ActiveCell.Offset(0, 2).Value, ".", "/"))
+            duration = DateDiff("m", Replace(ActiveCell.Offset(0, 1).value, ".", "/"), Replace(ActiveCell.Offset(0, 2).value, ".", "/"))
             duration = CInt(duration)
             i = 1
-            Do Until ActiveCell.Offset(i, 0).Value <> "" Or i > 20
+            Do Until ActiveCell.Offset(i, 0).value <> "" Or i > 20
             'exit loop for last cell
-                If ActiveCell.Offset(i, 3).Value = "" Then
+                If ActiveCell.Offset(i, 3).value = "" Then
                 Exit Do
                 End If
-            If ActiveCell.Offset(i, 1).Value = "" Then
-                ActiveCell.Offset(i, 1).Value = ActiveCell.Offset(-1, 1).Value
+            If ActiveCell.Offset(i, 1).value = "" Then
+                ActiveCell.Offset(i, 1).value = ActiveCell.Offset(-1, 1).value
             End If
-            If ActiveCell.Offset(i, 2).Value = "" Then
-                ActiveCell.Offset(i, 2).Value = ActiveCell.Offset(-2, 2).Value
+            If ActiveCell.Offset(i, 2).value = "" Then
+                ActiveCell.Offset(i, 2).value = ActiveCell.Offset(-2, 2).value
             End If
-            duration = duration + DateDiff("m", Replace(ActiveCell.Offset(i, 1).Value, ".", "/"), Replace(ActiveCell.Offset(i, 2).Value, ".", "/"))
+            duration = duration + DateDiff("m", Replace(ActiveCell.Offset(i, 1).value, ".", "/"), Replace(ActiveCell.Offset(i, 2).value, ".", "/"))
             duration = CInt(duration)
             i = i + 1
             Loop
@@ -524,46 +533,46 @@ If ActiveCell.Value <> "" Then
         k = 0
         Do
         'exit for last cell
-        If ActiveCell.Offset(k, 3).Value = "" Then
+        If ActiveCell.Offset(k, 3).value = "" Then
             Exit Do
         End If
-                fstVal = DateSerial(Year(Replace(ActiveCell.Offset(k, 1).Value, ".", "/", 4)), Month(Replace(ActiveCell.Offset(k, 1).Value, ".", "/", 4)), 1)
-                lstVal = DateSerial(Year(Replace(ActiveCell.Offset(k, 2).Value, ".", "/", 4)), Month(Replace(ActiveCell.Offset(k, 2).Value, ".", "/", 4)) + 1, 0)
+                fstVal = DateSerial(Year(Replace(ActiveCell.Offset(k, 1).value, ".", "/", 4)), Month(Replace(ActiveCell.Offset(k, 1).value, ".", "/", 4)), 1)
+                lstVal = DateSerial(Year(Replace(ActiveCell.Offset(k, 2).value, ".", "/", 4)), Month(Replace(ActiveCell.Offset(k, 2).value, ".", "/", 4)) + 1, 0)
                 
-                If fstVal <= CDate(ActiveCell.Offset(-topCelVal, monthCellForTable).Value) And CDate(ActiveCell.Offset(-topCelVal, monthCellForTable).Value) <= lstVal Then
-                    ActiveCell.Offset(0, monthCellForTable).Value = "Yes"
+                If fstVal <= CDate(ActiveCell.Offset(-topCelVal, monthCellForTable).value) And CDate(ActiveCell.Offset(-topCelVal, monthCellForTable).value) <= lstVal Then
+                    ActiveCell.Offset(0, monthCellForTable).value = "Yes"
                 Else
                     'condition not to overwrite Yes values
-                    If ActiveCell.Offset(0, monthCellForTable).Value = "" Then
-                        ActiveCell.Offset(0, monthCellForTable).Value = "No"
+                    If ActiveCell.Offset(0, monthCellForTable).value = "" Then
+                        ActiveCell.Offset(0, monthCellForTable).value = "No"
                     End If
                 End If
         k = k + 1
-        Loop Until ActiveCell.Offset(k, 0).Value <> "" Or k > 20
+        Loop Until ActiveCell.Offset(k, 0).value <> "" Or k > 20
 
-    If i = 2 And ActiveCell.Offset(0, monthCellForTable).Value = "No" Then
-        If ActiveCell.Offset(0, monthCellForTable - 3).Value = "Yes" Then
+    If i = 2 And ActiveCell.Offset(0, monthCellForTable).value = "No" Then
+        If ActiveCell.Offset(0, monthCellForTable - 3).value = "Yes" Then
             If duration <= 12 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "LessThan1Year"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "LessThan1Year"
             ElseIf 13 >= duration Or duration <= 36 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "1To3Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "1To3Years"
             ElseIf 37 >= duration Or duration <= 60 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "3To5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "3To5Years"
             ElseIf duration >= 61 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "MoreThan5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "MoreThan5Years"
             End If
-            If ActiveCell.Offset(0, -5).Value = "EOL" Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "EOL"
+            If ActiveCell.Offset(0, -5).value = "EOL" Then
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "EOL"
             End If
             
         'condition for After warranty
-        If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
+        If ActiveCell.Offset(0, 3).value = "ZCSW" Then
         j = 1
         zcswVal = True
         Do Until ActiveCell.Offset(j, 0) <> "" Or j > 20
         'condition for last row exit loop
-            If ActiveCell.Offset(j, 3).Value <> "ZCSW" Then
-                If ActiveCell.Offset(1, 3).Value = "" Then
+            If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
+                If ActiveCell.Offset(1, 3).value = "" Then
                     Exit Do
             End If
             zcswVal = False
@@ -571,35 +580,35 @@ If ActiveCell.Value <> "" Then
         j = j + 1
         Loop
         If zcswVal = True Then
-            ActiveCell.Offset(0, monthCellForTable - 2).Value = "Warranty"
+            ActiveCell.Offset(0, monthCellForTable - 2).value = "Warranty"
         End If
     End If
 
 End If
 End If
 
-    If i > 2 And ActiveCell.Offset(0, monthCellForTable).Value = "No" Then
-        If ActiveCell.Offset(0, monthCellForTable - 3).Value = "Yes" Then
+    If i > 2 And ActiveCell.Offset(0, monthCellForTable).value = "No" Then
+        If ActiveCell.Offset(0, monthCellForTable - 3).value = "Yes" Then
             If duration <= 12 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "LessThan1Year"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "LessThan1Year"
             ElseIf 13 >= duration Or duration <= 36 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "1To3Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "1To3Years"
             ElseIf 37 >= duration Or duration <= 60 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "3To5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "3To5Years"
             ElseIf duration >= 61 Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "MoreThan5Years"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "MoreThan5Years"
             End If
-            If ActiveCell.Offset(0, -5).Value = "EOL" Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "EOL"
+            If ActiveCell.Offset(0, -5).value = "EOL" Then
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "EOL"
             End If
             
-            If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
+            If ActiveCell.Offset(0, 3).value = "ZCSW" Then
             j = 1
             zcswVal = True
             Do Until ActiveCell.Offset(j, 0) <> "" Or j > 20
             'condition for last row exit loop
-                If ActiveCell.Offset(j, 3).Value <> "ZCSW" Then
-                    If ActiveCell.Offset(1, 3).Value = "" Then
+                If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
+                    If ActiveCell.Offset(1, 3).value = "" Then
                         Exit Do
                     End If
                 zcswVal = False
@@ -607,35 +616,35 @@ End If
                 j = j + 1
             Loop
             If zcswVal = True Then
-                ActiveCell.Offset(0, monthCellForTable - 2).Value = "Warranty"
+                ActiveCell.Offset(0, monthCellForTable - 2).value = "Warranty"
             End If
             End If
     End If
 End If
 
-If i = 2 And ActiveCell.Offset(0, monthCellForTable).Value = "Yes" Then
-  If ActiveCell.Offset(0, monthCellForTable - 3).Value = "No" Then
+If i = 2 And ActiveCell.Offset(0, monthCellForTable).value = "Yes" Then
+  If ActiveCell.Offset(0, monthCellForTable - 3).value = "No" Then
    If duration <= 12 Then
-     ActiveCell.Offset(0, monthCellForTable - 1).Value = "LessThan1Year"
+     ActiveCell.Offset(0, monthCellForTable - 1).value = "LessThan1Year"
    ElseIf 13 >= duration Or duration <= 36 Then
-     ActiveCell.Offset(0, monthCellForTable - 1).Value = "1To3Years"
+     ActiveCell.Offset(0, monthCellForTable - 1).value = "1To3Years"
    ElseIf 37 >= duration Or duration <= 60 Then
-     ActiveCell.Offset(0, monthCellForTable - 1).Value = "3To5Years"
+     ActiveCell.Offset(0, monthCellForTable - 1).value = "3To5Years"
    ElseIf duration >= 61 Then
-     ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
+     ActiveCell.Offset(0, monthCellForTable - 1).value = "MoreThan5Years"
    End If
-   If ActiveCell.Offset(0, -5).Value = "EOL" Then
-                ActiveCell.Offset(0, monthCellForTable - 1).Value = "EOL"
+   If ActiveCell.Offset(0, -5).value = "EOL" Then
+                ActiveCell.Offset(0, monthCellForTable - 1).value = "EOL"
             End If
             
 'condition for After warranty
-If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
+If ActiveCell.Offset(0, 3).value = "ZCSW" Then
    j = 1
 zcswVal = True
             Do Until ActiveCell.Offset(j, 0) <> "" Or j > 20
                     'condition for last row exit loop
-                    If ActiveCell.Offset(j, 3).Value <> "ZCSW" Then
-                        If ActiveCell.Offset(1, 3).Value = "" Then
+                    If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
+                        If ActiveCell.Offset(1, 3).value = "" Then
                             Exit Do
                         End If
                         zcswVal = False
@@ -643,36 +652,36 @@ zcswVal = True
                 j = j + 1
                 Loop
                 If zcswVal = True Then
-                    ActiveCell.Offset(0, monthCellForTable - 1).Value = "Warranty"
+                    ActiveCell.Offset(0, monthCellForTable - 1).value = "Warranty"
                 End If
         End If
 
     End If
 End If
-            If i > 2 And ActiveCell.Offset(0, monthCellForTable).Value = "Yes" Then
+            If i > 2 And ActiveCell.Offset(0, monthCellForTable).value = "Yes" Then
                 
-                If ActiveCell.Offset(0, monthCellForTable - 3).Value = "No" Then
+                If ActiveCell.Offset(0, monthCellForTable - 3).value = "No" Then
                     If duration <= 12 Then
-                        ActiveCell.Offset(0, monthCellForTable - 1).Value = "LessThan1Year"
+                        ActiveCell.Offset(0, monthCellForTable - 1).value = "LessThan1Year"
                     ElseIf 13 >= duration Or duration <= 36 Then
-                        ActiveCell.Offset(0, monthCellForTable - 1).Value = "1To3Years"
+                        ActiveCell.Offset(0, monthCellForTable - 1).value = "1To3Years"
                     ElseIf 37 >= duration Or duration <= 60 Then
-                        ActiveCell.Offset(0, monthCellForTable - 1).Value = "3To5Years"
+                        ActiveCell.Offset(0, monthCellForTable - 1).value = "3To5Years"
                     ElseIf duration >= 61 Then
-                        ActiveCell.Offset(0, monthCellForTable - 1).Value = "MoreThan5Years"
+                        ActiveCell.Offset(0, monthCellForTable - 1).value = "MoreThan5Years"
                     End If
-                    If ActiveCell.Offset(0, -5).Value = "EOL" Then
-                ActiveCell.Offset(0, monthCellForTable - 1).Value = "EOL"
+                    If ActiveCell.Offset(0, -5).value = "EOL" Then
+                ActiveCell.Offset(0, monthCellForTable - 1).value = "EOL"
             End If
             
                     'condition for After warranty
-                    If ActiveCell.Offset(0, 3).Value = "ZCSW" Then
+                    If ActiveCell.Offset(0, 3).value = "ZCSW" Then
                         j = 1
                         zcswVal = True
                             Do Until ActiveCell.Offset(j, 0) <> "" Or j > 20
                                 'condition for last row exit loop
-                                If ActiveCell.Offset(j, 3).Value <> "ZCSW" Then
-                                    If ActiveCell.Offset(1, 3).Value = "" Then
+                                If ActiveCell.Offset(j, 3).value <> "ZCSW" Then
+                                    If ActiveCell.Offset(1, 3).value = "" Then
                                         Exit Do
                                     End If
                                     zcswVal = False
@@ -680,7 +689,7 @@ End If
                             j = j + 1
                             Loop
                             If zcswVal = True Then
-                                ActiveCell.Offset(0, monthCellForTable - 1).Value = "Warranty"
+                                ActiveCell.Offset(0, monthCellForTable - 1).value = "Warranty"
                             End If
                     End If
                 End If
@@ -701,11 +710,11 @@ Dim lstRowCnt As Long
 Dim celAdd As String
 celAdd = Mid(ActiveCell.Offset(0, 4).Address, 2, 2)
 rowCount = 0
-lstRowCnt = ActiveSheet.Range(celAdd & Rows.Count).End(xlUp).Row
+lstRowCnt = ActiveSheet.Range(celAdd & rows.Count).End(xlUp).Row
 For rowCount = 0 To lstRowCnt - 4
-    If ActiveCell.Offset(1, 0).Value = "" Then
+    If ActiveCell.Offset(1, 0).value = "" Then
         ActiveCell.Offset(1, 0).Select
-        ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
+        ActiveCell.value = ActiveCell.Offset(-1, 0).value
     Else
         ActiveCell.Offset(1, 0).Select
     End If
@@ -714,7 +723,7 @@ ActiveSheet.UsedRange.Find(what:="Country A", lookat:=xlWhole).Select
 ActiveCell.Offset(1, -1).Select
 'ActiveCell.EntireColumn.Value = ActiveCell.EntireColumn.Value
 For rowCount = 0 To lstRowCnt - 3
-    If ActiveCell.Value = "" Then
+    If ActiveCell.value = "" Then
         ActiveCell.FillDown
         ActiveCell.Offset(1, 0).Select
     Else
@@ -725,8 +734,8 @@ Next
 ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 For rowCount = 0 To lstRowCnt - 3
-    If ActiveCell.Value = "" Then
-        ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
+    If ActiveCell.value = "" Then
+        ActiveCell.value = ActiveCell.Offset(-1, 0).value
         ActiveCell.Offset(1, 0).Select
     Else
         ActiveCell.Offset(1, 0).Select
@@ -736,9 +745,9 @@ Next
 ActiveSheet.UsedRange.Find(what:="Market", lookat:=xlWhole).Select
 ActiveCell.Offset(1, 0).Select
 For rowCount = 0 To lstRowCnt - 4
-    If ActiveCell.Offset(1, 0).Value = "" Then
+    If ActiveCell.Offset(1, 0).value = "" Then
         ActiveCell.Offset(1, 0).Select
-        ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
+        ActiveCell.value = ActiveCell.Offset(-1, 0).value
     Else
         ActiveCell.Offset(1, 0).Select
     End If
@@ -871,29 +880,29 @@ For monthCellForTable = 7 To 42
 Next
 
 ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
-ActiveSheet.Cells(Rows.Count, 6).End(xlUp).Select
+ActiveSheet.Cells(rows.Count, 6).End(xlUp).Select
 'Calculating total numbers for dropped and up
 Dim lstCelNum As String
 Dim lstCelNumForChart As String
 lstCelNumForChart = ActiveCell.Address
 ActiveCell.Offset(10, 0).Select
 lstCelNum = ActiveCell.Address
-ActiveCell.Value = "ZCSS"
-ActiveCell.Offset(4, 0).Value = "LessThan1Year-Dropped"
-ActiveCell.Offset(5, 0).Value = "LessThan1Year-Joined"
-ActiveCell.Offset(6, 0).Value = "1To3Years-Dropped"
-ActiveCell.Offset(7, 0).Value = "1To3Years-Joined"
-ActiveCell.Offset(8, 0).Value = "3To5Years-Dropped"
-ActiveCell.Offset(9, 0).Value = "3To5Years-Joined"
-ActiveCell.Offset(10, 0).Value = "MoreThan5Years-Dropped"
-ActiveCell.Offset(11, 0).Value = "MoreThan5Years-Joined"
-ActiveCell.Offset(12, 0).Value = "Warranty-Dropped"
-ActiveCell.Offset(13, 0).Value = "Warranty-Joined"
-ActiveCell.Offset(14, 0).Value = "EOL-Dropped"
-ActiveCell.Offset(15, 0).Value = "EOL-Joined"
-ActiveCell.Offset(1, 0).Value = "ZCSP"
-ActiveCell.Offset(2, 0).Value = "ZCSW"
-ActiveCell.Offset(3, 0).Value = "Blanks"
+ActiveCell.value = "ZCSS"
+ActiveCell.Offset(4, 0).value = "LessThan1Year-Dropped"
+ActiveCell.Offset(5, 0).value = "LessThan1Year-Joined"
+ActiveCell.Offset(6, 0).value = "1To3Years-Dropped"
+ActiveCell.Offset(7, 0).value = "1To3Years-Joined"
+ActiveCell.Offset(8, 0).value = "3To5Years-Dropped"
+ActiveCell.Offset(9, 0).value = "3To5Years-Joined"
+ActiveCell.Offset(10, 0).value = "MoreThan5Years-Dropped"
+ActiveCell.Offset(11, 0).value = "MoreThan5Years-Joined"
+ActiveCell.Offset(12, 0).value = "Warranty-Dropped"
+ActiveCell.Offset(13, 0).value = "Warranty-Joined"
+ActiveCell.Offset(14, 0).value = "EOL-Dropped"
+ActiveCell.Offset(15, 0).value = "EOL-Joined"
+ActiveCell.Offset(1, 0).value = "ZCSP"
+ActiveCell.Offset(2, 0).value = "ZCSW"
+ActiveCell.Offset(3, 0).value = "Blanks"
 
 ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
 Dim fstCelCount As String
@@ -1231,7 +1240,7 @@ strMacro = strMacro & vbCrLf & _
     Range(fstChartAdd).Select
     ActiveCell.Offset(-1, 0).Select
     For i = 1 To 17
-        ActiveCell.Offset(i, -1).Value = i
+        ActiveCell.Offset(i, -1).value = i
     Next i
     
     Range(fstChartAdd).Select
@@ -1249,7 +1258,7 @@ strMacro = strMacro & vbCrLf & _
     ActiveCell.Offset(3, 0).Select
     
     For i = 1 To 28
-        ActiveCell.Offset(-1, i).Value = i * 3
+        ActiveCell.Offset(-1, i).value = i * 3
     Next i
     
     Dim multiplyCellAdd As String
@@ -1286,7 +1295,7 @@ strMacro = strMacro & vbCrLf & _
                                     '=G11189*-1
                      
     For i = 1 To 22
-        If ActiveCell.Value = "" Then
+        If ActiveCell.value = "" Then
             ActiveCell.Offset(-1, 0).Copy
             ActiveCell.PasteSpecial xlPasteFormulas
         End If
@@ -1296,33 +1305,33 @@ strMacro = strMacro & vbCrLf & _
     Range(fstNewTableAdd).Select
     Range(ActiveCell.Address, ActiveCell.End(xlDown).Address).Copy
     
-    Do Until ActiveCell.Offset(-1, 1).Value = ""
+    Do Until ActiveCell.Offset(-1, 1).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
     
     Range(fstNewTableAdd).Select
-ActiveCell.Offset(1, -1).Value = "ZCSS"
-ActiveCell.Offset(2, -1).Value = "ZCSP"
-ActiveCell.Offset(3, -1).Value = "ZCSW"
-ActiveCell.Offset(4, -1).Value = "Join - LessThan1Year"
-ActiveCell.Offset(5, -1).Value = "Join - 1To3Years"
-ActiveCell.Offset(6, -1).Value = "Join - 3To5Years"
-ActiveCell.Offset(7, -1).Value = "Join -MoreThan5Years"
-ActiveCell.Offset(8, -1).Value = "Join -Warranty"
-ActiveCell.Offset(9, -1).Value = "Join -EOL"
-ActiveCell.Offset(10, -1).Value = "Drop - LessThan1Year"
-ActiveCell.Offset(11, -1).Value = "Drop - 1To3Years"
-ActiveCell.Offset(12, -1).Value = "Drop - 3To5Years"
-ActiveCell.Offset(13, -1).Value = "Drop -MoreThan5Years"
-ActiveCell.Offset(14, -1).Value = "Drop -Warranty"
-ActiveCell.Offset(15, -1).Value = "Drop -EOL"
-ActiveCell.Offset(16, -1).Value = "Drop - LessThan1Year"
-ActiveCell.Offset(17, -1).Value = "Drop - 1To3Years"
-ActiveCell.Offset(18, -1).Value = "Drop - 3To5Years"
-ActiveCell.Offset(19, -1).Value = "Drop -MoreThan5Years"
-ActiveCell.Offset(20, -1).Value = "Drop -Warranty"
-ActiveCell.Offset(21, -1).Value = "Drop -EOL"
+ActiveCell.Offset(1, -1).value = "ZCSS"
+ActiveCell.Offset(2, -1).value = "ZCSP"
+ActiveCell.Offset(3, -1).value = "ZCSW"
+ActiveCell.Offset(4, -1).value = "Join - LessThan1Year"
+ActiveCell.Offset(5, -1).value = "Join - 1To3Years"
+ActiveCell.Offset(6, -1).value = "Join - 3To5Years"
+ActiveCell.Offset(7, -1).value = "Join -MoreThan5Years"
+ActiveCell.Offset(8, -1).value = "Join -Warranty"
+ActiveCell.Offset(9, -1).value = "Join -EOL"
+ActiveCell.Offset(10, -1).value = "Drop - LessThan1Year"
+ActiveCell.Offset(11, -1).value = "Drop - 1To3Years"
+ActiveCell.Offset(12, -1).value = "Drop - 3To5Years"
+ActiveCell.Offset(13, -1).value = "Drop -MoreThan5Years"
+ActiveCell.Offset(14, -1).value = "Drop -Warranty"
+ActiveCell.Offset(15, -1).value = "Drop -EOL"
+ActiveCell.Offset(16, -1).value = "Drop - LessThan1Year"
+ActiveCell.Offset(17, -1).value = "Drop - 1To3Years"
+ActiveCell.Offset(18, -1).value = "Drop - 3To5Years"
+ActiveCell.Offset(19, -1).value = "Drop -MoreThan5Years"
+ActiveCell.Offset(20, -1).value = "Drop -Warranty"
+ActiveCell.Offset(21, -1).value = "Drop -EOL"
 
 ActiveCell.Offset(23, 0).Formula = "=" & ActiveCell.Address(True, False)
 ActiveCell.Offset(24, 0).Formula = "=SUM(" & ActiveCell.Offset(4, 0).Address(False, False) & ":" & ActiveCell.Offset(9, 0).Address(False, False) & ")"
@@ -1334,16 +1343,16 @@ ActiveCell.Offset(26, 0).Formula = "=SUM(" & ActiveCell.Offset(1, 0).Address(Fal
 ActiveCell.Offset(27, 0).Formula = "=" & ActiveCell.Offset(25, 0).Address(False, False) & "*-1"
 ActiveCell.Offset(28, 0).Formula = "=" & ActiveCell.Offset(26, 0).Address(False, False) & "*-1"
 
-ActiveCell.Offset(24, -1).Value = "Join Total"
-ActiveCell.Offset(25, -1).Value = "Drop Total"
-ActiveCell.Offset(26, -1).Value = "IB Total"
-ActiveCell.Offset(27, -1).Value = "Drop Total Label"
-ActiveCell.Offset(28, -1).Value = "IB Dummy"
+ActiveCell.Offset(24, -1).value = "Join Total"
+ActiveCell.Offset(25, -1).value = "Drop Total"
+ActiveCell.Offset(26, -1).value = "IB Total"
+ActiveCell.Offset(27, -1).value = "Drop Total Label"
+ActiveCell.Offset(28, -1).value = "IB Dummy"
 
 ActiveCell.Offset(23, 0).Select
 Range(ActiveCell.Address, ActiveCell.End(xlDown).Address).Copy
 
-    Do Until ActiveCell.Offset(-2, 1).Value = ""
+    Do Until ActiveCell.Offset(-2, 1).value = ""
     ActiveCell.Offset(0, 1).Select
     ActiveCell.PasteSpecial xlPasteFormulas
 Loop
@@ -1434,6 +1443,8 @@ ActiveChart.seriesCollection(7).Delete
 ActiveChart.seriesCollection(7).Delete
 ActiveChart.seriesCollection(7).Delete
 
+Color_ChartSeries_Scefics
+
 ActiveChart.ChartArea.Select
     ActiveChart.seriesCollection.NewSeries
     ActiveChart.FullSeriesCollection(13).name = _
@@ -1449,8 +1460,8 @@ ActiveChart.ChartArea.Select
     ActiveChart.FullSeriesCollection(13).Select
     ActiveChart.FullSeriesCollection(13).ApplyDataLabels
     ActiveChart.FullSeriesCollection(1).Select
-    Cells(2, 2).Value = ActiveChart.Axes(xlValue).MaximumScale
-    Cells(3, 2).Value = ActiveChart.Axes(xlValue).MinimumScale
+    Cells(2, 2).value = ActiveChart.Axes(xlValue).MaximumScale
+    Cells(3, 2).value = ActiveChart.Axes(xlValue).MinimumScale
     
 ActiveSheet.ChartObjects(3).name = "JoinsAndDropsAll"
 Creating_Trend_Drops_Joins 'calling function for trends
@@ -1489,7 +1500,7 @@ Dim modalityVal As String
 On Error Resume Next
 
 'Selection for Modality
-If Sheet1.combModality.Value = "Modality" Or Sheet1.combModality.Value = "" Then
+If Sheet1.combModality.value = "Modality" Or Sheet1.combModality.value = "" Then
      MsgBox "Please Select a Modality Group!"
      End
 End If
@@ -1542,16 +1553,16 @@ ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R 
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole, after:=ActiveCell).Select
 
 'Putting names in blank cells
-Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
-    If ActiveCell.Value = "" Then
-        ActiveCell.Value = ActiveCell.Offset(0, -1).Value & " " & "A"
+Do Until ActiveCell.Offset(1, 0).value = "" And ActiveCell.Offset(0, 1).value = ""
+    If ActiveCell.value = "" Then
+        ActiveCell.value = ActiveCell.Offset(0, -1).value & " " & "A"
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 1).Select
     End If
     
-    If ActiveCell.Value = "EUR" Then
-        ActiveCell.Value = ActiveCell.Offset(-1, 0).Value
+    If ActiveCell.value = "EUR" Then
+        ActiveCell.value = ActiveCell.Offset(-1, 0).value
     End If
 Loop
 
@@ -1614,7 +1625,7 @@ Set marketRNG = Range(Selection.Address)
 ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="[C,S] Company Code", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "Market"
+ActiveCell.Offset(0, -1).value = "Market"
 
 Dim lstPasteRNG As String
 Dim fstPasteRNG As String
@@ -1647,7 +1658,7 @@ ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Se
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
 ActiveCell.Offset(0, -1).Select
-ActiveCell.Value = "Fiscal Year/Period"
+ActiveCell.value = "Fiscal Year/Period"
 
 ActiveCell.Offset(1, 1).Select
 fstPasteRNG = ActiveCell.Offset(0, -1).Address
@@ -1668,7 +1679,7 @@ Selection.PasteSpecial (xlValues)
 
 'Adding 6NC Names column
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
-modalityVal = Sheet1.combModality.Value
+modalityVal = Sheet1.combModality.value
 
 Application.Workbooks(marketInputFile).Activate
 ActiveWorkbook.Sheets("Sheet1").Activate
@@ -1694,7 +1705,7 @@ Set marketRNG = Range(Selection.Address)
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="[C,S] System Code Material (Material no of  R Eq)", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "System Code (6NC)"
+ActiveCell.Offset(0, -1).value = "System Code (6NC)"
 
 rngStringMarket = marketRNG.Address
 ActiveCell.Offset(1, 0).Select
@@ -1723,7 +1734,7 @@ Set wsData = Worksheets("Data")
 
 'determine source data range (dynamic):
 'last row in column no. 1:
-lastRow = wsData.Cells(Rows.Count, 1).End(xlUp).Row
+lastRow = wsData.Cells(rows.Count, 1).End(xlUp).Row
 'last column in row no. 1:
 lastColumn = wsData.Cells(1, Columns.Count).End(xlToLeft).Column
 
@@ -1814,8 +1825,8 @@ pvtTbl.ManualUpdate = False
     ActiveCell.EntireColumn.Insert xlToRight
     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.Offset(1, 0).Select
-    Do Until ActiveCell.Value = ""
-        ActiveCell.Offset(0, -1).Value = numCounter
+    Do Until ActiveCell.value = ""
+        ActiveCell.Offset(0, -1).value = numCounter
         ActiveCell.Offset(1, 0).Select
         numCounter = numCounter + 1
     Loop
@@ -1832,7 +1843,7 @@ pvtTbl.ManualUpdate = False
     ActiveCell.Formula = "=" & constAddMarketCelAdd
     ActiveCell.Copy
     Dim marketColCount As Integer
-    Do Until ActiveCell.Offset(-2, 1).Value = ""
+    Do Until ActiveCell.Offset(-2, 1).value = ""
     ActiveCell.Offset(0, 1).Select
     ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -1853,7 +1864,7 @@ pvtTbl.ManualUpdate = False
     ActiveSheet.Range(marketCelAdd).Select
     ActiveCell.End(xlToRight).Select
     'ActiveCell.End(xlDown).Select
-    ActiveSheet.Cells(Rows.Count, ActiveCell.Column).End(xlUp).Select
+    ActiveSheet.Cells(rows.Count, ActiveCell.Column).End(xlUp).Select
     lstForPercentCal = ActiveCell.Address
     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.Offset(2, 1).Select
@@ -2120,9 +2131,9 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     Range(fstContractAdd, lstContractAdd).PasteSpecial (xlPasteAll)
     Dim GT As Integer
     GT = 2
-    Do Until ActiveCell.Offset(0, 1).Value = ""
+    Do Until ActiveCell.Offset(0, 1).value = ""
      ActiveCell.Offset(0, 1).Select
-     ActiveCell.Offset(-1, 0).Value = GT
+     ActiveCell.Offset(-1, 0).value = GT
      GT = GT + 1
     Loop
     ActiveCell.End(xlToLeft).Select
@@ -2131,7 +2142,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     Dim refNumberForSum As String
     refNumberForSum = ActiveCell.Offset(-1, 1).Address(False, False)
     ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(2, 0).Value = "Grand Total"
+    ActiveCell.Offset(2, 0).value = "Grand Total"
     Dim fstGrandTotal As String
     Dim lstGrandTotal As String
     
@@ -2154,7 +2165,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     
     ActiveCell.Formula = "=IFERROR(VLOOKUP(" & fstGrandTotal & "," & fstSumOfTableAdd & ":" & lstSumOfTableAdd & "," & refNumberForSum & ",FALSE),)" ' For grand total for sum of revenue
     ActiveCell.Copy
-    Do Until ActiveCell.Offset(-2, 1).Value = ""
+    Do Until ActiveCell.Offset(-2, 1).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -2166,7 +2177,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     
     'Calculating Others
     ActiveCell.Offset(-1, 0).Select
-    ActiveCell.Value = "Others"
+    ActiveCell.value = "Others"
     
     Dim OthersAdd As String
     OthersAdd = ActiveCell.Offset(1, 1).Address(False, False)
@@ -2179,7 +2190,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     ActiveCell.Formula = "=IFERROR(" & OthersAdd & "-SUM(" & fstOthersAdd & ":" & lstOthersAdd & "),)" 'others for Sum of revenue
     ActiveCell.NumberFormat = "0"
     ActiveCell.Copy
-    Do Until ActiveCell.Offset(-1, 1).Value = ""
+    Do Until ActiveCell.Offset(-1, 1).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteAll
     Loop
@@ -2211,12 +2222,12 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     rngAddForPercentContracts = Selection.Address
     ActiveCell.Formula = "=" & fstAddForPercentContracts
     ActiveCell.Copy
-    Do Until ActiveCell.Offset(1, 0).Value = ""
+    Do Until ActiveCell.Offset(1, 0).value = ""
         ActiveCell.Offset(1, 0).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
     ActiveCell.End(xlUp).Select
-    Do Until ActiveCell.Offset(0, 1).Value = ""
+    Do Until ActiveCell.Offset(0, 1).value = ""
      ActiveCell.Offset(0, 1).Select
      ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -2284,9 +2295,9 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     Dim countOthersAdd As String
     countOthersAdd = ActiveCell.Offset(1, 0).Address(False, True)
     GT = 2
-    Do Until ActiveCell.Offset(0, 1).Value = ""
+    Do Until ActiveCell.Offset(0, 1).value = ""
         ActiveCell.Offset(0, 1).Select
-        ActiveCell.Offset(-1, 0).Value = GT
+        ActiveCell.Offset(-1, 0).value = GT
         GT = GT + 1
     Loop
     ActiveCell.End(xlToLeft).Select
@@ -2312,7 +2323,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     Dim refNumberForCount As String
     refNumberForCount = ActiveCell.Offset(-1, 1).Address(False, False)
     ActiveCell.End(xlDown).Select
-    ActiveCell.Offset(2, 0).Value = "Grand Total"
+    ActiveCell.Offset(2, 0).value = "Grand Total"
     Dim fstGrandTotalCount As String
     Dim lstGrandTotalCount As String
     
@@ -2335,7 +2346,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     
     ActiveCell.Formula = "=IFERROR(VLOOKUP(" & fstGrandTotalCount & "," & fstSumOfTableAddCount & ":" & lstSumOfTableAddCount & "," & refNumberForCount & ",FALSE),)" ' For grand total for Count of revenue
     ActiveCell.Copy
-    Do Until ActiveCell.Offset(-2, 1).Value = ""
+    Do Until ActiveCell.Offset(-2, 1).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -2344,7 +2355,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     
     'Calculating Others
     ActiveCell.Offset(-1, 0).Select
-    ActiveCell.Value = "Others"
+    ActiveCell.value = "Others"
     
     Dim OthersAddCount As String
     OthersAddCount = ActiveCell.Offset(1, 1).Address(False, False)
@@ -2357,7 +2368,7 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     ActiveCell.Formula = "=IFERROR(" & OthersAddCount & "-SUM(" & fstOthersAddcount & ":" & lstOthersAddcount & "),)" 'others for Count of revenue
     ActiveCell.NumberFormat = "0"
     ActiveCell.Copy
-    Do Until ActiveCell.Offset(-1, 1).Value = ""
+    Do Until ActiveCell.Offset(-1, 1).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteAll
     Loop
@@ -2391,14 +2402,14 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     rngAddForPercentContracts = Selection.Address
     ActiveCell.Formula = "=" & fstAddForPercentContracts
     ActiveCell.Copy
-    Do Until ActiveCell.Offset(1, 0).Value = ""
+    Do Until ActiveCell.Offset(1, 0).value = ""
         ActiveCell.Offset(1, 0).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
     ActiveCell.End(xlUp).Select
     Dim fstRowAdd As String
     fstRowAdd = ActiveCell.Address
-    Do Until ActiveCell.Offset(0, 1).Value = ""
+    Do Until ActiveCell.Offset(0, 1).value = ""
      ActiveCell.Offset(0, 1).Select
      ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -2589,10 +2600,10 @@ With ActiveSheet.PivotTables("contractsPivotTable").PivotFields( _
     Dim slicerSelected As Integer
     For slicerSelected = 1 To 11
         If slicerSelected < 5 Then
-            ActiveWorkbook.SlicerCaches("Slicer_Row_Labels").SlicerItems(ActiveCell.Value).selected = True
+            ActiveWorkbook.SlicerCaches("Slicer_Row_Labels").SlicerItems(ActiveCell.value).selected = True
             ActiveCell.Offset(1, 0).Select
         Else
-            ActiveWorkbook.SlicerCaches("Slicer_Row_Labels").SlicerItems(ActiveCell.Value).selected = False
+            ActiveWorkbook.SlicerCaches("Slicer_Row_Labels").SlicerItems(ActiveCell.value).selected = False
             ActiveCell.Offset(1, 0).Select
         End If
     Next
@@ -2714,9 +2725,9 @@ Next
     ActiveCell.Offset(3, 0).Select
     fstAddForTable = ActiveCell.Address
     
-    ActiveCell.Value = "Cumm. Revenue"
-    ActiveCell.Offset(1, 0).Value = "Cumm. Cost"
-    ActiveCell.Offset(2, 0).Value = "iGM%"
+    ActiveCell.value = "Cumm. Revenue"
+    ActiveCell.Offset(1, 0).value = "Cumm. Cost"
+    ActiveCell.Offset(2, 0).value = "iGM%"
     
     ActiveCell.Offset(0, 1).Formula = "=" & ActiveCell.Offset(-2, 1).Address(False, False)
     ActiveCell.Offset(1, 1).Formula = "=" & ActiveCell.Offset(-1, 1).Address(False, False)
@@ -2730,7 +2741,7 @@ Next
     ActiveCell.Offset(1, 0).Formula = "=" & ActiveCell.Offset(1, -1).Address(False, False) & "+" & ActiveCell.Offset(-1, 0).Address(False, False)
     
     Range(ActiveCell.Address, ActiveCell.Offset(2, 0).Address).Copy
-    Do Until ActiveCell.Offset(-1, 1).Value = ""
+    Do Until ActiveCell.Offset(-1, 1).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteAll
     Loop
@@ -2760,10 +2771,10 @@ ActiveSheet.Cells(1, 1).Select
     fstAddForTable = ActiveCell.Address
     
     Dim yearVal As String
-    yearVal = Mid(ActiveCell.Offset(-3, 1).Value, 1, 4)
-    ActiveCell.Value = "Cumm. Revenue - " & Mid(ActiveCell.Offset(-3, 1).Value, 1, 4)
-    ActiveCell.Offset(1, 0).Value = "Cumm. Cost - " & Mid(ActiveCell.Offset(-3, 1).Value, 1, 4)
-    ActiveCell.Offset(2, 0).Value = "iGM% - " & Mid(ActiveCell.Offset(-3, 1).Value, 1, 4)
+    yearVal = Mid(ActiveCell.Offset(-3, 1).value, 1, 4)
+    ActiveCell.value = "Cumm. Revenue - " & Mid(ActiveCell.Offset(-3, 1).value, 1, 4)
+    ActiveCell.Offset(1, 0).value = "Cumm. Cost - " & Mid(ActiveCell.Offset(-3, 1).value, 1, 4)
+    ActiveCell.Offset(2, 0).value = "iGM% - " & Mid(ActiveCell.Offset(-3, 1).value, 1, 4)
     
     ActiveCell.Offset(0, 1).Formula = "=" & ActiveCell.Offset(-2, 1).Address(False, False)
     ActiveCell.Offset(1, 1).Formula = "=" & ActiveCell.Offset(-1, 1).Address(False, False)
@@ -2777,7 +2788,7 @@ ActiveSheet.Cells(1, 1).Select
     ActiveCell.Offset(1, 0).Formula = "=" & ActiveCell.Offset(1, -1).Address(False, False) & "+" & ActiveCell.Offset(-1, 0).Address(False, False)
     
     Range(ActiveCell.Address, ActiveCell.Offset(2, 0).Address).Copy
-    Do Until ActiveCell.Offset(-1, 1).Value = ""
+    Do Until ActiveCell.Offset(-1, 1).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteAll
     Loop
@@ -2785,7 +2796,7 @@ ActiveSheet.Cells(1, 1).Select
     ActiveCell.End(xlUp).Select
     ActiveCell.End(xlToLeft).Select
     ActiveCell.Offset(0, 2).Select
-    Do Until Mid(ActiveCell.Value, 1, 4) <> Mid(ActiveCell.Offset(0, -1), 1, 4)
+    Do Until Mid(ActiveCell.value, 1, 4) <> Mid(ActiveCell.Offset(0, -1), 1, 4)
     ActiveCell.Offset(0, 1).Select
     Loop
         
@@ -2800,12 +2811,12 @@ ActiveSheet.Cells(1, 1).Select
     ActiveCell.Offset(8, 1).Select
     ActiveSheet.Paste
     
-    ActiveCell.Offset(0, -1).Value = "Values"
-    ActiveCell.Offset(1, -1).Value = "Sum of     Total Contract Revenue -" & Mid(ActiveCell.Offset(0, 1).Value, 1, 4)
-    ActiveCell.Offset(2, -1).Value = "Sum of    swo cost - " & Mid(ActiveCell.Offset(0, 1).Value, 1, 4)
-    ActiveCell.Offset(3, -1).Value = "Cumm. Revenue - " & Mid(ActiveCell.Offset(0, 1).Value, 1, 4)
-    ActiveCell.Offset(4, -1).Value = "Cumm. Cost - " & Mid(ActiveCell.Offset(0, 1).Value, 1, 4)
-    ActiveCell.Offset(5, -1).Value = "iGM% - " & Mid(ActiveCell.Offset(0, 1).Value, 1, 4)
+    ActiveCell.Offset(0, -1).value = "Values"
+    ActiveCell.Offset(1, -1).value = "Sum of     Total Contract Revenue -" & Mid(ActiveCell.Offset(0, 1).value, 1, 4)
+    ActiveCell.Offset(2, -1).value = "Sum of    swo cost - " & Mid(ActiveCell.Offset(0, 1).value, 1, 4)
+    ActiveCell.Offset(3, -1).value = "Cumm. Revenue - " & Mid(ActiveCell.Offset(0, 1).value, 1, 4)
+    ActiveCell.Offset(4, -1).value = "Cumm. Cost - " & Mid(ActiveCell.Offset(0, 1).value, 1, 4)
+    ActiveCell.Offset(5, -1).value = "iGM% - " & Mid(ActiveCell.Offset(0, 1).value, 1, 4)
     
     Dim nxtYearFormulaAdd As String
     Dim nxtYearFormulaAddCost As String
@@ -2824,16 +2835,16 @@ ActiveSheet.Cells(1, 1).Select
     Dim formulaString As String
     ActiveCell.Formula = "=MID(" & addCompare & ",1,4)" & "&" & Chr(34) & "-" & Chr(34) & "&" & "MID(" & addCompare & ",6,2)+1"
     ActiveCell.Copy
-    Do Until Mid(ActiveCell.Offset(0, -1).Value, 6, 2) >= 11
+    Do Until Mid(ActiveCell.Offset(0, -1).value, 6, 2) >= 11
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
     
     ActiveCell.End(xlToLeft).Select
     'converting value to date for forecast
-    Do Until ActiveCell.Offset(0, 1).Value = ""
+    Do Until ActiveCell.Offset(0, 1).value = ""
         ActiveCell.Offset(0, 1).Select
-        ActiveCell.Offset(-1, 0).Value = CDate(ActiveCell.Value & "-" & 1)
+        ActiveCell.Offset(-1, 0).value = CDate(ActiveCell.value & "-" & 1)
     Loop
     
     Dim forecastFstAdd As String
@@ -2856,7 +2867,7 @@ ActiveSheet.Cells(1, 1).Select
     ActiveCell.End(xlToRight).Select
     ActiveCell.Offset(1, 0).Select
     
-    If ActiveCell.Value = "" Then
+    If ActiveCell.value = "" Then
     ActiveCell.Formula = "=FORECAST(" & forecastAdd & "," & forecastFstAdd & ":" & forecastLstAdd & "," & currentFstAdd & ":" & currentLstAdd & ")"
                         '=FORECAST(H$46,$C48:G48,$C$46:G$46)
     ActiveCell.Copy
@@ -3140,7 +3151,7 @@ Dim modalityVal As String
 On Error Resume Next
 
 'Selection for Modality
-If Sheet1.combModality.Value = "Modality" Or Sheet1.combModality.Value = "" Then
+If Sheet1.combModality.value = "Modality" Or Sheet1.combModality.value = "" Then
      MsgBox "Please Select a Modality Group!"
      End
 End If
@@ -3202,16 +3213,16 @@ ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole).Select
 ActiveSheet.UsedRange.Find(what:="Profit Center", lookat:=xlWhole, after:=ActiveCell).Select
 
 'Putting names in blank cells
-Do Until ActiveCell.Offset(1, 0).Value = "" And ActiveCell.Offset(0, 1).Value = ""
-    If ActiveCell.Value = "" Then
-        ActiveCell.Value = ActiveCell.Offset(0, -1).Value & " " & "A"
+Do Until ActiveCell.Offset(1, 0).value = "" And ActiveCell.Offset(0, 1).value = ""
+    If ActiveCell.value = "" Then
+        ActiveCell.value = ActiveCell.Offset(0, -1).value & " " & "A"
         ActiveCell.Offset(0, 1).Select
     Else
         ActiveCell.Offset(0, 1).Select
     End If
     
-    If ActiveCell.Offset(-1, 0).Value = ActiveCell.Value Then
-        ActiveCell.Value = Replace(ActiveCell.Offset(-1, 0).Value, " ", "_")
+    If ActiveCell.Offset(-1, 0).value = ActiveCell.value Then
+        ActiveCell.value = Replace(ActiveCell.Offset(-1, 0).value, " ", "_")
     End If
 Loop
 
@@ -3274,7 +3285,7 @@ Set marketRNG = Range(Selection.Address)
 ActiveSheet.UsedRange.Find(what:="Company code", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="Company code", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "Market"
+ActiveCell.Offset(0, -1).value = "Market"
 
 Dim lstPasteRNG As String
 Dim fstPasteRNG As String
@@ -3307,7 +3318,7 @@ ActiveSheet.UsedRange.Find(what:="Calendar Year/Month", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="Calendar Year/Month", lookat:=xlWhole).Select
 ActiveCell.Offset(0, -1).Select
-ActiveCell.Value = "Calender Year/Period"
+ActiveCell.value = "Calender Year/Period"
 
 ActiveCell.Offset(1, 1).Select
 fstPasteRNG = ActiveCell.Offset(0, -1).Address
@@ -3329,7 +3340,7 @@ Selection.PasteSpecial (xlValues)
 
 'Adding 6NC Groups
 marketInputFile = "Market_Groups_Markets_Country.xlsx"
-modalityVal = Sheet1.combModality.Value
+modalityVal = Sheet1.combModality.value
 
 Application.Workbooks(marketInputFile).Activate
 ActiveWorkbook.Sheets("Sheet1").Activate
@@ -3355,7 +3366,7 @@ Set marketRNG = Range(Selection.Address)
 ActiveSheet.UsedRange.Find(what:="Material", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="Material", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "Groups (6NC)"
+ActiveCell.Offset(0, -1).value = "Groups (6NC)"
 
 rngStringMarket = marketRNG.Address
 ActiveCell.Offset(1, 0).Select
@@ -3404,7 +3415,7 @@ marketRNG.Sort Columns, Orientation:=xlLeftToRight
 ActiveSheet.UsedRange.Find(what:="Company code", lookat:=xlWhole).Select
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="Company code", lookat:=xlWhole).Select
-ActiveCell.Offset(0, -1).Value = "Country"
+ActiveCell.Offset(0, -1).value = "Country"
 
 rngStringMarket = marketRNG.Address
 ActiveCell.Offset(1, 0).Select
@@ -3434,7 +3445,7 @@ Set wsData = Worksheets("Data")
 
 'determine source data range (dynamic):
 'last row in column no. 1:
-lastRow = wsData.Cells(Rows.Count, 1).End(xlUp).Row
+lastRow = wsData.Cells(rows.Count, 1).End(xlUp).Row
 'last column in row no. 1:
 lastColumn = wsData.Cells(1, Columns.Count).End(xlToLeft).Column
 
@@ -3711,11 +3722,11 @@ pvtTbl.ManualUpdate = False
     
     Range(fstFormulaAdd, lstFormulaAdd).Select
     Selection.PasteSpecial xlPasteFormulas
-    ActiveCell.Offset(1, 0).Value = "CP%" & "-" & Mid(ActiveCell.Offset(0, 1).Value, 1, 4)
-    ActiveCell.Value = ""
+    ActiveCell.Offset(1, 0).value = "CP%" & "-" & Mid(ActiveCell.Offset(0, 1).value, 1, 4)
+    ActiveCell.value = ""
     
     ActiveCell.Offset(0, 1).Select
-    Do Until Mid(ActiveCell.Offset(0, 1).Value, 1, 4) <> Mid(ActiveCell.Value, 1, 4)
+    Do Until Mid(ActiveCell.Offset(0, 1).value, 1, 4) <> Mid(ActiveCell.value, 1, 4)
         ActiveCell.Offset(0, 1).Select
     Loop
     
@@ -3733,7 +3744,7 @@ pvtTbl.ManualUpdate = False
     ActiveCell.Offset(4, 1).Select
     
     ActiveSheet.Paste
-    ActiveCell.Offset(1, -1).Value = "CP%" & "-" & Mid(ActiveCell.Value, 1, 4)
+    ActiveCell.Offset(1, -1).value = "CP%" & "-" & Mid(ActiveCell.value, 1, 4)
     ActiveCell.Offset(0, 1).Select
     ActiveCell.End(xlToRight).Select
     
@@ -3742,15 +3753,15 @@ pvtTbl.ManualUpdate = False
     ActiveCell.Offset(0, 1).Select
     ActiveCell.Formula = "=MID(" & addCompare & ",1,4)" & "&" & Chr(34) & "-" & Chr(34) & "&" & "MID(" & addCompare & ",6,2)+1"
     ActiveCell.Copy
-    Do Until Mid(ActiveCell.Offset(0, -1).Value, 6, 2) >= 11
+    Do Until Mid(ActiveCell.Offset(0, -1).value, 6, 2) >= 11
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
     ActiveCell.End(xlToLeft).Select
     'converting value to date for forecast
-    Do Until ActiveCell.Value = ""
+    Do Until ActiveCell.value = ""
         
-        ActiveCell.Offset(-1, 0).Value = CDate(ActiveCell.Value & "-" & 1)
+        ActiveCell.Offset(-1, 0).value = CDate(ActiveCell.value & "-" & 1)
         ActiveCell.Offset(0, 1).Select
     Loop
     
@@ -3814,11 +3825,11 @@ pvtTbl.ManualUpdate = False
     
     Range(fstFormulaAdd, lstFormulaAdd).Select
     Selection.PasteSpecial xlPasteFormulas
-    ActiveCell.Offset(1, 0).Value = "Global CP%" & Mid(ActiveCell.Offset(0, 1).Value, 1, 4)
-    ActiveCell.Value = ""
+    ActiveCell.Offset(1, 0).value = "Global CP%" & Mid(ActiveCell.Offset(0, 1).value, 1, 4)
+    ActiveCell.value = ""
     
     ActiveCell.Offset(0, 1).Select
-    Do Until Mid(ActiveCell.Offset(0, 1).Value, 1, 4) <> Mid(ActiveCell.Value, 1, 4)
+    Do Until Mid(ActiveCell.Offset(0, 1).value, 1, 4) <> Mid(ActiveCell.value, 1, 4)
         ActiveCell.Offset(0, 1).Select
     Loop
     
@@ -3834,7 +3845,7 @@ pvtTbl.ManualUpdate = False
     ActiveCell.Offset(4, 1).Select
     
     ActiveSheet.Paste
-    ActiveCell.Offset(1, -1).Value = "Global CP%" & "-" & Mid(ActiveCell.Value, 1, 4)
+    ActiveCell.Offset(1, -1).value = "Global CP%" & "-" & Mid(ActiveCell.value, 1, 4)
     ActiveCell.Offset(0, 1).Select
     ActiveCell.End(xlToRight).Select
     
@@ -3842,15 +3853,15 @@ pvtTbl.ManualUpdate = False
     ActiveCell.Offset(0, 1).Select
     ActiveCell.Formula = "=MID(" & addCompare & ",1,4)" & "&" & Chr(34) & "-" & Chr(34) & "&" & "MID(" & addCompare & ",6,2)+1"
     ActiveCell.Copy
-    Do Until Mid(ActiveCell.Offset(0, -1).Value, 6, 2) >= 11
+    Do Until Mid(ActiveCell.Offset(0, -1).value, 6, 2) >= 11
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
     ActiveCell.End(xlToLeft).Select
     'converting value to date for forecast
-    Do Until ActiveCell.Value = ""
+    Do Until ActiveCell.value = ""
         
-        ActiveCell.Offset(-1, 0).Value = CDate(ActiveCell.Value & "-" & 1)
+        ActiveCell.Offset(-1, 0).value = CDate(ActiveCell.value & "-" & 1)
         ActiveCell.Offset(0, 1).Select
     Loop
     
@@ -4006,9 +4017,9 @@ pvtTbl.ManualUpdate = False
 
     ActiveWorkbook.Save
     Sheet1.lstBx6NC.MultiSelect = fmMultiSelectSingle
-    Sheet1.lstBx6NC.Value = ""
+    Sheet1.lstBx6NC.value = ""
     Sheet1.lstBx6NC.MultiSelect = fmMultiSelectMulti
-    Sheet1.comb6NC2.Value = ""
+    Sheet1.comb6NC2.value = ""
 End Sub
 
 Public Sub Creating_Trends_Market_Dynamics(nxtYearFormulaAdd As String)
@@ -4016,16 +4027,16 @@ Public Sub Creating_Trends_Market_Dynamics(nxtYearFormulaAdd As String)
     ActiveSheet.Cells(1, 1).Select
     ActiveSheet.UsedRange.Find(what:="Sum of     Total Contract Revenue", lookat:=xlWhole).Select
     ActiveCell.End(xlToRight).Select
-    ActiveSheet.Cells(4, 11).Value = ActiveCell.Value
+    ActiveSheet.Cells(4, 11).value = ActiveCell.value
     Range(nxtYearFormulaAdd).Select
-    ActiveSheet.Cells(5, 11).Value = Application.WorksheetFunction.Sum(Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address))
+    ActiveSheet.Cells(5, 11).value = Application.WorksheetFunction.Sum(Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address))
     ActiveSheet.Cells(4, 11).Select
     
-    ActiveCell.Offset(-1, 0).Value = "Global"
-    ActiveCell.Offset(-1, -1).Value = "Current"
-    ActiveCell.Offset(-1, 1).Value = "% Contribution"
-    ActiveCell.Offset(0, -2).Value = "ITM"
-    ActiveCell.Offset(1, -2).Value = "YTD"
+    ActiveCell.Offset(-1, 0).value = "Global"
+    ActiveCell.Offset(-1, -1).value = "Current"
+    ActiveCell.Offset(-1, 1).value = "% Contribution"
+    ActiveCell.Offset(0, -2).value = "ITM"
+    ActiveCell.Offset(1, -2).value = "YTD"
     
     Range(nxtYearFormulaAdd).Select
     ActiveCell.End(xlToRight).Select
@@ -4051,10 +4062,10 @@ Public Sub Creating_Trends_Market_Dynamics(nxtYearFormulaAdd As String)
     ActiveSheet.Cells(4, 5).Select
     ActiveCell.Formula = "=IFERROR((" & fstVerayance & "-" & lstVerayance & ")/" & lstVerayance & ",)"
     ActiveCell.NumberFormat = "0%"
-    ActiveCell.Offset(-1, 0).Value = "VLY"
+    ActiveCell.Offset(-1, 0).value = "VLY"
     ActiveCell.Offset(0, 2).Formula = "=" & currentYr
-    ActiveCell.Offset(-1, 2).Value = "Current Month"
-    ActiveCell.Offset(-1, 1).Value = "Trend"
+    ActiveCell.Offset(-1, 2).value = "Current Month"
+    ActiveCell.Offset(-1, 1).value = "Trend"
     
     'for trend arrow
     Range(nxtYearFormulaAdd).Select
@@ -4147,8 +4158,8 @@ Range("K2").Select
     Range("K2").Select
     ActiveCell.FormulaR1C1 = "Join"
     
-    ActiveSheet.Cells(4, 15).Value = lastmonthVal
-    ActiveSheet.Cells(3, 15).Value = "Current Month"
+    ActiveSheet.Cells(4, 15).value = lastmonthVal
+    ActiveSheet.Cells(3, 15).value = "Current Month"
 
     Application.CutCopyMode = False
     
@@ -4166,7 +4177,7 @@ Range("K2").Select
     ActiveSheet.Cells(5, 17).Formula = "=IFERROR(SUM(" & ActiveCell.Offset(0, 1).Address & ":" & ActiveCell.End(xlToRight).Address & "),)"
     
     ActiveSheet.UsedRange.Find(what:="Join Total", lookat:=xlWhole).Select
-    Do Until ActiveCell.Offset(-1, 0).Value = YTDMonth
+    Do Until ActiveCell.Offset(-1, 0).value = YTDMonth
         ActiveCell.Offset(0, 1).Select
     Loop
     
@@ -4176,7 +4187,7 @@ Range("K2").Select
     fstAddForTrend = ActiveCell.Address
     currmonthDrop = ActiveCell.Offset(3, 0).Address
     
-    Do Until ActiveCell.Offset(-1, 0).Value = currMonth
+    Do Until ActiveCell.Offset(-1, 0).value = currMonth
         ActiveCell.Offset(0, 1).Select
     Loop
     
@@ -4334,7 +4345,7 @@ ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Se
 ActiveCell.EntireColumn.Insert xlToRight
 ActiveSheet.UsedRange.Find(what:="{C,S] Fiscal Year/Period", lookat:=xlWhole).Select
 ActiveCell.Offset(0, -1).Select
-ActiveCell.Value = "Fiscal Year/Period"
+ActiveCell.value = "Fiscal Year/Period"
 
 ActiveCell.Offset(1, 1).Select
 fstPasteRNG = ActiveCell.Offset(0, -1).Address
@@ -4365,8 +4376,8 @@ Application.CutCopyMode = False
         .SortMethod = xlPinYin
         .Apply
     End With
-lastmonthVal = ActiveCell.Value
-stDate = ActiveCell.End(xlDown).Value
+lastmonthVal = ActiveCell.value
+stDate = ActiveCell.End(xlDown).value
 End Sub
 
 Public Sub Caculating_IMQANDMAT()
@@ -4390,7 +4401,7 @@ Public Sub Caculating_IMQANDMAT()
     ActiveCell.Offset(1, 0).Formula = "=" & fstAddForQuarter
     ActiveCell.Offset(1, 0).Select
     ActiveCell.Copy
-    Do Until ActiveCell.Offset(1, 0).Value = ""
+    Do Until ActiveCell.Offset(1, 0).value = ""
     ActiveCell.Offset(1, 0).Select
     ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -4409,7 +4420,7 @@ Public Sub Caculating_IMQANDMAT()
     Range(fstRNGToPaste, lstRNGToPaste).PasteSpecial xlPasteFormulas
     ActiveCell.End(xlDown).Select
     ActiveCell.Offset(-2, -1).Select
-    Do Until ActiveCell.Value = ""
+    Do Until ActiveCell.value = ""
     Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).Delete
     Loop
     Range(fstRNGToPaste).Select
@@ -4472,7 +4483,7 @@ Public Sub Caculating_IMQANDMAT()
     
     Range(fstIMQAdd).Select
     ActiveCell.Offset(2, 0).Select
-    Do Until Left(ActiveCell.Value, 4) <> Left(ActiveCell.Offset(-1, 0).Value, 4)
+    Do Until Left(ActiveCell.value, 4) <> Left(ActiveCell.Offset(-1, 0).value, 4)
         ActiveCell.Offset(1, 0).Select
     Loop
         
@@ -4488,7 +4499,7 @@ Public Sub Caculating_IMQANDMAT()
     
     Dim i As Integer
     i = 0
-    Do Until ActiveCell.Offset(0, 1).Value = ""
+    Do Until ActiveCell.Offset(0, 1).value = ""
         i = i + 1
         ActiveCell.Offset(0, 1).Select
     Loop
@@ -4512,7 +4523,7 @@ Public Sub Caculating_IMQANDMAT()
     ActiveCell.Offset(0, 1).Formula = "=IFERROR(SUM(" & fstMATAdd & ":" & lstMATAdd & ")/12,)"
     Range(ActiveCell.Address, ActiveCell.Offset(0, 1).Address).Copy
     
-    Do Until ActiveCell.Offset(2, -3).Value = ""
+    Do Until ActiveCell.Offset(2, -3).value = ""
         ActiveCell.Offset(1, 0).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -4521,7 +4532,7 @@ Public Sub Caculating_IMQANDMAT()
     ActiveCell.Offset(1, 1).Select
     Range(ActiveCell.Address, ActiveCell.End(xlDown)).Copy
     
-    Do Until ActiveCell.Offset(-1, 1).Value = ""
+    Do Until ActiveCell.Offset(-1, 1).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -4597,7 +4608,7 @@ MonthAdd = ActiveCell.Address(False, False)
 
 Dim i As Integer
 i = 0
-Do Until ActiveCell.Offset(0, 1).Value = ""
+Do Until ActiveCell.Offset(0, 1).value = ""
     i = i + 1
     ActiveCell.Offset(0, 1).Select
 Loop
@@ -4633,7 +4644,7 @@ Next
 ActiveCell.End(xlToLeft).Select
 ActiveCell.Offset(0, 1).Select
 Range(ActiveCell.Address, ActiveCell.End(xlToRight).Address).Copy
-Do Until ActiveCell.Offset(1, -1).Value = ""
+Do Until ActiveCell.Offset(1, -1).value = ""
     ActiveCell.Offset(1, 0).Select
     ActiveCell.PasteSpecial xlPasteFormulas
 Loop
@@ -4694,7 +4705,7 @@ fstChartAdd = ActiveCell.Address
     Dim lstValAdd As String
     
     ActiveCell.Offset(0, 1).Select
-    Do Until Left(ActiveCell.Value, 4) <> Left(ActiveCell.Offset(0, 1).Value, 4)
+    Do Until Left(ActiveCell.value, 4) <> Left(ActiveCell.Offset(0, 1).value, 4)
         ActiveCell.Offset(0, 1).Select
     Loop
     ActiveCell.Offset(0, 1).Select
@@ -4704,7 +4715,7 @@ fstChartAdd = ActiveCell.Address
     
     Dim k As Integer
     k = 0
-    Do Until ActiveCell.Offset(0, 1).Value = ""
+    Do Until ActiveCell.Offset(0, 1).value = ""
         k = k + 1
         ActiveCell.Offset(0, 1).Select
     Loop
@@ -4734,7 +4745,7 @@ fstChartAdd = ActiveCell.Address
     ActiveCell.Offset(1, 1).Select
     ActiveCell.Formula = "=IFERROR(SUM(" & fstValAdd & ":" & lstValAdd & ")/12,)"
     ActiveCell.Copy
-    Do Until ActiveCell.Offset(1, -1).Value = ""
+    Do Until ActiveCell.Offset(1, -1).value = ""
         ActiveCell.Offset(1, 0).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -4743,7 +4754,7 @@ fstChartAdd = ActiveCell.Address
     ActiveCell.Offset(1, 0).Select
     Range(ActiveCell.Address, ActiveCell.End(xlDown).Address).Copy
     
-    Do Until ActiveCell.Offset(-1, 1).Value = ""
+    Do Until ActiveCell.Offset(-1, 1).value = ""
         ActiveCell.Offset(0, 1).Select
         ActiveCell.PasteSpecial xlPasteFormulas
     Loop
@@ -4934,6 +4945,126 @@ ActiveChart.seriesCollection(1).Select
         .ForeColor.RGB = RGB(255, 100, 55)
         .ForeColor.TintAndShade = 0
         .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(16).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(50, 255, 150)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.4
+        .Transparency = 0
+        .Solid
+    End With
+End Sub
+
+Public Sub Color_ChartSeries_Scefics()
+    ActiveChart.seriesCollection(7).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 5, 5)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.1
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(1).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(20, 255, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.1
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(8).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 25, 10)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = -0.3
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(2).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(55, 255, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.2
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(9).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(200, 50, 0)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.2
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(3).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(10, 250, 150)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.6
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(10).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 50, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(4).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(10, 250, 50)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(11).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 50, 150)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.5
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(5).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(5, 250, 30)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(12).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 100, 55)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.7
+        .Transparency = 0
+        .Solid
+    End With
+    ActiveChart.seriesCollection(6).Select
+    With Selection.Format.Fill
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(50, 255, 150)
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0.4
         .Transparency = 0
         .Solid
     End With
