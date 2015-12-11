@@ -2,7 +2,7 @@ Attribute VB_Name = "DashBoard"
 '**********************************************************************************************************************
 '* Code for DashBoard Automation
 '* 'Date           Who     What
-'*
+'* Updated on 23rdNov2015
 '**********************************************************************************************************************
 
 Option Explicit
@@ -895,6 +895,7 @@ Next productItem 'for loop for each product end
 Workbooks(outputFlName).Save
 Workbooks(inputFlName).Close False
 Workbooks(installFileOpen).Close False
+Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
 
 'getting original date value back
 Sheet1.combYear.value = yrSelectedFirst
@@ -1346,7 +1347,7 @@ Application.Workbooks(outputFileGlobal).Windows(1).Visible = False
     Else
     escInputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs" & "*.xls*")
     inputFl = ThisWorkbook.Path & "\" & Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints" & "*.xls*")
-        If Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs_" & "*.xls*") = "" Or Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints_" & fstMonthChk & "*.xls*") = "" Then
+        If Dir(ThisWorkbook.Path & "\" & "Escalations_Overview_ALL BIUs" & "*.xls*") = "" Or Dir(ThisWorkbook.Path & "\" & "Customer escalations (Weekly Review) Complaints" & "*.xls*") = "" Then
             Exit Sub
         End If
     End If
@@ -1356,6 +1357,18 @@ Application.Workbooks.Open (escInputFl)
 
 escInputFl = "Escalations_Overview_ALL BIUs.xlsx"
 inputFl = "Customer escalations (Weekly Review) Complaints.xlsx"
+
+Workbooks(escInputFl).Activate
+Sheets("Open Esc_Product").Activate
+If ActiveSheet.UsedRange.Find(what:=Sheet1.combYear.value, lookat:=xlWhole) Is Nothing Then
+   Exit Sub
+End If
+
+Workbooks(inputFl).Activate
+Sheets("CHU synop").Activate
+If ActiveSheet.UsedRange.Find(Sheet1.combYear.value) Is Nothing Then
+   Exit Sub
+End If
 
 complaintsProductGroup = Sheet1.combProductGroup.value
 
@@ -2111,6 +2124,7 @@ ActiveSheet.Cells(5, 5).Select
 ActiveSheet.UsedRange.Find(what:=cProductGroup, after:=ActiveCell).Select
 Dim chuYearToFind As Integer
 chuYearToFind = CInt(Mid(ActiveCell.Address, 4, 2))
+
 ActiveSheet.UsedRange.Find(Mid(Sheet1.combYear.value, 1, 4) & "-" & selMonth).Select
 toMinusVal = CInt(Mid(ActiveCell.Address, 4, 2))
 ActiveCell.Offset(chuYearToFind - toMinusVal, 0).Select

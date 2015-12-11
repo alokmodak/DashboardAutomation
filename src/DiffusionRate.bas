@@ -45,9 +45,9 @@ inputFileNameContracts = ActiveWorkbook.name
 
 'Copy Data from SAP file
 strtMonth = Format(Now() - 31, "mmmyyyy")
-marketInputFile = "Market_Groups_Markets_Country.xlsx"
-marketInputFile = Replace(inputRevenue, inputFileNameContracts, marketInputFile)
-Application.Workbooks.Open (marketInputFile), False
+'marketInputFile = "Market_Groups_Markets_Country.xlsx"
+'marketInputFile = Replace(inputRevenue, inputFileNameContracts, marketInputFile)
+'Application.Workbooks.Open (marketInputFile), False
 
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
@@ -109,10 +109,11 @@ End With
 ActiveSheet.name = "Data"
 
 'Adding 6NC Names column
-marketInputFile = "Market_Groups_Markets_Country.xlsx"
+'marketInputFile = "Market_Groups_Markets_Country.xlsx"
 
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet1").Activate
+'Application.Workbooks(marketInputFile).Activate
+'ActiveWorkbook.Sheets("Sheet1").Activate
+ThisWorkbook.Sheets("Markets").Activate
 ActiveSheet.UsedRange.AutoFilter
 ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
 ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
@@ -166,7 +167,7 @@ marketRNG.Delete
 'Deleting # lines
 ActiveSheet.UsedRange.Find(what:="[C,S] Contract Start Date (Header)", lookat:=xlWhole).Select
 
-ActiveCell.AutoFilter field:=ActiveCell.Column, Criteria1:="#", Operator:=xlFilterValues
+ActiveCell.AutoFilter Field:=ActiveCell.Column, Criteria1:="#", Operator:=xlFilterValues
 ActiveCell.EntireRow.Hidden = True
 ActiveSheet.UsedRange.SpecialCells(xlCellTypeVisible).Select
 Selection.EntireRow.Delete
@@ -369,7 +370,7 @@ filterRNG = Range(fstFilterAdd, lstFilterAdd).Address
 ActiveSheet.UsedRange.Find(what:="[C,S] Reference Equipment", lookat:=xlWhole).Select
 
 'Filter range from the data
-Range(filterRNG).AutoFilter field:=4, Criteria1:=aryData, Operator:=xlFilterValues
+Range(filterRNG).AutoFilter Field:=4, Criteria1:=aryData, Operator:=xlFilterValues
 
 ActiveCell.SpecialCells(xlCellTypeVisible).Select
 Selection.Copy

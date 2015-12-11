@@ -5,7 +5,7 @@ Dim myworkbook As String
 Sub Create_Presentation()
 Dim ws As Worksheet
 Dim wb As FileDialog
-Dim FSO, ofolder, osubfolder, ofile, queue As Collection
+Dim FSO, oFolder, osubfolder, ofile, queue As Collection
     Set FSO = CreateObject("Scripting.FileSystemObject")
 Dim slicerItem As slicerItem
 

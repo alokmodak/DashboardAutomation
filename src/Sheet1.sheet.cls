@@ -84,6 +84,15 @@ startTime = second(Now())
                        
                        Call Contract_Penetration
                    End If
+                   
+                   If Sheet1.lstBx6NC.List(i) = "Contract_Penetration_Mobile" Then
+                       
+                       'Checking whether file present
+                       'Call ErrorMessage_RevenueFiles("Contract_Penetration_SAPBW_Download.xlsx")
+                       
+                       Call Contract_Penetration_MobileDXR
+                   End If
+                   
                    If Sheet1.lstBx6NC.List(i) = "SendEmail_Contracts-Join&Drops" Then
                        
                        'Checking whether file present
@@ -172,11 +181,12 @@ Const READYSTATE_COMPLETE As Integer = 4
   With objIE
     .Visible = True
     .silent = True
-    .navigate "https://github.com/alokmodak/DashboardAutomation/wiki"
+    .Navigate "https://github.com/alokmodak/DashboardAutomation/wiki"
     Do Until .ReadyState = READYSTATE_COMPLETE
       DoEvents
     Loop
   End With
+  
   Set objIE = Nothing
 
 End Sub

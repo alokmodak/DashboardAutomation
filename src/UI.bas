@@ -3,7 +3,6 @@ Attribute VB_Name = "UI"
 
 Option Explicit
 
-
 Public Sub Automation_Tool_File_Open()
 On Error Resume Next
 
@@ -29,9 +28,11 @@ With Sheet1.lstBx6NC
 .AddItem "ContractsDynamics_Waterfall"
 .AddItem "MarketDynamics_Waterfall"
 .AddItem "Contract_Penetration"
+.AddItem "Contract_Penetration_Mobile"
+.AddItem "BoxPlot"
 .AddItem "SendEmail_Contracts-Join&Drops"
 .AddItem "Diffusion Rate"
-.AddItem "BoxPlot"
+
 End With
 
 Sheet1.combModality.value = "Modality"

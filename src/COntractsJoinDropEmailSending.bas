@@ -57,9 +57,9 @@ End If
 
 'Copy Data from SAP file
 strtMonth = Format(Now() - 31, "mmmyyyy")
-marketInputFile = "Market_Groups_Markets_Country.xlsx"
-marketInputFile = Replace(inputRevenue, inputFileNameContracts, marketInputFile)
-Application.Workbooks.Open (marketInputFile), False
+'marketInputFile = "Market_Groups_Markets_Country.xlsx"
+'marketInputFile = Replace(inputRevenue, inputFileNameContracts, marketInputFile)
+'Application.Workbooks.Open (marketInputFile), False
 
 'opening Requrements file
 'userRequiremetsFile = "User_Requirements.xlsx"
@@ -120,10 +120,11 @@ End With
 ActiveSheet.name = "Data"
 
 'Adding 6NC Names column
-marketInputFile = "Market_Groups_Markets_Country.xlsx"
+'marketInputFile = "Market_Groups_Markets_Country.xlsx"
 
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet1").Activate
+'Application.Workbooks(marketInputFile).Activate
+'ActiveWorkbook.Sheets("Sheet1").Activate
+ThisWorkbook.Sheets("Markets").Activate
 ActiveSheet.UsedRange.AutoFilter
 ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
 ActiveSheet.UsedRange.Find(what:="System Code (6NC)", lookat:=xlWhole).Select
@@ -176,8 +177,9 @@ marketRNG.Delete
 
 'Adding Market column
 
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet1").Activate
+'Application.Workbooks(marketInputFile).Activate
+'ActiveWorkbook.Sheets("Sheet1").Activate
+ThisWorkbook.Sheets("Markets").Activate
 ActiveSheet.UsedRange.AutoFilter
 ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
 ActiveSheet.UsedRange.Find(what:="Country Code", lookat:=xlWhole).Select
@@ -220,8 +222,9 @@ Selection.PasteSpecial (xlValues)
 marketRNG.Delete
 
 'Adding EOL
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet2").Activate
+'Application.Workbooks(marketInputFile).Activate
+'ActiveWorkbook.Sheets("Sheet2").Activate
+ThisWorkbook.Sheets("EOL").actiavte
 ActiveSheet.UsedRange.Find(what:="EOL System code", lookat:=xlWhole).Select
 
 marketFSTAdd = ActiveCell.Address
@@ -791,7 +794,8 @@ Application.DisplayAlerts = False
     Sheets("Contracts-Joins&Drops").Select
     Sheets("Contracts-Joins&Drops").Move
     Dim flName As String
-    flName = exportFolder & filterValCountry & "_" & filterValMarket & "-Drops.xlsx"
+    flName = exportFolder & filterValCountry & "_" & filterValMarket & "-Drops-" & Format(dateVal, "mmmyy") & ".xlsx"
+    
     ActiveWorkbook.SaveAs fileName:=flName, AccessMode:=xlExclusive, ConflictResolution:=Excel.XlSaveConflictResolution.xlLocalSessionChanges
 Application.DisplayAlerts = True
 
@@ -903,7 +907,7 @@ Send_Email_Via_OutlookInbox flName, toEmailAdd, subject, txtBody
 Next cellVal
 
 ThisWorkbook.Sheets("UI").Activate
-Application.Workbooks(marketInputFile).Close False
+'Application.Workbooks(marketInputFile).Close False
 'Application.Workbooks(reqFile).Close False
 Application.Workbooks(revenueOutputGlobal).Close False
 

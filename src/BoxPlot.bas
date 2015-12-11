@@ -31,7 +31,7 @@ Dim rngDataForPivot As String
 Dim pvtItem As PivotItem
 Dim strtMonth As String
 
-'On Error Resume Next
+On Error Resume Next
 
 'Selection for Modality
 If Sheet1.combModality.value = "Modality" Or Sheet1.combModality.value = "" Then
@@ -51,9 +51,9 @@ inputFileNameContracts = ActiveWorkbook.name
 
 'Copy Data from SAP file
 strtMonth = Format(Now() - 31, "mmmyyyy")
-marketInputFile = "Market_Groups_Markets_Country.xlsx"
-marketInputFile = Replace(inputRevenue, inputFileNameContracts, marketInputFile)
-Application.Workbooks.Open (marketInputFile), False
+'marketInputFile = "Market_Groups_Markets_Country.xlsx"
+'marketInputFile = Replace(inputRevenue, inputFileNameContracts, marketInputFile)
+'Application.Workbooks.Open (marketInputFile), False
 
 Workbooks(inputFileNameContracts).Activate
 ActiveWorkbook.Sheets("SAPBW_DOWNLOAD").Activate
@@ -116,12 +116,13 @@ End With
 ActiveSheet.name = "Data"
 
 'Adding 6NC Names column
-marketInputFile = "Market_Groups_Markets_Country.xlsx"
+'marketInputFile = "Market_Groups_Markets_Country.xlsx"
 
 modalityVal = Sheet1.combModality.value
 
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet1").Activate
+'Application.Workbooks(marketInputFile).Activate
+'ActiveWorkbook.Sheets("Sheet1").Activate
+ThisWorkbook.Sheets("Markets").Activate
 Dim revenueval As String
 revenueval = ActiveSheet.Cells(2, 16).value
 ActiveSheet.UsedRange.AutoFilter
@@ -177,8 +178,9 @@ marketRNG.Delete
 
 'Adding Market column
 
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet1").Activate
+'Application.Workbooks(marketInputFile).Activate
+'ActiveWorkbook.Sheets("Sheet1").Activate
+ThisWorkbook.Sheets("Markets").Activate
 ActiveSheet.UsedRange.AutoFilter
 ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
 ActiveSheet.UsedRange.Find(what:="Country Code", lookat:=xlWhole).Select
@@ -248,8 +250,9 @@ Selection.PasteSpecial (xlValues)
 
 'Adding contracts type
 
-Application.Workbooks(marketInputFile).Activate
-ActiveWorkbook.Sheets("Sheet1").Activate
+'Application.Workbooks(marketInputFile).Activate
+'ActiveWorkbook.Sheets("Sheet1").Activate
+ThisWorkbook.Sheets("Markets").Activate
 ActiveSheet.UsedRange.AutoFilter
 ActiveSheet.UsedRange.AutoFilter 'two times autofilter to clear all the filters
 ActiveSheet.UsedRange.Find(what:="Contract Type Material", lookat:=xlWhole).Select
@@ -527,7 +530,6 @@ ActiveWorkbook.Sheets("Data").Activate
     
     MarketVsCost_Boxplot inputFileNameContracts, revenueval
     
-    Sheets("RevenueVsMarket").Move Before:=Sheets(1)
     Sheets("CostVsMarket").Move Before:=Sheets(2)
     Sheets("RevenueVsMarket").Select
 End Sub
@@ -539,12 +541,12 @@ Sheets("Data").Select
 ActiveSheet.UsedRange.Find(what:="    Total Contract Revenue", lookat:=xlWhole).Select
 Dim cellFld As Integer
 cellFld = ActiveCell.Column
-ActiveCell.AutoFilter field:=cellFld, Criteria1:=">=0" _
+ActiveCell.AutoFilter Field:=cellFld, Criteria1:=">=0" _
         , Operator:=xlAnd, Criteria2:="<=" & revenueval
         
 ActiveSheet.UsedRange.Find(what:="[C,S] Contract Start Date (Header)", lookat:=xlWhole).Select
 cellFld = ActiveCell.Column
-ActiveCell.AutoFilter field:=cellFld, Criteria1:="<>#"
+ActiveCell.AutoFilter Field:=cellFld, Criteria1:="<>#"
 
 'Calculating duration
 ActiveSheet.UsedRange.Find(what:="[C,S] Contract Type", lookat:=xlWhole).Select
@@ -564,7 +566,7 @@ Range(fstDateDiffAdd, lstDateDiffAdd).PasteSpecial xlPasteFormulas
 
 ActiveSheet.UsedRange.Find(what:="Duration", lookat:=xlWhole).Select
 cellFld = ActiveCell.Column
-ActiveCell.AutoFilter field:=cellFld, Criteria1:=">6"
+ActiveCell.AutoFilter Field:=cellFld, Criteria1:=">6"
 
 ActiveCell.SpecialCells(xlCellTypeVisible).Select
 Selection.Copy
@@ -575,7 +577,7 @@ ActiveSheet.name = "Filtered-Data-Revenue"
 
 ActiveSheet.UsedRange.Find(what:="Duration", lookat:=xlWhole).Select
 cellFld = ActiveCell.Column
-ActiveCell.AutoFilter field:=cellFld, Criteria1:=">13"
+ActiveCell.AutoFilter Field:=cellFld, Criteria1:=">13"
 
 ActiveSheet.UsedRange.Find(what:="    Total Contract Revenue", lookat:=xlWhole).Select
 Dim fstcel As Integer
@@ -815,16 +817,16 @@ ActiveCell.AutoFilter
 ActiveSheet.UsedRange.Find(what:="   swo cost" & Chr(10) & "settled to" & Chr(10) & "contract", lookat:=xlWhole).Select
 Dim cellFld As Integer
 cellFld = ActiveCell.Column
-ActiveCell.AutoFilter field:=cellFld, Criteria1:=">=0" _
+ActiveCell.AutoFilter Field:=cellFld, Criteria1:=">=0" _
         , Operator:=xlAnd, Criteria2:="<=" & revenueval
         
 ActiveSheet.UsedRange.Find(what:="[C,S] Contract Start Date (Header)", lookat:=xlWhole).Select
 cellFld = ActiveCell.Column
-ActiveCell.AutoFilter field:=cellFld, Criteria1:="<>#"
+ActiveCell.AutoFilter Field:=cellFld, Criteria1:="<>#"
 
 ActiveSheet.UsedRange.Find(what:="Duration", lookat:=xlWhole).Select
 cellFld = ActiveCell.Column
-ActiveCell.AutoFilter field:=cellFld, Criteria1:=">6"
+ActiveCell.AutoFilter Field:=cellFld, Criteria1:=">6"
 
 ActiveCell.SpecialCells(xlCellTypeVisible).Select
 Selection.Copy
@@ -1045,22 +1047,24 @@ With Selection.Interior
 ActiveSheet.Cells(1, 1).Select
 ActiveSheet.name = "CostVsMarket"
 
-ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
-        "System Code (6NC)").Slicers.Add ActiveSheet, , "System Code (6NC) 2", _
+ActiveSheet.PivotTables("PivotTable1").PivotSelect _
+        "'[C,S] Reference Equipment'[All]", xlLabelOnly, True
+    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
+        "System Code (6NC)").Slicers.Add ActiveSheet, , "System Code (6NC)", _
         "System Code (6NC)", 5, 5, 144, 198.75
+ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
+        "Market").Slicers.Add ActiveSheet, , "Market", "Market", 210, 150, 144, 198.75
     ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
-        "[C,S] Reference Equipment").Slicers.Add ActiveSheet, , _
-        "[C,S] Reference Equipment 2", "[C,S] Reference Equipment", 210, 150, 144, 198.75
-    ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
-        "Contract Type Material").Slicers.Add ActiveSheet, , _
-        "Contract Type Material 2", "Contract Type Material", 5, _
+        "Contract Type Material").Slicers.Add ActiveSheet, , "Contract Type Material", _
+        "Contract Type Material", 5, _
         150, 144, 198.75
     ActiveWorkbook.SlicerCaches.Add2(ActiveSheet.PivotTables("PivotTable1"), _
-        "Fiscal Year/Period").Slicers.Add ActiveSheet, , "Fiscal Year/Period 2", _
+        "Fiscal Year/Period").Slicers.Add ActiveSheet, , "Fiscal Year/Period 1", _
         "Fiscal Year/Period", 210, 5, 144, 198.75
 
+    ThisWorkbook.Sheets("UI").Activate
 Application.Workbooks(revenueOutputGlobal).Save
 Workbooks(inputFileNameContracts).Close False
-Workbooks(marketInputFile).Close False
+'Workbooks(marketInputFile).Close False
 
 End Sub

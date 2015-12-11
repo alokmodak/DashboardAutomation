@@ -118,7 +118,7 @@ End Function
 
 
 ' Returns the CodeName of the added sheet or an empty String if the workbook could not be opened.
-Public Function addSheetToWorkbook(sheetName As String, workbookFilePath As String) As String
+Public Function addSheetToWorkbook(sheetNAME As String, workbookFilePath As String) As String
     Dim wb As Workbook
     On Error Resume Next 'can throw if given path does not exist
     Set wb = openWorkbook(workbookFilePath)
@@ -126,12 +126,12 @@ Public Function addSheetToWorkbook(sheetName As String, workbookFilePath As Stri
     If Not wb Is Nothing Then
         Dim ws As Worksheet
         Set ws = wb.Sheets.Add(after:=wb.Sheets(wb.Sheets.Count))
-        ws.name = sheetName
+        ws.name = sheetNAME
         'ws.CodeName = sheetName: cannot assign to read only property
-        Debug.Print "Sheet added " & sheetName
+        Debug.Print "Sheet added " & sheetNAME
         addSheetToWorkbook = ws.CodeName
     Else
-        Debug.Print "Skipping file " & sheetName & ". Could not open workbook " & workbookFilePath
+        Debug.Print "Skipping file " & sheetNAME & ". Could not open workbook " & workbookFilePath
         addSheetToWorkbook = ""
     End If
 End Function

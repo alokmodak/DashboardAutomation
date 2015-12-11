@@ -43,8 +43,8 @@ warrantyVal = Replace(Sheet1.combYear.value, "-", "")
 "1) Service Scorecard F 6.1_" & lblMonthCheck & ".xlsm" & vbCrLf & _
 "2) Install SPAN P95.xlsx" & vbCrLf & _
 "3) FCO OP review file.xlsx" & vbCrLf & _
-"4) Escalations_Overview_ALL BIUs_" & lblMonthCheck & ".xlsx" & vbCrLf & _
-"5) Customer escalations (Weekly Review) Complaints_" & lblMonthCheck & ".xlsx" & vbCrLf & _
+"4) Escalations_Overview_ALL BIUs.xlsx" & vbCrLf & _
+"5) Customer escalations (Weekly Review) Complaints.xlsx" & vbCrLf & _
 "6) " & Sheet1.combYear.value & " Installation spend L2-report" & lblMonthCheck & ".xlsb" & vbCrLf & _
 "7) Level 4 Warranty Spend Analysis - " & warrantyVal & " @ " & warrantyVal - 1 & " BS Rate_IGT" & vbCrLf & _
 "8) Level 4 Warranty Spend Analysis - " & warrantyVal & " @ " & warrantyVal - 1 & " BS Rate_DI" & vbCrLf & _
@@ -54,7 +54,7 @@ warrantyVal = Replace(Sheet1.combYear.value, "-", "")
 
 revenueLblText = "Input files required are -" & vbCrLf & _
 "1) Market_Groups_Markets_Country.xlsx" & vbCrLf & _
-"2) Revenue_MoS_SAPBW_Download.xlsx" & vbCrLf & _
+"2) Revenue_SAPBW_Download.xlsx (file name may vary)" & vbCrLf & _
 "3) Contract_Penetration_SAPBW_Download.xlsx" & vbCrLf & _
 "Input data files are individually selectable, " & Chr(34) & "Market_Groups_Markets_Country.xlsx" & Chr(34) & " Should be in the same folder with input files"
 

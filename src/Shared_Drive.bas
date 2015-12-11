@@ -9,7 +9,7 @@ Public Function SharedDrive_Path(inputFileName As String)
     On Error Resume Next
     
     
-    Dim FSO, ofolder, osubfolder, ofile, queue As Collection
+    Dim FSO, oFolder, osubfolder, ofile, queue As Collection
     Set FSO = CreateObject("Scripting.FileSystemObject")
     Set queue = New Collection
     
@@ -30,14 +30,14 @@ fileNotPresent:
     queue.Add FSO.GetFolder(Application.FileDialog(msoFileDialogFolderPicker).SelectedItems(1))
 
     Do While queue.Count > 0
-        Set ofolder = queue(1)
+        Set oFolder = queue(1)
         queue.Remove 1 'dequeue
         '...insert any folder processing code here...
-        For Each osubfolder In ofolder.SubFolders
+        For Each osubfolder In oFolder.SubFolders
             queue.Add osubfolder 'enqueue
         Next osubfolder
         
-        For Each ofile In ofolder.Files
+        For Each ofile In oFolder.Files
             If inputFileName = ofile.name Then
                 sharedDrivePath = ofile.Path
                 fileExists = True

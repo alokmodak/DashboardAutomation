@@ -34,7 +34,7 @@ Dim strtPt As String
 Dim SrcData As String
 Dim fstadd1 As String
 Dim sourceSheet As String
-Dim myPath As String
+Dim mypath As String
 Dim fstAdd As String
 Dim lstAdd As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
@@ -142,7 +142,7 @@ AggrDataShtName = ActiveSheet.name
     lastCellAdd = ActiveCell.Address
     ActiveSheet.Range(fstCellAdd, lastCellAdd).Select
     Selection.AutoFilter
-    ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter field:=l, Criteria1:="=Buildingblocks Aggregated"
+    ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter Field:=l, Criteria1:="=Buildingblocks Aggregated"
     Range("A2").Offset(1, 0).Select
     fstFiltCellAdd = ActiveCell.Address
     Range("A2").Offset(1, 0).End(xlDown).Select
@@ -1424,7 +1424,7 @@ Sub DataBrekUpFrPivotKPIALL()
     
 End Sub
 Public Sub CRRateCalculationNew()
-Dim fixedDate, myPath, CTSExcel, CTSWorkBook, pvtExcel, myPvtWorkBook As String
+Dim fixedDate, mypath, CTSExcel, CTSWorkBook, pvtExcel, myPvtWorkBook As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
 Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
 Call IBPivotTable
@@ -2110,7 +2110,7 @@ End With
             Sheets("CR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
             ActiveCell.Offset(2, 0).Select
             myRow = ActiveCell.Row
-            MyCol = ActiveCell.Column
+            myCol = ActiveCell.Column
             pf.CurrentPage = pvtItm.Caption
             abc = pf.CurrentPage
             lr = Worksheets("CR").Cells(rows.Count, "D").End(xlUp).Row
@@ -2145,11 +2145,11 @@ End With
             If i <= 29 Then
                 For X = myRow To lr
                     On Error Resume Next
-                    Cells(X, MyCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & "/" & 12 & ")" & "," & 0 & ")"
+                    Cells(X, myCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & "/" & 12 & ")" & "," & 0 & ")"
                     'Cells(X, MyCol).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False) / (IBVal / 12))
-                    Cells(X, MyCol).Copy
-                    Cells(X, MyCol).PasteSpecial xlValues
-                    Cells(X, MyCol).NumberFormat = "0.0000"
+                    Cells(X, myCol).Copy
+                    Cells(X, myCol).PasteSpecial xlValues
+                    Cells(X, myCol).NumberFormat = "0.0000"
                 Next X
              
             End If
@@ -2248,7 +2248,7 @@ Next
     ActiveCell.Offset(1, 0).Select
     ActiveCell.Offset(2, 1).Select
     myRow = ActiveCell.Row
-    MyCol = ActiveCell.Column
+    myCol = ActiveCell.Column
     Range("AE3").Select
     fstAdd = ActiveCell.Address(True, True)
     Sheets("CR").UsedRange.Find(what:="#Calls (#)", lookat:=xlWhole).Select
@@ -2263,11 +2263,11 @@ Next
     vlkupALstAdd = ActiveCell.Address(True, True)
     For X = myRow To lr
     'On Error Resume Next
-    Cells(X, MyCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
+    Cells(X, myCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
     'Cells(X, MyCol).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False) / (IBVal / 12))
-    Cells(X, MyCol).Copy
-    Cells(X, MyCol).PasteSpecial xlValues
-    Cells(X, MyCol).NumberFormat = "0.0000"
+    Cells(X, myCol).Copy
+    Cells(X, myCol).PasteSpecial xlValues
+    Cells(X, myCol).NumberFormat = "0.0000"
 
     'Cells(X, 10).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / IBVal
     'Cells(X, 10).NumberFormat = "0.00"
@@ -2329,7 +2329,7 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     ActiveCell.Offset(1, 0).Select
     ActiveCell.Offset(2, 2).Select
     myRow = ActiveCell.Row
-    MyCol = ActiveCell.Column
+    myCol = ActiveCell.Column
     Range("AE3").Select
     fstAdd = ActiveCell.Address(True, True)
     Sheets("CR").UsedRange.Find(what:="#Calls (#)", lookat:=xlWhole).Select
@@ -2344,11 +2344,11 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     vlkupALstAdd = ActiveCell.Address(True, True)
     For X = myRow To lr
     'On Error Resume Next
-    Cells(X, MyCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
+    Cells(X, myCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
     'Cells(X, MyCol).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False) / (IBVal / 12))
-    Cells(X, MyCol).Copy
-    Cells(X, MyCol).PasteSpecial xlValues
-    Cells(X, MyCol).NumberFormat = "0.0000"
+    Cells(X, myCol).Copy
+    Cells(X, myCol).PasteSpecial xlValues
+    Cells(X, myCol).NumberFormat = "0.0000"
 
     'Cells(X, 10).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / IBVal
     'Cells(X, 10).NumberFormat = "0.00"
@@ -2412,7 +2412,7 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     ActiveCell.Offset(1, 0).Select
     ActiveCell.Offset(2, 3).Select
     myRow = ActiveCell.Row
-    MyCol = ActiveCell.Column
+    myCol = ActiveCell.Column
     Range("AE3").Select
     fstAdd = ActiveCell.Address(True, True)
     Sheets("CR").UsedRange.Find(what:="#Calls (#)", lookat:=xlWhole).Select
@@ -2427,11 +2427,11 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     vlkupALstAdd = ActiveCell.Address(True, True)
     For X = myRow To lr
     On Error Resume Next
-    Cells(X, MyCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
+    Cells(X, myCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
     'Cells(X, MyCol).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False) / (IBVal / 12))
-    Cells(X, MyCol).Copy
-    Cells(X, MyCol).PasteSpecial xlValues
-    Cells(X, MyCol).NumberFormat = "0.0000"
+    Cells(X, myCol).Copy
+    Cells(X, myCol).PasteSpecial xlValues
+    Cells(X, myCol).NumberFormat = "0.0000"
 
     'Cells(X, 10).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / IBVal
     'Cells(X, 10).NumberFormat = "0.00"
@@ -2493,7 +2493,7 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     ActiveCell.Offset(1, 0).Select
     ActiveCell.Offset(2, 0).Select
     myRow = ActiveCell.Row
-    MyCol = ActiveCell.Column
+    myCol = ActiveCell.Column
     Range("AE3").Select
     fstAdd = ActiveCell.Address(True, True)
     Sheets("CR").UsedRange.Find(what:="#Calls (#)", lookat:=xlWhole).Select
@@ -2508,11 +2508,11 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     vlkupALstAdd = ActiveCell.Address(True, True)
     For X = myRow To lr
     On Error Resume Next
-    Cells(X, MyCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
+    Cells(X, myCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
     'Cells(X, MyCol).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False) / (IBVal / 12))
-    Cells(X, MyCol).Copy
-    Cells(X, MyCol).PasteSpecial xlValues
-    Cells(X, MyCol).NumberFormat = "0.0000"
+    Cells(X, myCol).Copy
+    Cells(X, myCol).PasteSpecial xlValues
+    Cells(X, myCol).NumberFormat = "0.0000"
 
     'Cells(X, 10).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / IBVal
     'Cells(X, 10).NumberFormat = "0.00"
@@ -2583,7 +2583,7 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     ActiveCell.Offset(1, 0).Select
     ActiveCell.Offset(2, 1).Select
     myRow = ActiveCell.Row
-    MyCol = ActiveCell.Column
+    myCol = ActiveCell.Column
     Range("AE3").Select
     fstAdd = ActiveCell.Address(True, True)
     Sheets("CR").UsedRange.Find(what:="#Calls (#)", lookat:=xlWhole).Select
@@ -2598,11 +2598,11 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     vlkupALstAdd = ActiveCell.Address(True, True)
     For X = myRow To lr
     On Error Resume Next
-    Cells(X, MyCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
+    Cells(X, myCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
     'Cells(X, MyCol).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False) / (IBVal / 12))
-    Cells(X, MyCol).Copy
-    Cells(X, MyCol).PasteSpecial xlValues
-    Cells(X, MyCol).NumberFormat = "0.0000"
+    Cells(X, myCol).Copy
+    Cells(X, myCol).PasteSpecial xlValues
+    Cells(X, myCol).NumberFormat = "0.0000"
 
     'Cells(X, 10).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / IBVal
     'Cells(X, 10).NumberFormat = "0.00"
@@ -2669,7 +2669,7 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     ActiveCell.Offset(1, 0).Select
     ActiveCell.Offset(2, 3).Select
     myRow = ActiveCell.Row
-    MyCol = ActiveCell.Column
+    myCol = ActiveCell.Column
     Range("AE3").Select
     fstAdd = ActiveCell.Address(True, True)
     Sheets("CR").UsedRange.Find(what:="#Calls (#)", lookat:=xlWhole).Select
@@ -2684,11 +2684,11 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     vlkupALstAdd = ActiveCell.Address(True, True)
     For X = myRow To lr
     On Error Resume Next
-    Cells(X, MyCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
+    Cells(X, myCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
     'Cells(X, MyCol).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False) / (IBVal / 12))
-    Cells(X, MyCol).Copy
-    Cells(X, MyCol).PasteSpecial xlValues
-    Cells(X, MyCol).NumberFormat = "0.0000"
+    Cells(X, myCol).Copy
+    Cells(X, myCol).PasteSpecial xlValues
+    Cells(X, myCol).NumberFormat = "0.0000"
 
     'Cells(X, 10).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / IBVal
     'Cells(X, 10).NumberFormat = "0.00"
@@ -2758,7 +2758,7 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     ActiveCell.Offset(1, 0).Select
     ActiveCell.Offset(2, 2).Select
     myRow = ActiveCell.Row
-    MyCol = ActiveCell.Column
+    myCol = ActiveCell.Column
     Range("AE3").Select
     fstAdd = ActiveCell.Address(True, True)
     Sheets("CR").UsedRange.Find(what:="#Calls (#)", lookat:=xlWhole).Select
@@ -2773,11 +2773,11 @@ pvtTbl.PivotFields("Period").ClearAllFilters
     vlkupALstAdd = ActiveCell.Address(True, True)
     For X = myRow To lr
     On Error Resume Next
-    Cells(X, MyCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
+    Cells(X, myCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & ")" & "," & 0 & ")"
     'Cells(X, MyCol).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False) / (IBVal / 12))
-    Cells(X, MyCol).Copy
-    Cells(X, MyCol).PasteSpecial xlValues
-    Cells(X, MyCol).NumberFormat = "0.0000"
+    Cells(X, myCol).Copy
+    Cells(X, myCol).PasteSpecial xlValues
+    Cells(X, myCol).NumberFormat = "0.0000"
 
     'Cells(X, 10).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False)) / IBVal
     'Cells(X, 10).NumberFormat = "0.00"
@@ -3117,7 +3117,7 @@ Dim strtPt As String
 Dim SrcData As String
 Dim fstadd1 As String
 Dim sourceSheet As String
-Dim myPath As String
+Dim mypath As String
 Dim fstAdd As String
 Dim lstAdd As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
@@ -3260,7 +3260,7 @@ Dim lastRow As Integer
          End If
     Dim l As Long
     l = Application.WorksheetFunction.Match("BuildingBlock", Range("1:1"), 0)
-    ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter field:=l, Criteria1:="=Buildingblocks Aggregated"
+    ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter Field:=l, Criteria1:="=Buildingblocks Aggregated"
     Range("A1").Offset(1, 0).Select
     fstFiltCellAdd = ActiveCell.Address
     Range("A1").Offset(1, 0).End(xlDown).Select
@@ -3398,7 +3398,7 @@ Dim strtPt As String
 Dim SrcData As String
 Dim fstadd1 As String
 Dim sourceSheet As String
-Dim myPath As String
+Dim mypath As String
 Dim fstAdd As String
 Dim lstAdd As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
@@ -4125,7 +4125,7 @@ End Sub
 
 
 Public Sub MTTRRateCalculationNew()
-Dim fixedDate, myPath, CTSExcel, CTSWorkBook, pvtExcel, myPvtWorkBook As String
+Dim fixedDate, mypath, CTSExcel, CTSWorkBook, pvtExcel, myPvtWorkBook As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
 Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
 
@@ -4766,7 +4766,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             Sheets("MTTR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
             ActiveCell.Offset(1, 0).Select
             myRow = ActiveCell.Row
-            MyCol = ActiveCell.Column
+            myCol = ActiveCell.Column
             pf.CurrentPage = pvtItm.Caption
             lr = Worksheets("MTTR").Cells(rows.Count, "C").End(xlUp).Row
             Range("AE3").Select
@@ -4780,8 +4780,8 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             If i <= 29 Then
                 For X = myRow To lr
                     On Error Resume Next
-                    Cells(X, MyCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
-                    Cells(X, MyCol).NumberFormat = "0.00"
+                    Cells(X, myCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
+                    Cells(X, myCol).NumberFormat = "0.00"
                 Next X
              
             End If
@@ -4845,7 +4845,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             Sheets("MTTR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
             ActiveCell.Offset(1, 0).Select
             myRow = ActiveCell.Row
-            MyCol = ActiveCell.Column
+            myCol = ActiveCell.Column
             pf.CurrentPage = pvtItm.Caption
             lr = Worksheets("MTTR").Cells(rows.Count, "C").End(xlUp).Row
             Range("AE3").Select
@@ -4859,8 +4859,8 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             If i <= 29 Then
                 For X = myRow To lr
                     On Error Resume Next
-                    Cells(X, MyCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
-                    Cells(X, MyCol).NumberFormat = "0.00"
+                    Cells(X, myCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
+                    Cells(X, myCol).NumberFormat = "0.00"
                 Next X
              
             End If
@@ -5711,7 +5711,7 @@ Dim strtPt As String
 Dim SrcData As String
 Dim fstadd1 As String
 Dim sourceSheet As String
-Dim myPath As String
+Dim mypath As String
 Dim fstAdd As String
 Dim lstAdd As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
@@ -5960,7 +5960,7 @@ Dim lastRow As Integer
     
 End Function
 Public Sub ETTRRateCalculationNew()
-Dim fixedDate, myPath, CTSExcel, CTSWorkBook, pvtExcel, myPvtWorkBook As String
+Dim fixedDate, mypath, CTSExcel, CTSWorkBook, pvtExcel, myPvtWorkBook As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
 Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
 
@@ -6602,7 +6602,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             Sheets("ETTR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
             ActiveCell.Offset(1, 0).Select
             myRow = ActiveCell.Row
-            MyCol = ActiveCell.Column
+            myCol = ActiveCell.Column
             pf.CurrentPage = pvtItm.Caption
             lr = Worksheets("ETTR").Cells(rows.Count, "C").End(xlUp).Row
             Range("AE3").Select
@@ -6616,8 +6616,8 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             If i <= 29 Then
                 For X = myRow To lr
                     On Error Resume Next
-                    Cells(X, MyCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
-                    Cells(X, MyCol).NumberFormat = "0.00"
+                    Cells(X, myCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
+                    Cells(X, myCol).NumberFormat = "0.00"
                 Next X
              
             End If
@@ -6681,7 +6681,7 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             Sheets("ETTR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
             ActiveCell.Offset(1, 0).Select
             myRow = ActiveCell.Row
-            MyCol = ActiveCell.Column
+            myCol = ActiveCell.Column
             pf.CurrentPage = pvtItm.Caption
             lr = Worksheets("ETTR").Cells(rows.Count, "C").End(xlUp).Row
             Range("AE3").Select
@@ -6695,8 +6695,8 @@ Dim fstFiltCellAdd, lastFiltCellAdd, fstFiltCellAdd1, KPISheetName As String
             If i <= 29 Then
                 For X = myRow To lr
                     On Error Resume Next
-                    Cells(X, MyCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
-                    Cells(X, MyCol).NumberFormat = "0.00"
+                    Cells(X, myCol).value = Application.WorksheetFunction.VLookup(Cells(X, 3).value, rng, 6, False)
+                    Cells(X, myCol).NumberFormat = "0.00"
                 Next X
              
             End If
@@ -7555,7 +7555,7 @@ Dim strtPt As String
 Dim SrcData As String
 Dim fstadd1 As String
 Dim sourceSheet As String
-Dim myPath As String
+Dim mypath As String
 Dim fstAdd As String
 Dim lstAdd As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
@@ -7815,7 +7815,7 @@ End Function
 
 Public Sub ListSubfoldersFile()
 
-    Dim StrFile, myPath As String
+    Dim StrFile, mypath As String
     Dim objFSO, destRow As Long
     Dim mainFolder, mySubFolder
     Dim wbName As String
@@ -7838,9 +7838,9 @@ Public Sub ListSubfoldersFile()
     Dim outPutFileLstAdd As String
  
     Set objFSO = CreateObject("Scripting.FileSystemObject")
-    myPath = ThisWorkbook.Path & "\RRR_Input_Files\"
-    Set mainFolder = objFSO.GetFolder(myPath)
-    StrFile = Dir(myPath & "*.xlsx*")
+    mypath = ThisWorkbook.Path & "\RRR_Input_Files\"
+    Set mainFolder = objFSO.GetFolder(mypath)
+    StrFile = Dir(mypath & "*.xlsx*")
     Set BaseWks = ThisWorkbook.Worksheets(1)
     Workbooks.Add
     wbName = ActiveWorkbook.name
@@ -7964,13 +7964,13 @@ Public Sub ListSubfoldersFile()
     Range(firstAdd, lastAdd).Select
     Application.CutCopyMode = False
     Selection.AutoFilter
-    ActiveSheet.Range(firstAdd, lastAdd).AutoFilter field:=8, Criteria1:=Array( _
+    ActiveSheet.Range(firstAdd, lastAdd).AutoFilter Field:=8, Criteria1:=Array( _
         "722400", "718094", "718095", "718400", "718074", _
         "714045", "712301", "712301", "714047", "714247", _
         "714048", "714248", "704301", "704310", "712310", _
         "718132", "718131", "718130", "718075"), Operator:=xlFilterValues
          
-    ActiveSheet.Range(firstAdd, lastAdd).AutoFilter field:=10, Criteria1:=Array( _
+    ActiveSheet.Range(firstAdd, lastAdd).AutoFilter Field:=10, Criteria1:=Array( _
         "C", "W"), Operator:=xlFilterValues
     
     Dim add1
@@ -8041,9 +8041,9 @@ Public Sub ListSubfoldersFile()
 
     Dim inputItem As String
     Set objFSO = CreateObject("Scripting.FileSystemObject")
-    myPath = ThisWorkbook.Path & "\RRR_Input_Files\"
+    mypath = ThisWorkbook.Path & "\RRR_Input_Files\"
     myFile = "BCTool_SWO_RawData_SingleVersionOfTheTruth"
-    inputItem = myPath & "\" & Dir(myPath & "\" & "BCTool_SWO_RawData_SingleVersionOfTheTruth" & "*.xls*") 'input file path
+    inputItem = mypath & "\" & Dir(mypath & "\" & "BCTool_SWO_RawData_SingleVersionOfTheTruth" & "*.xls*") 'input file path
     Application.Workbooks.Open (inputItem), False
     myworkbook = ActiveWorkbook.name
     
@@ -8237,7 +8237,7 @@ Dim lstAdd As String
           
     Workbooks(myPvtWorkBook).Connections.Add2 _
         "WorksheetConnection_" & "RRR_Report" & "!" & rngData, "", _
-        "WORKSHEET;" & myPath & "\[myPvtWorkBook]RRR_Report" _
+        "WORKSHEET;" & mypath & "\[myPvtWorkBook]RRR_Report" _
         , "RRR_Report!" & pkAdd & ":" & Add, 7, True, False
 
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlExternal, SourceData:= _
@@ -8326,7 +8326,7 @@ Dim lstAdd As String
     Call PrtChartCalculation
 End Sub
 Public Sub PrtChartCalculation()
-Dim StrFile, myPath, myFile As String
+Dim StrFile, mypath, myFile As String
 Dim objFSO, destRow As Long
 Dim wb As Workbook
 Dim inputItem As String
@@ -8334,8 +8334,8 @@ Dim rng As Range
 Dim chtObject As ChartObject
 Dim rownum As Integer
     Set objFSO = CreateObject("Scripting.FileSystemObject")
-    myPath = ThisWorkbook.Path
-    inputItem = myPath & "\" & Dir(myPath & "\" & "CTS-Cost to Serve_RRR_*" & "*.xls*") 'input file path
+    mypath = ThisWorkbook.Path
+    inputItem = mypath & "\" & Dir(mypath & "\" & "CTS-Cost to Serve_RRR_*" & "*.xls*") 'input file path
     Application.Workbooks.Open (inputItem), False
     myPvtWorkBook = ActiveWorkbook.name
     
@@ -8943,7 +8943,7 @@ Dim strtPt As String
 Dim SrcData As String
 Dim fstadd1 As String
 Dim sourceSheet As String
-Dim myPath As String
+Dim mypath As String
 Dim fstAdd As String
 Dim lstAdd As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
@@ -9053,7 +9053,7 @@ Dim lastRow As Integer
     Range("A2").End(xlToRight).Select
     lastCellAdd = ActiveCell.Address
     ActiveSheet.Range(fstCellAdd, lastCellAdd).Select
-    ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter field:=l, Criteria1:="=Buildingblocks Aggregated"
+    ActiveSheet.Range(fstCellAdd, lastCellAdd).AutoFilter Field:=l, Criteria1:="=Buildingblocks Aggregated"
     Range("A2").Offset(1, 0).Select
     fstFiltCellAdd = ActiveCell.Address
     Range("A2").Offset(1, 0).End(xlDown).Select
@@ -10355,7 +10355,7 @@ Dim strtPt As String
 Dim SrcData As String
 Dim fstadd1 As String
 Dim sourceSheet As String
-Dim myPath As String
+Dim mypath As String
 Dim fstAdd As String
 Dim lstAdd As String
 Dim CTSProductName, dateValue, prdNameFile, filePresent As String
@@ -10478,7 +10478,7 @@ Dim lastRow As Integer
     SearchForWords = Array("*Old*")
    
        With ActiveSheet
-            Range("A2").AutoFilter field:=5, Criteria1:=SearchForWords
+            Range("A2").AutoFilter Field:=5, Criteria1:=SearchForWords
             .Cells.SpecialCells(xlCellTypeVisible).Delete Shift:=xlUp
         End With
 
@@ -10486,7 +10486,7 @@ Dim lastRow As Integer
      Range("A1").Select
      Selection.EntireRow.Select
         With Selection
-            .AutoFilter field:=5, Criteria1:=SearchForWords1
+            .AutoFilter Field:=5, Criteria1:=SearchForWords1
            Range("A1").Cells.SpecialCells(xlCellTypeVisible).Delete Shift:=xlUp
         End With
 
@@ -10909,7 +10909,7 @@ Sub RRRDatainAllSSBB()
             Sheets("CR").UsedRange.Find(what:=pvtMonth, lookat:=xlWhole).Select
             ActiveCell.Offset(2, 0).Select
             myRow = ActiveCell.Row
-            MyCol = ActiveCell.Column
+            myCol = ActiveCell.Column
             pf.CurrentPage = pvtItm.Caption
             abc = pf.CurrentPage
             lr = Worksheets("CR").Cells(rows.Count, "D").End(xlUp).Row
@@ -10930,11 +10930,11 @@ Sub RRRDatainAllSSBB()
             If i <= 29 Then
                 For X = myRow To lr
                     On Error Resume Next
-                    Cells(X, MyCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & "/" & 12 & ")" & "," & 0 & ")"
+                    Cells(X, myCol).Formula = "=IFERROR(VLOOKUP(" & vlkupAFstAdd & ":" & vlkupALstAdd & "," & fstAdd & ":" & lstAdd & ",6,0)" & " / " & "(" & IBVal & "/" & 12 & ")" & "," & 0 & ")"
                     'Cells(X, MyCol).value = (Application.WorksheetFunction.VLookup(Cells(X, 4).value, rng, 6, False) / (IBVal / 12))
-                    Cells(X, MyCol).Copy
-                    Cells(X, MyCol).PasteSpecial xlValues
-                    Cells(X, MyCol).NumberFormat = "0.0000"
+                    Cells(X, myCol).Copy
+                    Cells(X, myCol).PasteSpecial xlValues
+                    Cells(X, myCol).NumberFormat = "0.0000"
                 Next X
              
             End If
