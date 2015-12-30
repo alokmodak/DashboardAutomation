@@ -53,7 +53,7 @@ Dim insFilterValue1 As String
 Dim p As PivotTable
 Dim pf As PivotField
 Dim pfi As PivotItem
-Dim pvtName As String
+Dim pvtname As String
 Dim startDate As String
 Dim endDate As String
 Dim insFilterValue2 As String
@@ -86,7 +86,7 @@ End If
 Dim wsheet As Worksheet
 Application.Workbooks.Open (outputPath), False
 For Each wsheet In ActiveWorkbook.Sheets
-    ActiveSheet.UsedRange.AutoFilter
+    wsheet.UsedRange.AutoFilter
 Next
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = False
 
@@ -225,10 +225,10 @@ End If
 Workbooks(inputFlName).Activate
 Worksheets("Data Analysis Pivot").Activate
 ActiveSheet.Cells(5, 2).Select
-pvtName = ActiveCell.PivotTable.name
+pvtname = ActiveCell.PivotTable.name
 
 'filtering the data based on selection
-Set p = ActiveSheet.PivotTables(pvtName)
+Set p = ActiveSheet.PivotTables(pvtname)
 'Unhide page field pivot items
 For Each pf In p.PageFields
 If pf = "Product Group" Then
@@ -239,9 +239,9 @@ Next pf
 Application.Calculation = xlCalculationAutomatic  'Enabling automatic calculations
 Worksheets("Service Scorecard").Activate
 ActiveSheet.Cells(8, 2).Select
-pvtName = ActiveCell.PivotTable.name
+pvtname = ActiveCell.PivotTable.name
 
-Set p = ActiveSheet.PivotTables(pvtName) 'for YTD values
+Set p = ActiveSheet.PivotTables(pvtname) 'for YTD values
 For Each pf In p.PageFields
 If pf = "Product Group" Then
     pf.CurrentPage = productGroup
@@ -415,7 +415,7 @@ Workbooks(inputFile).Activate
 ActiveWorkbook.Sheets("Install SPAN").Activate
 ActiveSheet.UsedRange.Find("Period").Select
 insFindValue = Sheet1.combProductGroup.value
-pvtName = ActiveCell.PivotTable.name
+pvtname = ActiveCell.PivotTable.name
 
 Select Case insFindValue
     
@@ -485,7 +485,7 @@ insFilterValue5 = ""
 End Select
 
 'filtering the data based on selection
-Set p = ActiveSheet.PivotTables(pvtName)
+Set p = ActiveSheet.PivotTables(pvtname)
 
 For Each pfi In p.PivotFields("System").PivotItems
 pfi.Visible = True
@@ -892,10 +892,10 @@ End If
 
 Next productItem 'for loop for each product end
 
+Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
 Workbooks(outputFlName).Save
 Workbooks(inputFlName).Close False
 Workbooks(installFileOpen).Close False
-Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
 
 'getting original date value back
 Sheet1.combYear.value = yrSelectedFirst
@@ -1296,6 +1296,7 @@ remoteValToPaste = ""
 Next productItem 'for all product groups
 
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
+Application.Workbooks(outputFileGlobal).Save
 Workbooks(inputFl).Close False
 End Sub
 
@@ -1317,7 +1318,7 @@ Dim productItem As Variant
 Dim p As PivotTable
 Dim pf As PivotField
 Dim pfi As PivotItem
-Dim pvtName As String
+Dim pvtname As String
 Dim yrSelectedFirst As String 'Month and year selected at first
 Dim selMonth As String
 Dim p95ValToPaste As String
@@ -1498,9 +1499,9 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("MoS Open Complaints").Activate
 ActiveSheet.UsedRange.Find("Period").Select
 
-pvtName = ActiveCell.PivotTable.name
+pvtname = ActiveCell.PivotTable.name
 'filtering the data based on selection
-Set p = ActiveSheet.PivotTables(pvtName)
+Set p = ActiveSheet.PivotTables(pvtname)
 'Unhide page field pivot items
 
 For Each pf In p.PageFields
@@ -1657,9 +1658,9 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("MoS Open Complaints").Activate
 ActiveSheet.UsedRange.Find("Period").Select
 
-pvtName = ActiveCell.PivotTable.name
+pvtname = ActiveCell.PivotTable.name
 'filtering the data based on selection
-Set p = ActiveSheet.PivotTables(pvtName)
+Set p = ActiveSheet.PivotTables(pvtname)
 'Unhide page field pivot items
 
 For Each pf In p.PageFields
@@ -1810,9 +1811,9 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("MoS Open Complaints").Activate
 ActiveSheet.UsedRange.Find("Period").Select
 
-pvtName = ActiveCell.PivotTable.name
+pvtname = ActiveCell.PivotTable.name
 'filtering the data based on selection
-Set p = ActiveSheet.PivotTables(pvtName)
+Set p = ActiveSheet.PivotTables(pvtname)
 'Unhide page field pivot items
 
 For Each pf In p.PageFields
@@ -1963,9 +1964,9 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("MoS Open Complaints").Activate
 ActiveSheet.UsedRange.Find("Period").Select
 
-pvtName = ActiveCell.PivotTable.name
+pvtname = ActiveCell.PivotTable.name
 'filtering the data based on selection
-Set p = ActiveSheet.PivotTables(pvtName)
+Set p = ActiveSheet.PivotTables(pvtname)
 'Unhide page field pivot items
 
 For Each pf In p.PageFields
@@ -2561,6 +2562,7 @@ Next productItem 'for all product groups
 Workbooks(inputFl).Close False
 Workbooks(escInputFl).Close False
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
+Application.Workbooks(outputFileGlobal).Save
 
 End Sub
 
@@ -3014,6 +3016,7 @@ Next productItem 'for all product groups
 
 Workbooks(inputFl).Close False
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
+Application.Workbooks(outputFileGlobal).Save
 
 End Sub
 
@@ -3036,7 +3039,7 @@ Dim inputFlOpen As String
 Dim p As PivotTable
 Dim pf As PivotField
 Dim pfi As PivotItem
-Dim pvtName As String
+Dim pvtname As String
 
 yrSelectedFirst = Sheet1.combYear.value
 
@@ -3198,10 +3201,10 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("Pivot").Activate
 ActiveSheet.Cells(11, 2).Select
 
-pvtName = ActiveCell.PivotTable.name
+pvtname = ActiveCell.PivotTable.name
 
 'filtering the data based on selection
-Set p = ActiveSheet.PivotTables(pvtName)
+Set p = ActiveSheet.PivotTables(pvtname)
 
               
 For Each pf In p.PageFields
@@ -3240,10 +3243,10 @@ Workbooks(inputFl).Activate
 ActiveWorkbook.Sheets("Pivot").Activate
 ActiveSheet.Cells(11, 2).Select
 
-pvtName = ActiveCell.PivotTable.name
+pvtname = ActiveCell.PivotTable.name
 
 'filtering the data based on selection
-Set p = ActiveSheet.PivotTables(pvtName)
+Set p = ActiveSheet.PivotTables(pvtname)
 
               
 For Each pf In p.PageFields
@@ -3283,6 +3286,7 @@ Next productItem 'for all product groups
 
 Workbooks(inputFl).Close False
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
+Application.Workbooks(outputFileGlobal).Save
 
 End Sub
 
@@ -3905,6 +3909,7 @@ Next productItem 'for all product groups
 Workbooks(inputFlDI).Close False
 Workbooks(inputFlIGT).Close False
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
+Application.Workbooks(outputFileGlobal).Save
 End Sub
 
 
@@ -4111,9 +4116,9 @@ ActiveSheet.Cells(11, 11).Select
 Next productItem 'for all product groups
 
 Workbooks(inputFl).Close False
-Workbooks(outputFl).Save
-Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
 
+Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
+Workbooks(outputFl).Save
 End Sub
 
 
@@ -4366,7 +4371,7 @@ For i = 1 To 20
     End If
 Next
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
-
+Application.Workbooks(outputFileGlobal).Save
 End Sub
 
 
@@ -4634,10 +4639,9 @@ Selection.Font.Size = 18
 ActiveSheet.Cells(11, 11).Select
 Next
 
-Workbooks(outputFl).Save
-
 If Sheet1.chkAllGroups.value = True Then
 ActiveWorkbook.Sheets(2).Activate
 End If
 Application.Workbooks(outputFileGlobal).Windows(1).Visible = True
+Workbooks(outputFl).Save
 End Sub

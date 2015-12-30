@@ -1202,23 +1202,23 @@ AggrDataShtName = ActiveSheet.name
 
     Range("AD1").Select
     ActiveSheet.Paste
-    pvtName = ActiveCell.PivotTable.name
+    pvtname = ActiveCell.PivotTable.name
     
-    Set pvtTbl = ActiveSheet.PivotTables(pvtName)
+    Set pvtTbl = ActiveSheet.PivotTables(pvtname)
 
     pvtTbl.DataPivotField.Orientation = xlHidden
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC").Orientation = _
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC").Orientation = _
         xlHidden
 
-    ActiveSheet.PivotTables(pvtName).AddDataField ActiveSheet.PivotTables( _
-        pvtName).PivotFields("Total Calls (#)"), "# of Calls", xlSum
-    ActiveSheet.PivotTables(pvtName).AddDataField ActiveSheet.PivotTables( _
-        pvtName).PivotFields("Calls = 0 Visit"), "Sum of Calls = 0 Visit", xlSum
-    ActiveSheet.PivotTables(pvtName).PivotFields("Sum of Calls = 0 Visit"). _
+    ActiveSheet.PivotTables(pvtname).AddDataField ActiveSheet.PivotTables( _
+        pvtname).PivotFields("Total Calls (#)"), "# of Calls", xlSum
+    ActiveSheet.PivotTables(pvtname).AddDataField ActiveSheet.PivotTables( _
+        pvtname).PivotFields("Calls = 0 Visit"), "Sum of Calls = 0 Visit", xlSum
+    ActiveSheet.PivotTables(pvtname).PivotFields("Sum of Calls = 0 Visit"). _
         Caption = "#Calls = 0 Visit"
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC-Sub Parts").ShowAllItems = _
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC-Sub Parts").ShowAllItems = _
         True
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC-Sub Parts").ClearAllFilters
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC-Sub Parts").ClearAllFilters
 'Add RRR% calculated field in Pivot table
 
         pvtTbl.CalculatedFields.Add "RRR", _
@@ -1227,11 +1227,11 @@ AggrDataShtName = ActiveSheet.name
         xlDataField
         
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("Part12NC-Sub Parts").ClearAllFilters
-    ActiveSheet.PivotTables(pvtName).PivotSelect "", xlDataAndLabel, True
+    ActiveSheet.PivotTables(pvtname).PivotSelect "", xlDataAndLabel, True
     Selection.Cut
     Range("AD3").Select
     ActiveSheet.Paste
-    ActiveSheet.PivotTables(pvtName).PivotSelect "Subsystem['-']", xlDataAndLabel, True
+    ActiveSheet.PivotTables(pvtname).PivotSelect "Subsystem['-']", xlDataAndLabel, True
     ActiveCell.Offset(0, -1).Select
     fstAdd = ActiveCell.Address
     ActiveCell.Offset(0, 1).Select
@@ -1271,8 +1271,8 @@ AggrDataShtName = ActiveSheet.name
 
     Application.CutCopyMode = False
     
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC-Sub Parts").PivotFilters.Add Type:=xlCaptionEquals, Value1:="-"
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC-Sub Parts").EnableMultiplePageItems _
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC-Sub Parts").PivotFilters.Add Type:=xlCaptionEquals, Value1:="-"
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC-Sub Parts").EnableMultiplePageItems _
         = True
     
     ActiveSheet.PivotTables("pvtKPIALL").PivotFields("Part12NC-Sub Parts").PivotFilters.Add Type:=xlCaptionEquals, Value1:="-"
@@ -1323,7 +1323,7 @@ AggrDataShtName = ActiveSheet.name
 'Filter the KPI-All data for previous 12 months (month selected by the user will be considered as start of the month)
     ActiveSheet.Shapes.Range(Array("Period 1")).Select
     ActiveWorkbook.SlicerCaches("Slicer_Period1").PivotTables.AddPivotTable ( _
-        ActiveSheet.PivotTables(pvtName))
+        ActiveSheet.PivotTables(pvtname))
         
     Dim slSlicer As Slicer
     'Dim slCache As SlicerCache
@@ -10084,23 +10084,23 @@ Dim lastRow As Integer
 
     Range("AD1").Select
     ActiveSheet.Paste
-    pvtName = ActiveCell.PivotTable.name
+    pvtname = ActiveCell.PivotTable.name
     
-    Set pvtTbl = ActiveSheet.PivotTables(pvtName)
+    Set pvtTbl = ActiveSheet.PivotTables(pvtname)
 
     pvtTbl.DataPivotField.Orientation = xlHidden
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC").Orientation = _
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC").Orientation = _
         xlHidden
 
-    ActiveSheet.PivotTables(pvtName).AddDataField ActiveSheet.PivotTables( _
-        pvtName).PivotFields("Total Calls (#)"), "# of Calls", xlSum
-    ActiveSheet.PivotTables(pvtName).AddDataField ActiveSheet.PivotTables( _
-        pvtName).PivotFields("Calls = 0 Visit"), "Sum of Calls = 0 Visit", xlSum
-    ActiveSheet.PivotTables(pvtName).PivotFields("Sum of Calls = 0 Visit"). _
+    ActiveSheet.PivotTables(pvtname).AddDataField ActiveSheet.PivotTables( _
+        pvtname).PivotFields("Total Calls (#)"), "# of Calls", xlSum
+    ActiveSheet.PivotTables(pvtname).AddDataField ActiveSheet.PivotTables( _
+        pvtname).PivotFields("Calls = 0 Visit"), "Sum of Calls = 0 Visit", xlSum
+    ActiveSheet.PivotTables(pvtname).PivotFields("Sum of Calls = 0 Visit"). _
         Caption = "#Calls = 0 Visit"
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC-Sub Parts").ShowAllItems = _
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC-Sub Parts").ShowAllItems = _
         True
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC-Sub Parts").ClearAllFilters
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC-Sub Parts").ClearAllFilters
 
         pvtTbl.CalculatedFields.Add "RRR", _
         "='Calls = 0 Visit' /'Total Calls (#)' *100", True
@@ -10108,11 +10108,11 @@ Dim lastRow As Integer
         xlDataField
         
     ActiveSheet.PivotTables("pvtKPIMASTER").PivotFields("Part12NC-Sub Parts").ClearAllFilters
-    ActiveSheet.PivotTables(pvtName).PivotSelect "", xlDataAndLabel, True
+    ActiveSheet.PivotTables(pvtname).PivotSelect "", xlDataAndLabel, True
     Selection.Cut
     Range("AD2").Select
     ActiveSheet.Paste
-    ActiveSheet.PivotTables(pvtName).PivotSelect "Subsystem['-']", xlDataAndLabel, True
+    ActiveSheet.PivotTables(pvtname).PivotSelect "Subsystem['-']", xlDataAndLabel, True
     ActiveCell.Offset(0, -1).Select
     fstAdd = ActiveCell.Address
     ActiveCell.Offset(0, 1).Select
@@ -10155,8 +10155,8 @@ Dim lastRow As Integer
 
     Application.CutCopyMode = False
     
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC-Sub Parts").PivotFilters.Add Type:=xlCaptionEquals, Value1:="-"
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC-Sub Parts").EnableMultiplePageItems _
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC-Sub Parts").PivotFilters.Add Type:=xlCaptionEquals, Value1:="-"
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC-Sub Parts").EnableMultiplePageItems _
         = True
     
     
@@ -10803,14 +10803,14 @@ Sub RRRDatainAllSSBB()
     Sheets("All SS-BB").Select
     Range("AD3").Select
     Set pvtTbl = ActiveCell.PivotTable
-    pvtName = ActiveCell.PivotTable.name
+    pvtname = ActiveCell.PivotTable.name
    
-    Set pvtTbl = ActiveSheet.PivotTables(pvtName)
+    Set pvtTbl = ActiveSheet.PivotTables(pvtname)
     Set pf = pvtTbl.PivotFields("Part12NC")
     pf.Orientation = xlPageField
     pf.Position = 2
        
-    ActiveSheet.PivotTables(pvtName).PivotFields("Period").Orientation = _
+    ActiveSheet.PivotTables(pvtname).PivotFields("Period").Orientation = _
         xlHidden
     
     Set pf = pvtTbl.PivotFields("Period")
@@ -10821,9 +10821,9 @@ Sub RRRDatainAllSSBB()
         xlHidden
     'ActiveSheet.PivotTables(pvtName).AddDataField ActiveSheet.PivotTables( _
         pvtName).PivotFields("Total Calls (#)"), "# of Calls", xlSum
-    ActiveSheet.PivotTables(pvtName).AddDataField ActiveSheet.PivotTables( _
-        pvtName).PivotFields("Calls = 0 Visit"), "Sum of Calls = 0 Visit", xlSum
-    ActiveSheet.PivotTables(pvtName).PivotFields("Sum of Calls = 0 Visit"). _
+    ActiveSheet.PivotTables(pvtname).AddDataField ActiveSheet.PivotTables( _
+        pvtname).PivotFields("Calls = 0 Visit"), "Sum of Calls = 0 Visit", xlSum
+    ActiveSheet.PivotTables(pvtname).PivotFields("Sum of Calls = 0 Visit"). _
         Caption = "#Calls = 0 Visit"
 
 'Add RRR% calculated field in Pivot table
@@ -10834,23 +10834,23 @@ Sub RRRDatainAllSSBB()
         xlDataField
 
    
-    With ActiveSheet.PivotTables(pvtName)
+    With ActiveSheet.PivotTables(pvtname)
             .InGridDropZones = True
             .RowAxisLayout xlTabularRow
     End With
 
-    Set pvtTbl = Worksheets("All SS-BB").PivotTables(pvtName)
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC"). _
+    Set pvtTbl = Worksheets("All SS-BB").PivotTables(pvtname)
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC"). _
         EnableMultiplePageItems = True
     'pvtTbl.PivotFields("Part12NC").PivotFilters.Add Type:=xlCaptionEndsWith, Value1:="Parts", Value2:="All"
 
     'ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC").PivotFilters.Add Type:=xlCaptionContains, Value1:="Parts", Value2:="Aggregatged"
     
     Dim pvtItm As PivotItem
-    Set pvtTbl = ActiveSheet.PivotTables(pvtName)
+    Set pvtTbl = ActiveSheet.PivotTables(pvtname)
     Set pf = pvtTbl.PivotFields("Part12NC")
    ' Set pvtItm = pf.PivotItem
-    ActiveSheet.PivotTables(pvtName).PivotFields("Part12NC").ClearAllFilters
+    ActiveSheet.PivotTables(pvtname).PivotFields("Part12NC").ClearAllFilters
 
     For Each pvtItm In pvtTbl.PivotFields("Part12NC").PivotItems
         If pvtItm.name = "All Aggregated" Or pvtItm.name = "Non-Parts" Or pvtItm.name = "Parts" Then
@@ -10860,14 +10860,14 @@ Sub RRRDatainAllSSBB()
         End If
  
     Next
-    With ActiveSheet.PivotTables(pvtName)
+    With ActiveSheet.PivotTables(pvtname)
         .ColumnGrand = True
         .RowGrand = True
     End With
     
     Set pf = pvtTbl.PivotFields("BuildingBlock")
     'pf.ClearAllFilters
-    ActiveSheet.PivotTables(pvtName).PivotFields("BuildingBlock").ClearAllFilters
+    ActiveSheet.PivotTables(pvtname).PivotFields("BuildingBlock").ClearAllFilters
     
     For Each pvtItm In pvtTbl.PivotFields("BuildingBlock").PivotItems
         If pvtItm = "Buildingblocks Aggregated" Then
@@ -10877,12 +10877,12 @@ Sub RRRDatainAllSSBB()
         End If
     Next pvtItm
     
-    ActiveSheet.PivotTables(pvtName).PivotFields("System").ClearAllFilters
-    ActiveSheet.PivotTables(pvtName).PivotFields("System"). _
+    ActiveSheet.PivotTables(pvtname).PivotFields("System").ClearAllFilters
+    ActiveSheet.PivotTables(pvtname).PivotFields("System"). _
         EnableMultiplePageItems = False
-    ActiveSheet.PivotTables(pvtName).PivotFields("System").CurrentPage = "(All)"
-    ActiveSheet.PivotTables(pvtName).PivotFields("System").ClearAllFilters
-    ActiveSheet.PivotTables(pvtName).PivotFields("System").CurrentPage = _
+    ActiveSheet.PivotTables(pvtname).PivotFields("System").CurrentPage = "(All)"
+    ActiveSheet.PivotTables(pvtname).PivotFields("System").ClearAllFilters
+    ActiveSheet.PivotTables(pvtname).PivotFields("System").CurrentPage = _
         "System level"
    ' pvtTbl.RefreshTable
 
@@ -10892,7 +10892,7 @@ Sub RRRDatainAllSSBB()
     endDate1 = Format(DateAdd("yyyy", -1, startDate), "yyyy" & "-" & "mm")
     endDate = Format(DateAdd("m", 1, endDate1), "yyyy" & "-" & "mm")
     Sheets("CR").Select
-    Set pvtTbl = ActiveSheet.PivotTables(pvtName)
+    Set pvtTbl = ActiveSheet.PivotTables(pvtname)
     Set pf = pvtTbl.PivotFields("Period")
     pf.ClearAllFilters
     pf.CurrentPage = "(All)"

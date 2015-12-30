@@ -786,9 +786,9 @@ tempB = Application.ConvertFormula(Formula:=lstPivoAdd, FromReferenceStyle:=xlA1
         , DefaultVersion:=xlPivotTableVersion15
         
 ActiveSheet.Cells(30, 1).Select
-Dim pvtName As String
+Dim pvtname As String
 Dim posVal As Integer
-pvtName = ActiveCell.PivotTable.name
+pvtname = ActiveCell.PivotTable.name
     With ActiveSheet.PivotTables("PivotTable1").PivotFields( _
         "[C,S] System Code Material (Material no of  R Eq)")
         .Orientation = xlRowField
