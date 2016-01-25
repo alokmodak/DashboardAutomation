@@ -1,4 +1,6 @@
 Attribute VB_Name = "BoxPlot"
+Option Explicit
+
 Public Sub BoxPlot_Calculations()
 
 Dim NCNotPresent(20) As String

@@ -27,11 +27,12 @@ Sheet1.cmb6NC2OK.Visible = False
 With Sheet1.lstBx6NC
 .AddItem "ContractsDynamics_Waterfall"
 .AddItem "MarketDynamics_Waterfall"
-.AddItem "Contract_Penetration"
-.AddItem "Contract_Penetration_Mobile"
+.AddItem "Contract_Penetration_MPW"
+.AddItem "Contract_Penetration_GCS"
 .AddItem "BoxPlot"
 .AddItem "SendEmail_Contracts-Join&Drops"
 .AddItem "Diffusion Rate"
+.AddItem "PieChart"
 
 End With
 

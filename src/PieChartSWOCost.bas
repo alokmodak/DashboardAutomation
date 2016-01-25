@@ -22,7 +22,7 @@ Dim countLstAddress As String
 Dim strtMonth As String
 Dim modalityVal As String
 
-'On Error Resume Next
+On Error Resume Next
 
 'Selection for Modality
 If Sheet1.combModality.value = "Modality" Or Sheet1.combModality.value = "" Then
@@ -516,7 +516,15 @@ ActiveSheet.PivotTables("marketPivotTable").PivotSelect "", xlDataAndLabel, _
     
     ActiveSheet.name = "SWO_Cost_PieChart"
     
-    Sheets.Add
+    ThisWorkbook.Sheets("UI").Activate
+    Workbooks(inputFileNameContracts).Close False
+    Workbooks(revenueOutputGlobal).Save
+    
+End Sub
+
+Public Sub adding_ParetoChart()
+
+Sheets.Add
 ActiveSheet.name = "Pivot"
 
 Set pvtTbl = PvtTblCache.CreatePivotTable(TableDestination:="Pivot!R40C1", TableName:="paratoPivotTable", DefaultVersion:=xlPivotTableVersion15)
@@ -597,9 +605,52 @@ With ActiveSheet.PivotTables("paratoPivotTable").PivotFields("[S] SWO Order")
     ActiveSheet.Cells(41, 1).Select
     ActiveSheet.Paste
     
-    ThisWorkbook.Sheets("UI").Activate
-    Workbooks(inputFileNameContracts).Close False
-    Workbooks(revenueOutputGlobal).Save
-    
-End Sub
+    Dim fstAdd As String
+Dim lstAdd As String
+Dim rngMaterial As Range
+Dim cell As Range
+Dim maxCell As String
 
+
+Do Until ActiveCell.Offset(0, 1).value = ""
+    ActiveCell.Offset(1, 0).Select
+If ActiveCell.Offset(1, 0).value = "" Then
+    fstAdd = ActiveCell.Address
+    If ActiveCell.Offset(1, 0).value = "" Then
+        lstAdd = ActiveCell.End(xlDown).Offset(-1, 0).Address
+    Else
+        lstAdd = ActiveCell.Address
+    End If
+    Set rngMaterial = Range(fstAdd, lstAdd).Offset(0, 1)
+    maxCell = Application.Max(rngMaterial.Offset(0, 2))
+    For Each cell In rngMaterial.Offset(0, 2).Cells
+        If cell.value = maxCell Then
+            maxCell = cell.Address
+        End If
+    Next cell
+    
+    For Each cell In rngMaterial.Cells
+    On Error Resume Next
+        If InStr(1, cell.value, "A", vbBinaryCompare) Or InStr(1, cell.value, "B") Or InStr(1, cell.value, "C") Or InStr(1, cell.value, "D") Or InStr(1, cell.value, "E") Or InStr(1, cell.value, "F") Or _
+            InStr(1, cell.value, "G") Or InStr(1, cell.value, "H") Or InStr(1, cell.value, "I") Or InStr(1, cell.value, "J") Or InStr(1, cell.value, "K") Or InStr(1, cell.value, "L") Or _
+            InStr(1, cell.value, "M") Or InStr(1, cell.value, "N") Or InStr(1, cell.value, "O") Or InStr(1, cell.value, "P") Or InStr(1, cell.value, "Q") Or InStr(1, cell.value, "R") Or _
+            InStr(1, cell.value, "S") Or InStr(1, cell.value, "T") Or InStr(1, cell.value, "U") Or InStr(1, cell.value, "V") Or InStr(1, cell.value, "W") Or InStr(1, cell.value, "X") Or _
+            InStr(1, cell.value, "Y") Or InStr(1, cell.value, "Z") Or InStr(1, cell.value, "#") Then
+            'cell.Value = ""
+            Range(maxCell).value = Range(maxCell).value + cell.Offset(0, 2).value
+            cell.Offset(0, 2).value = ""
+            Range(maxCell).Offset(0, -1).value = Range(maxCell).Offset(0, -1).value + cell.Offset(0, 1).value
+            cell.Offset(0, 1).value = ""
+            Range(maxCell).Offset(0, 1).value = Range(maxCell).Offset(0, 1).value + cell.Offset(0, 3).value
+            cell.Offset(0, 3).value = ""
+            Range(maxCell).Offset(0, 2).value = Range(maxCell).Offset(0, 2).value + cell.Offset(0, 4).value
+            cell.Offset(0, 4).value = ""
+            Range(maxCell).Offset(0, 3).value = Range(maxCell).Offset(0, 3).value + cell.Offset(0, 5).value
+            cell.Offset(0, 5).value = ""
+        End If
+    Next cell
+    Range(lstAdd).Select
+End If
+
+    Loop
+End Sub

@@ -77,7 +77,7 @@ startTime = second(Now())
                        
                        Call Market_Revenue_Chart_Generation
                    End If
-                    If Sheet1.lstBx6NC.List(i) = "Contract_Penetration" Then
+                    If Sheet1.lstBx6NC.List(i) = "Contract_Penetration_MPW" Then
                        
                        'Checking whether file present
                        'Call ErrorMessage_RevenueFiles("Contract_Penetration_SAPBW_Download.xlsx")
@@ -85,7 +85,7 @@ startTime = second(Now())
                        Call Contract_Penetration
                    End If
                    
-                   If Sheet1.lstBx6NC.List(i) = "Contract_Penetration_Mobile" Then
+                   If Sheet1.lstBx6NC.List(i) = "Contract_Penetration_GCS" Then
                        
                        'Checking whether file present
                        'Call ErrorMessage_RevenueFiles("Contract_Penetration_SAPBW_Download.xlsx")
@@ -107,6 +107,11 @@ startTime = second(Now())
                    If Sheet1.lstBx6NC.List(i) = "BoxPlot" Then
                        
                        Call BoxPlot_Calculations
+                   End If
+                   
+                   If Sheet1.lstBx6NC.List(i) = "PieChart" Then
+                       
+                       Call PieChart_SWOCost
                    End If
                End If
             Next i
